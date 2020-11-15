@@ -1,0 +1,1 @@
+package com.sugon.analysis.domain.data.query;import lombok.Data;/** * @author: create by huangxb * @version: v1.0 * @description: * @date:2019/11/1 */@Datapublic class WorkAgeCount {    /**     * @工作年限范围     */    private String workAgeRand;    /**     * @数量     */    private int count;}

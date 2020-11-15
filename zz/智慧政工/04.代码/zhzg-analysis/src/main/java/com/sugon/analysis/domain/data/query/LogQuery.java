@@ -1,0 +1,1 @@
+package com.sugon.analysis.domain.data.query;import lombok.Data;/** * @author: create by huangxb * @version: v1.0 * @description: * @date:2019/12/24 */@Datapublic class LogQuery {    private String idNumber;    private String pageName;    private String flagName;    private String action;}

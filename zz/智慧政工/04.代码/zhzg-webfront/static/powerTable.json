@@ -1,0 +1,111 @@
+{
+    "list": [{
+        "name": "角色名称林丽",
+        "state":"启用",
+        "datainfo":"民警",
+        "type":"派出所",
+        "menu":"用户管理"
+    }, {
+        "name": "角色名称文敏",
+        "state":"禁用",
+        "datainfo":"巡警",
+        "type":"本人",
+        "menu":"用户管理"
+    }, {
+        "name": "角色名称杨秀兰",
+        "state":"启用",
+        "datainfo":"领导",
+        "type":"市局",
+        "menu":"用户管理"
+    }, {
+        "name": "角色名称魏强",
+        "state":"禁用",
+        "datainfo":"巡警",
+        "type":"本人",
+        "menu":"用户管理"
+    }, {
+        "name": "角色名称石秀兰",
+        "state":"启用",
+        "datainfo":"巡警",
+        "type":"市局",
+        "menu":"用户管理"
+    }, {
+        "name": "角色名称朱洋",
+        "state":"禁用",
+        "datainfo":"巡警",
+        "type":"派出所",
+        "menu":"用户管理"
+    }, {
+        "name": "角色名称傅敏",
+        "state":"启用",
+        "datainfo":"巡警",
+        "type":"本人",
+        "menu":"用户管理"
+    }, {
+        "name": "角色名称毛明",
+        "state":"禁用",
+        "datainfo":"巡警",
+        "type":"派出所",
+        "menu":"用户管理"
+    }, {
+        "name": "角色名称何静",
+        "state":"启用",
+        "datainfo":"巡警",
+        "type":"本人",
+        "menu":"用户管理"
+    }, {
+        "name": "角色名称郭秀英",
+        "state":"禁用",
+        "datainfo":"巡警最多50个汉字",
+        "type":"市局",
+        "menu":"用户管理"
+    },{
+        "name": "角色名称杨秀兰",
+        "state":"启用",
+        "datainfo":"领导",
+        "type":"本人",
+        "menu":"用户管理"
+    }, {
+        "name": "角色名称魏强",
+        "state":"禁用",
+        "datainfo":"巡警",
+        "type":"派出所",
+        "menu":"用户管理"
+    }, {
+        "name": "角色名称石秀兰",
+        "state":"启用",
+        "datainfo":"巡警",
+        "type":"本人",
+        "menu":"用户管理"
+    }, {
+        "name": "角色名称朱洋",
+        "state":"禁用",
+        "datainfo":"巡警",
+        "type":"本人",
+        "menu":"用户管理"
+    }, {
+        "name": "角色名称傅敏",
+        "state":"启用",
+        "datainfo":"巡警",
+        "type":"市局",
+        "menu":"用户管理"
+    }, {
+        "name": "角色名称毛明",
+        "state":"禁用",
+        "datainfo":"巡警",
+        "type":"市局",
+        "menu":"用户管理"
+    }, {
+        "name": "角色名称何静",
+        "state":"启用",
+        "datainfo":"巡警",
+        "type":"本人",
+        "menu":"用户管理"
+    }, {
+        "name": "角色名称郭秀英",
+        "state":"禁用",
+        "datainfo":"巡警",
+        "type":"派出所",
+        "menu":"用户管理"
+    }]
+}

@@ -1,0 +1,44 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://10.33.72.239:27017/zhzg
+
+  datasource:
+    primary:
+      url: jdbc:oracle:thin:@10.33.70.199:1521:zzb
+      username: zhzg_ypfx
+      password: zhzg_ypfx2019db
+      driverClassName: oracle.jdbc.driver.OracleDriver
+
+    secondary:
+      url: jdbc:presto://10.33.69.45:20808/hive/sugon
+      username: root
+      password: root
+      driverClassName: com.facebook.presto.jdbc.PrestoDriver
+
+    tertiary:
+      url: jdbc:oracle:thin:@10.33.68.219:1551/zhxt
+      username: zhzg
+      password: zhzg_2019
+      driverClassName: oracle.jdbc.driver.OracleDriver
+
+  jpa:
+    database: oracle
+    properties:
+      hibernate:
+        show_sql: false
+
+  file:
+    template: /home/apache-tomcat-8.5.40/template/
+    outPath: /home/apache-tomcat-8.5.40/webapps/download/applyDir/
+    picPath: /home/apache-tomcat-8.5.40/template/pic/
+
+mymyd:
+  webPath: http://10.33.70.132:7777/
+
+
+ftpimg:
+  ip: 50.32.9.137
+
+local:
+  url: http://10.33.72.236:${server.port}/

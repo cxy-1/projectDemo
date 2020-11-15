@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zksg.smartpolitical.usermgmt.dao.UserRoleMapper" >
+
+    <resultMap id="UserRoleMap" type="com.zksg.smartpolitical.usermgmt.entity.UserRoleKey">
+        <result column="RU_ID" property="ruId"></result>
+        <result column="PERSON_ID" property="personId"></result>
+        <result column="ROLE_ID" property="roleId"></result>
+        <result column="RO_ID" property="roId"></result>
+        <result column="TYPE" property="type"></result>
+        <result column="STATE" property="state"></result>
+        <result column="DATA_ID" property="dataId"></result>
+    </resultMap>
+    <sql id="Base_Column_List" >
+        RU_ID, PERSON_ID, ROLE_ID, RO_ID, TYPE, DATA_ID
+    </sql>
+
+    <resultMap id="BsUserMap" type="com.zksg.smartpolitical.usermgmt.entity.BasicUser">
+        <result column="PERSON_ID" property="personId"></result>
+        <result column="USER_NAME" property="userName"></result>
+        <result column="ID_NUMBER" property="idNumber"></result>
+        <result column="COMPANY_ID" property="companyId"></result>
+        <result column="DEPT_ID" property="unitId"></result>
+        <result column="POLICE_NO" property="policeNo"></result>
+        <result column="PHONE" property="phone"></result>
+        <result column="SEX" property="sex"></result>
+        <result column="STATUS" property="status"></result>
+        <result column="NAME_LOGOGRAM" property="logogram"></result>
+        <result column="DEPT_NAME" property="unitName"></result>
+        <result column="COMPANY_NAME" property="companyName"></result>
+        <result column="RU_ID" property="ruId"></result>
+    </resultMap>
+
+    <sql id="BsUser_Column_List" >
+        PERSON_ID, USER_NAME, ID_NUMBER, COMPANY_ID, DEPT_ID, SEX,
+        POLICE_NO, PHONE, STATUS, NAME_LOGOGRAM, DEPT_NAME, COMPANY_NAME
+    </sql>
+
+    <!-- 1 -->
+    <insert id="insertUserRoleKey" parameterType="java.util.List" useGeneratedKeys="false">
+        <selectKey keyProperty="id" resultType="java.lang.Integer" order="AFTER">
+            select USER_ROLE_KEY_SEQ.CURRVAL as id from dual
+        </selectKey>
+        INSERT INTO USER_ROLE_NEW(RU_ID, PERSON_ID, ROLE_ID, RO_ID, TYPE, STATE, DATA_ID)
+        select USER_ROLE_KEY_SEQ.NEXTVAL, a.personId, a.roleId, a.roId, a.type, a.state, a.dataId from
+        (<foreach collection="userRoleKeys" index="" item="item" separator="union all">
+        select
+        #{item.personId,jdbcType=VARCHAR} personId,
+        #{item.roleId,javaType=Integer} roleId,
+        #{item.roId,javaType=Integer} roId,
+        1 type,
+        'A' state,
+        #{item.dataId,jdbcType=VARCHAR} dataId
+        from dual
+        </foreach>) a
+    </insert>
+
+    <!-- 1 -->
+    <select id="findUserRoleList" resultType="java.lang.Integer" parameterType="java.lang.String">
+        SELECT ROLE_ID FROM USER_ROLE_NEW
+        WHERE STATE = 'A' and PERSON_ID = #{personId}
+    </select>
+
+    <delete id="delByRoleId">
+        delete from USER_ROLE_NEW
+        where ROLE_ID = #{id}
+    </delete>
+
+    <delete id="delUserRole">
+        delete from USER_ROLE_NEW
+        where ROLE_ID = #{roleId} and PERSON_ID = #{personId}
+    </delete>
+
+<!--    1-->
+    <select id="selectUserRoleByDataId" resultType="com.zksg.smartpolitical.usermgmt.entity.model.BsRoleAndRoleOrgModel" >
+        SELECT
+        distinct o.RO_ID as roId, r.ROLE_ID as roleId, r.NAME, r.TYPE, r.SORT, r.REMARK,
+        o.UNIT_ID as unitId, o.DATA_ID as dataId
+        FROM BS_ROLE_NEW r left join ROLE_ORG_KEY_NEW o
+        on r.ROLE_ID = o.ROLE_ID and r.STATE = 'A' and o.STATE = 'A'
+        left join USER_ROLE_NEW u
+        on o.RO_ID = u.RO_ID and u.STATE = 'A'
+        where o.DATA_ID like CONCAT(#{dataId},'%')
+    </select>
+
+<!--    1-->
+    <select id="roleListByPersonId" resultType="com.zksg.smartpolitical.usermgmt.vo.UserRoleVO" >
+        SELECT
+        r.ROLE_ID as roleId, r.NAME, r.TYPE, r.SORT, r.REMARK, o.RO_ID as roId,
+        o.UNIT_ID as unitId, o.DATA_ID as dataId, u.RU_ID as ruId
+        FROM BS_ROLE_NEW r left join ROLE_ORG_KEY_NEW o
+        on r.ROLE_ID = o.ROLE_ID and r.STATE = 'A'
+        left join USER_ROLE_NEW u
+        on o.RO_ID = u.RO_ID
+        where u.PERSON_ID = #{personId} and u.STATE = 'A' and o.STATE = 'A'
+    </select>
+
+
+<!--    1-->
+    <!-- 根据角色-组织ID查询已授权用户 -->
+    <select id="selectRoleListByRoId" resultMap="BsUserMap" >
+        SELECT
+        u.PERSON_ID as PERSON_ID, u.USER_NAME as USER_NAME, u.ID_NUMBER as ID_NUMBER, u.COMPANY_ID as COMPANY_ID, u.DEPT_ID as DEPT_ID, u.SEX as SEX,
+        u.POLICE_NO as POLICE_NO, u.PHONE as PHONE, u.STATUS as STATUS, u.NAME_LOGOGRAM as NAME_LOGOGRAM, u.DEPT_NAME as DEPT_NAME, u.COMPANY_NAME as COMPANY_NAME,r.RU_ID as RU_ID
+        FROM USER_ROLE_NEW r left join BASIC_USER_NEW u
+        on r.PERSON_ID = u.PERSON_ID
+        where r.STATE = 'A'
+        AND r.RO_ID = #{roId}
+    </select>
+
+<!--    1-->
+    <!-- 根据角色ID查询已授权用户 -->
+    <select id="selectRoleListByRoleId" resultMap="BsUserMap" >
+        SELECT
+        u.PERSON_ID as PERSON_ID, u.USER_NAME as USER_NAME, u.ID_NUMBER as ID_NUMBER, u.COMPANY_ID as COMPANY_ID, u.DEPT_ID as DEPT_ID, u.SEX as SEX,
+        u.POLICE_NO as POLICE_NO, u.PHONE as PHONE, u.STATUS as STATUS, u.NAME_LOGOGRAM as NAME_LOGOGRAM, u.DEPT_NAME as DEPT_NAME, u.COMPANY_NAME as COMPANY_NAME,r.RU_ID as RU_ID
+        FROM USER_ROLE_NEW r left join BASIC_USER_NEW u
+        on r.PERSON_ID = u.PERSON_ID
+        where r.STATE = 'A'
+        AND r.ROLE_ID = #{roleId}
+    </select>
+
+
+<!--    1-->
+    <!-- 根据unitId查询未授权用户 -->
+    <select id="selectUnRoleListByunitId" resultMap="BsUserMap" >
+        SELECT
+        a.PERSON_ID, a.USER_NAME, a.ID_NUMBER, a.COMPANY_ID, a.DEPT_ID, a.SEX,
+        a.POLICE_NO, a.PHONE, a.STATUS, a.NAME_LOGOGRAM, a.DEPT_NAME, a.COMPANY_NAME
+        FROM
+        (SELECT
+         PERSON_ID, USER_NAME, ID_NUMBER, COMPANY_ID, DEPT_ID, SEX,
+         POLICE_NO, PHONE, STATUS, NAME_LOGOGRAM, DEPT_NAME, COMPANY_NAME
+         FROM BASIC_USER_NEW WHERE DEPT_ID LIKE concat(#{unitId},'%')) a
+        LEFT JOIN (SELECT DISTINCT PERSON_ID FROM USER_ROLE_NEW WHERE STATE = 'A') b ON a.PERSON_ID = b.PERSON_ID
+    </select>
+
+<!--    SELECT a.* FROM-->
+<!--    (SELECT * FROM BASIC_USER_NEW WHERE DEPT_ID LIKE concat(#{unitId},'%')) a-->
+<!--    LEFT JOIN (SELECT DISTINCT PERSON_ID FROM USER_ROLE_NEW WHERE STATE = 'A') b ON a.PERSON_ID = b.PERSON_ID-->
+<!--    WHERE b.PERSON_ID IS NULL OR b.PERSON_ID = ''-->
+
+<!--    1-->
+    <delete id="delUserRoleKey">
+        delete from USER_ROLE_NEW
+        where RU_ID = #{ruId}
+    </delete>
+
+    <select id="selectDataIdList" resultType="java.lang.String" >
+        SELECT
+        DATA_ID
+        FROM USER_ROLE_NEW
+        WHERE STATE = 'A' and PERSON_ID = #{personId}
+    </select>
+
+
+
+</mapper>

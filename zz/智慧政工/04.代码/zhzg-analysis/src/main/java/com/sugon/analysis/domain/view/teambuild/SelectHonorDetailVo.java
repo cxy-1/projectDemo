@@ -1,0 +1,1 @@
+package com.sugon.analysis.domain.view.teambuild;import lombok.Data;/** * description √Ë ˆ * * @author young * @time 15:21 */@Datapublic class SelectHonorDetailVo {    private String honorName;    private String dept;    private String hdate;    private String hdept;}

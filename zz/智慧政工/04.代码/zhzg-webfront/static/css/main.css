@@ -1,0 +1,386 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body,
+#app,
+.mainApp,
+.wrapper {
+    width: 100%;
+    height: 100%;
+    font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif!important;
+    /* overflow: hidden; */
+}
+.content{
+    min-width:1140px!important;
+}
+body {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif!important;
+}
+
+a {
+    text-decoration: none
+}
+
+.content-box {
+    position: absolute;
+    left: 210px;
+    right: 0;
+    top: 50px;
+    bottom: 0;
+    -webkit-transition: left .3s ease-in-out;
+    transition: left .3s ease-in-out;
+    background: #f0f0f0;
+}
+
+.content {
+    width: auto;
+    height: 100%;
+     /* padding: 10px 10px;willa */
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+.content-collapse {
+    left: 65px;
+}
+
+#app .container {
+    padding: 16px 30px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    position: relative;
+    z-index: 99;
+}
+
+.crumbs {
+    margin-bottom: 10px;
+}
+
+.pagination {
+    margin: 20px 0;
+    text-align: right;
+}
+
+.plugins-tips {
+    padding: 20px 10px;
+    margin-bottom: 20px;
+}
+
+.el-button+.el-tooltip {
+    margin-left: 10px;
+}
+
+.el-table tr:hover {
+    background: #f6faff;
+}
+.el-card__body{
+    padding-bottom: 8px;
+}
+.mgb20 {
+    margin-bottom: 18px;
+}
+
+.move-enter-active,
+.move-leave-active {
+    transition: opacity .5s;
+}
+
+.move-enter,
+.move-leave {
+    opacity: 0;
+}
+/*icon  willa begin*/
+.content{
+     overflow-x: hidden; 
+}
+.titIcon{
+    width: 100%;
+    height: 36px;
+    line-height: 34px;
+     /* font-family: PingFangSC-Medium;  */
+    font-size: 18px;
+    color: #272727;
+    font-weight: bold;
+    overflow: hidden;
+    position: relative;
+}
+.btn-group{
+    margin: 10px 0;
+     text-align: center;
+}
+.clearfix span{
+    /* font-family: PingFangSC-Medium; */
+    font-size: 18px;
+    color: #262626;
+    font-weight: bold;
+}
+.titIcon p {
+    display: inline-block;
+    position: absolute;
+    left: 45px;
+    top: 6px;
+}
+.el-footer {
+    font-size: 12px;
+    color: #333;
+     line-height: 20px ;
+     position: absolute;
+}
+.faSelf{
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    position: relative;
+}
+/*willa end */
+/*BaseForm*/
+
+.form-box {
+    width: 600px;
+}
+
+.form-box .line {
+    text-align: center;
+}
+
+.el-time-panel__content::after,
+.el-time-panel__content::before {
+    margin-top: -7px;
+}
+
+.el-time-spinner__wrapper .el-scrollbar__wrap:not(.el-scrollbar__wrap--hidden-default) {
+    padding-bottom: 0;
+}
+
+/*Upload*/
+
+.pure-button {
+    width: 150px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    color: #fff;
+    border-radius: 3px;
+}
+
+.g-core-image-corp-container .info-aside {
+    height: 45px;
+}
+
+.el-upload--text {
+    background-color: #fff;
+    border: 1px dashed #d9d9d9;
+    /**border-radius: 6px;*/
+    box-sizing: border-box;
+    width: 360px;
+    height: 180px;
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.el-upload--text .el-icon-upload {
+    font-size: 67px;
+    color: #97a8be;
+    margin: 40px 0 16px;
+    line-height: 50px;
+}
+
+.el-upload--text {
+    color: #97a8be;
+    font-size: 14px;
+    text-align: center;
+}
+
+.el-upload--text em {
+    font-style: normal;
+}
+
+/*VueEditor*/
+
+.ql-container {
+    min-height: 400px;
+}
+
+.ql-snow .ql-tooltip {
+    transform: translateX(117.5px) translateY(10px) !important;
+}
+
+.editor-btn {
+    margin-top: 20px;
+}
+
+/*markdown*/
+
+.v-note-wrapper .v-note-panel {
+    min-height: 500px;
+}
+.el-footer{
+    width: 100%;
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    height: 40px;
+    bottom:0px;
+}
+.search-button-custom-style .el-input-group__append,.search-button-custom-style .el-input-group__prepend {
+    background-color: #409EFF;
+    color: #ffffff;
+    border-color: #409EFF;
+    font-size: 16px;
+}
+.search-button-custom-style input {
+    border-right-color: #409EFF;
+}
+
+.table-checkbox,.table-checkbox .el-checkbox__inner {
+    width: 16px!important;
+    height: 16px!important; 
+}
+
+.table-checkbox .el-checkbox__label {
+    display: none!important;
+}
+.is-always-shadow{
+    -webkit-box-shadow:0 2px 12px 0 rgba(0,0,0,.1);
+    box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+    border:1px solid #EBEEF5;
+    /* border-radius:4px; */
+}
+.card2 {
+    margin: 0 20px;
+}
+/*表格样式  */
+.el-table th>.cell{
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.85);
+    font-family: 'PingFangSC-Medium';
+}
+.el-table th{
+    background: #FAFAFA!important;
+    height: 53px;
+}
+.el-table td div{
+    font-size: 14px;
+    color: rgba(0,0,0,0.65);
+    font-family: 'PingFangSC-Regular';
+}
+.el-table .cell .el-button--text{
+    font-size: 14px;
+    color: #409EFF;
+    font-family: 'PingFangSC-Regular';
+}
+/*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
+
+::-webkit-scrollbar {
+    width: 6px;
+    /*滚动条宽度*/
+    height: 6px;
+    /*滚动条高度*/
+}
+
+
+/*定义滚动条轨道 内阴影+圆角*/
+
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px #F5F5F5;
+    border-radius: 4px;
+    /*滚动条的背景区域的圆角*/
+    background-color: #F5F5F5;
+    /*滚动条的背景颜色*/
+}
+
+
+/*定义滑块 内阴影+圆角background: #BBC3D2;*/
+
+::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    /*滚动条的圆角*/
+    -webkit-box-shadow: inset 0 0 6px #BBC3D2;
+    background-color: #BBC3D2;
+    /*滚动条的背景颜色*/
+}
+.noDataImg{
+    display: block;
+    margin: 0 auto;
+    position: relative;
+    margin-bottom:30px;
+}
+.noDataSmall{
+    display: block;
+    position: relative;
+    margin: 8% auto;
+}
+/*add */
+.iconfolder, .iconwenjianjia1,.icondoc-s{
+color: #409EFF;
+font-size: 16px; 
+}
+.icondoc-s{
+font-size: 22px;
+}
+.iconyou2{
+    font-size:20px!important;
+}
+
+/* progress */
+.p-list-progress .el-progress-bar__outer {
+    border-radius: 0;
+    background-color: transparent;
+}
+.p-list-progress.blue .el-progress-bar__inner {
+    border-radius: 0;
+    background-color: #1890FF;
+}
+.p-list-progress.purple .el-progress-bar__inner {
+    border-radius: 0;
+    background-color: rgba(153,88,209,0.80);
+}
+.p-list-progress .el-progress-bar__inner {
+    line-height: 9px;
+}
+.treeSelect .el-tree-node__content:hover {
+    background-color: rgb(255, 255, 255, 0.3);
+}
+.treeSelect .el-tree-node:focus>.el-tree-node__content {
+    background-color: rgb(255, 255, 255, 0.3);
+}
+.customManageBox {
+    min-width: 160px!important;
+}
+.customManageBox .el-select {
+    width: 100px;
+    position: absolute;
+    right: 0;
+    opacity: 0;
+}
+.customManageBox .el-select-dropdown__item {
+    padding: 5px 5px!important;
+    height: 250px!important;
+}
+.customManageBox .el-select-dropdown__item {
+    padding: 0!important;
+}
+.customManageBox .el-select-dropdown__item {
+    height: 250px!important;
+    overflow: auto;
+}
+.customManageBox .el-tree-node__content:hover {
+    background: transparent!important;
+}
+
+.customManageBox .el-select-dropdown {
+    background-color: rgba(16,85,184,0.90)!important;
+    border: 0!important;
+}
+.customManageBox .el-select-dropdown__item.hover,.customManageBox .el-select-dropdown__item:hover {
+    background: transparent!important;
+    background-color: transparent!important;
+}

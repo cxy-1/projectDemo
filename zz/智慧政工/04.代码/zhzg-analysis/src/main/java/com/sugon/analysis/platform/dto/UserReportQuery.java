@@ -1,0 +1,1 @@
+package com.sugon.analysis.platform.dto;import lombok.Data;import java.util.List;/** * @description: 用户报告查询 * @author: liuwei * @create: 2020-06-04 11:14 **/@Datapublic class UserReportQuery extends com.sugon.analysis.platform.dto.PageQuery {	private List<String> deptIds;	private String[] dateRange;	private String flagName;}

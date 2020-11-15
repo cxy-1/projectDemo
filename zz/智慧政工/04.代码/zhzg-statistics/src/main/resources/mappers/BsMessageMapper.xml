@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sugon.zhzg.statistics.repository.oracle.BsMessageMapper">
+    <resultMap id="bsMessage" type="com.sugon.zhzg.statistics.domain.data.object.oracle.BsMessage">
+        <result column="ID" property="ID"/>
+        <result column="SENDER" property="sender"/>
+        <result column="RECEIVER" property="receiver"/>
+        <result column="CREATE_TIME" property="createTime"/>
+        <result column="CONTENT" property="content"/>
+        <result column="STATUS" property="status"/>
+        <result column="FORM_ID" property="formId"/>
+        <result column="TYPE" property="type"/>
+    </resultMap>
+
+
+    <insert id="insertMessage" parameterType="com.sugon.zhzg.statistics.domain.data.object.oracle.BsMessage" useGeneratedKeys="true"
+            keyProperty="ID">
+        <selectKey keyProperty="ID" resultType="java.lang.Integer" order="BEFORE">
+            select SEQ_MESSAGE_ID.nextval from dual
+        </selectKey>
+        insert into
+        BS_MESSAGE(ID, SENDER, RECEIVER, CREATE_TIME,CONTENT,STATUS,FORM_ID,TYPE)
+        values(SEQ_MESSAGE_ID.nextval,#{sender},#{receiver},#{createTime,jdbcType=VARCHAR},#{content,jdbcType=VARCHAR},#{status},
+        #{formId},#{type})
+    </insert>
+
+    <insert id="batchInsertMessage" parameterType="java.util.List">
+        <selectKey keyProperty="id" resultType="java.lang.Integer" order="AFTER">
+            select SEQ_MESSAGE_ID.CURRVAL as id from dual
+        </selectKey>
+        INSERT INTO BS_MESSAGE(ID, SENDER, RECEIVER, CREATE_TIME, CONTENT, STATUS, FORM_ID, TYPE, IS_TODO)
+        select SEQ_MESSAGE_ID.NEXTVAL, a.sender, a.receiver, a.createTime,
+        a.content, a.status, a.formId, a.type, a.isTodo from
+        (<foreach collection="messageList" index="" item="item" separator="union all">
+        select
+        #{item.sender,jdbcType=VARCHAR} sender,
+        #{item.receiver,jdbcType=VARCHAR} receiver,
+        #{item.createTime,jdbcType=VARCHAR} createTime,
+        #{item.content,jdbcType=VARCHAR} content,
+        0 status,
+        #{item.formId,jdbcType=VARCHAR} formId,
+        #{item.type,jdbcType=VARCHAR} type,
+        1 isTodo
+        from dual
+    </foreach>) a
+    </insert>
+
+    <select id="queryLeaderId" resultType="java.lang.String" >
+        select
+        d.PERSON_ID as personId
+        from BASIC_DUTY d left join BASIC_USER u
+        on d.DEPT = u.DEPT_ID
+        where d.DUTY_NO = '11' and u.PERSON_ID = #{personId}
+    </select>
+
+    <select id="queryUserName" resultType="java.lang.String" >
+        select
+        u.USER_NAME as userName
+        from BASIC_USER u
+        where u.PERSON_ID = #{personId}
+    </select>
+
+</mapper>

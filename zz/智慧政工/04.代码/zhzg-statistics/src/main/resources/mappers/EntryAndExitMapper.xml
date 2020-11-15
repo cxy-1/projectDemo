@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sugon.zhzg.statistics.repository.MybatisAndOracl.EntryAndExitMapper" >
+
+<!--    &lt;!&ndash; 查询下级单位名称 &ndash;&gt;-->
+<!--    <select id="selectCompanyList" resultMap="BsCmopanyMap">-->
+<!--        SELECT-->
+<!--        NAME,COMPANY_ID-->
+<!--        FROM BS_COMPANY-->
+<!--        WHERE PARENT_ID-->
+<!--        IN-->
+<!--        SELECT DEPT_ID FROM BASIC_USER WHERE ID = #{userid}-->
+<!--    </select>-->
+
+
+    <!-- 查询出国境核查列表政工系统(正常/异常)(2页面) -->
+    <select id="selectSendList" resultType="com.sugon.zhzg.statistics.domain.data.query.EntryAndexitManage.IORecord">
+        SELECT * FROM
+        (SELECT a.USER_NAME as name,a.ID_NUMBER as idNumber,b.UNIT_NAME as dept,b.COMPANY_NAME as company,a.CHECK_TYPE as
+        checkType,a.CHECK_RESULT as checkStatus,a.CHECK_TIME as checkTime
+        FROM CHECK_RECORDS a,BS_COMPANY_NEW b
+        WHERE a.DEPT_ID = b.UNIT_ID
+        AND a.DEPT_ID IN
+        <foreach collection="deptIdList" index="" item="item" open="(" separator="," close=")">
+        #{item}
+        </foreach>) c
+        <where>
+            <if test="name != null and name != ''">
+                AND c.name LIKE concat(concat('%',#{name}),'%')
+            </if>
+            <if test="idNumber != null and idNumber != ''">
+                AND c.idNumber LIKE concat(concat('%',#{idNumber}),'%')
+            </if>
+        </where>
+    </select>
+
+
+    <!-- 查询出国境核查列表（2页面） -->
+    <select id="selectSendListOff" resultType="com.sugon.zhzg.statistics.domain.data.object.oracle.CheckHistoryEntity">
+        SELECT a.USER_NAME as name,a.ID_NUMBER as idNumber,b.UNIT_NAME as dept,b.COMPANY_NAME as company,a.DEPT_ID as deptId,a.COMPANY_ID as companyId
+        FROM BASIC_USER_NEW a,BS_COMPANY_NEW b
+        WHERE a.DEPT_ID = b.UNIT_ID
+        AND a.ID_NUMBER IN
+        <foreach collection="idNumberList" index="" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+
+    <!-- 根据personId查询部门和单位名称 -->
+    <select id="selectDeptAndCompany" resultType="com.sugon.zhzg.statistics.domain.data.object.oracle.CheckHistoryEntity">
+        SELECT b.UNIT_NAME as dept,b.COMPANY_NAME as company,b.UNIT_ID as deptId,b.COMPANY_ID as companyId
+        FROM BASIC_USER_NEW a,BS_COMPANY_NEW b
+        WHERE nvl(a.DEPT_ID,a.COMPANY_ID) = b.UNIT_ID
+        AND a.PERSON_ID = #{personId}
+    </select>
+
+
+    <!-- 政工系统推送任务多条件查询,获取任务ID -->
+    <select id="swithCheckJob" resultType="java.lang.String">
+        SELECT DISTINCT a.TIMESTAMP as timestamp FROM CHECK_JOBLIST a LEFT JOIN CHECK_HISTORY b ON a.TIMESTAMP = b.TIMESTAMP
+        <where>
+            <if test="queryType != null and queryType != ''">
+                AND a.CHECK_STATUS != #{queryType}
+            </if>
+            <if test="checkType != null and checkType != ''">
+                AND a.CHECK_TYPE LIKE concat(concat('%',#{checkType}),'%')
+            </if>
+            <if test="checkCompany != null and checkCompany != ''">
+                AND a.NAMES LIKE concat(#{checkCompany},'%')
+            </if>
+            <if test="checkResult != null and checkResult != ''">
+                AND a.CHECK_RESULT LIKE concat(concat('%',#{checkResult}),'%')
+            </if>
+            <if test="checkStatus != null and checkStatus != ''">
+                AND a.CHECK_STATUS LIKE concat(concat('%',#{checkStatus}),'%')
+            </if>
+            <if test="checkPeo != null and checkPeo != ''">
+                AND b.NAME LIKE concat(concat('%',#{checkPeo}),'%')
+            </if>
+        </where>
+        ORDER BY a.TIMESTAMP DESC
+    </select>
+
+
+<!--    &lt;!&ndash; 查询指定条件下的任务单 &ndash;&gt;-->
+<!--    <select id="getHistory" resultType="com.sugon.zhzg.statistics.domain.data.object.oracle.CheckHistoryEntity">-->
+<!--        SELECT * FROM CHECK_HISTORY WHERE TIMESTAMP = #{timestamp}-->
+<!--    </select>-->
+
+
+    <!-- 查询出入境被推送的数据 -->
+    <select id="getSendPeople" resultType="com.sugon.zhzg.statistics.domain.data.object.oracle.CheckHistoryEntity">
+        SELECT * FROM CHECK_HISTORY WHERE SEND_STATUS = 1
+    </select>
+
+
+
+    <!-- 多条件查询出入境被推送的数据 -->
+    <select id="switchSendPeo" resultType="com.sugon.zhzg.statistics.domain.data.object.oracle.CheckHistoryEntity">
+        SELECT NAME as name,ID_NUMBER as idNumber,DEPT_NAME as dept,COMPANY_NAME as company,CHECK_TYPE as checkType,SEND_TIME as sendTime,CHECK_SORT as checkSort,TIMESTAMP as timestamp FROM CHECK_HISTORY WHERE SEND_STATUS=1 AND TIMESTAMP = #{query.timestamp}
+        <if test="query.checkType != null and query.name != ''">
+            AND CHECK_TYPE LIKE concat(concat('%',#{query.checkType}),'%')
+        </if>
+        <if test="query.idNumber != null and query.idNumber != ''">
+            AND ID_NUMBER LIKE concat(concat('%',#{query.idNumber}),'%')
+        </if>
+        <if test="query.companyName != null and query.companyName != ''">
+            AND concat(COMPANY_NAME,DEPT_NAME) LIKE concat(concat('%',#{query.companyName}),'%')
+        </if>
+        <if test="query.checkStatus != null and query.checkStatus != ''">
+            AND CHECK_SORT LIKE concat(concat('%',#{query.checkStatus}),'%')
+        </if>
+        <if test="query.name != null and query.name != ''">
+            AND NAME LIKE concat(concat('%',#{query.name}),'%')
+        </if>
+        ORDER BY CHECK_SORT,TIMESTAMP DESC
+    </select>
+
+
+    <!-- 查询出入境表单及随同人员信息 -->
+    <select id="selectFormAndWithPeo" resultType="com.sugon.zhzg.statistics.domain.data.query.EntryAndexitManage.GoAbroadDetail">
+        SELECT a.APPLICATION_FORM_ID as applicationFormId,a.USER_ID as userId,a.START_TIME as startTime,
+        a.END_TIME as endTime,a.DESTINATION_BROAD as destinationBroad,a.DEPARTURE_FORM as departureForm,
+        a.TRAVEL_AGENCY_NAME as travelAgencyName,a.IS_INVOLVED_SECRET as isInvolvedSecret,a.IS_FIELD as isField,
+        a.DEPARTURE_REASON as departureReason,a.UPLOAD_ATTACHED as uploadAttached,a.INSTANCE_ID as instanceId,
+        a.APPLICATION_TIME as applicationTime,a.OUTLAND_PHONE as outlandPhone,a.REMARKS as remarks,a.STATUS as status,
+        a.WORK_ID as workId,b.RELATION_USER_NAME as relationUserName,b.WORK_UNITS as workUnits,b.JOB_POSITION as jobPosition,
+        b.APPELLATION as appellation,b.ID as id
+        FROM BS_GOABROAD a LEFT JOIN BS_GOABROAD_FIELD b ON a.APPLICATION_FORM_ID = b.APPLICATION_ID
+        WHERE a.USER_ID = #{personId}
+        ORDER BY a.END_TIME DESC
+    </select>
+
+</mapper>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sugon.analysis.mappper.oracle.PerComparisonMapper">
+
+    <resultMap id="jobAndTime" type="com.sugon.analysis.domain.view.return2view.NameAndTimeInfo">
+        <result column="DURATION_OF_SERVICE" property="time"></result>
+        <result column="CVNAME" property="name"></result>
+    </resultMap>
+
+    <resultMap id="policeRankAndTime" type="com.sugon.analysis.domain.view.return2view.NameAndTimeInfo">
+        <result column="TITLE_START_DATE" property="time"></result>
+        <result column="CVNAME" property="name"></result>
+    </resultMap>
+
+    <resultMap id="mymydAndMonth" type="com.sugon.analysis.domain.view.return2view.OpinionVo">
+        <result column="SFZH" property="sfzh"></result>
+        <result column="MONTH" property="month"></result>
+        <result column="MYMYD" property="mymyd"></result>
+    </resultMap>
+
+    <resultMap id="dutyYear1" type="com.sugon.analysis.domain.data.query.DutyAndYear">
+        <result column="JOB_GRADE" property="dutyCode"></result>
+        <result column="YEAR" property="year"></result>
+        <result column="CVNAME" property="cvName"></result>
+    </resultMap>
+
+    <select id="queryJobAndTimeInfo" resultMap="jobAndTime">
+        SELECT t1.duration_of_service,t2.cvname
+        FROM NJGAZNL.T_JOB_INFO t1
+        left join NJGAZNL.SG_QUERY_CATEGORY t2
+        on t1.job_grade = t2.cvflag
+        where t1.idno = #{idNumber} and t2.cvtype = 'XG' and t1.delstatus= '0'
+        order by t1.data_source_id asc
+    </select>
+
+    <select id="queryPolicebAndTimeInfo" resultMap="policeRankAndTime">
+        select t2.cvname,TO_CHAR(t1.title_start_date, 'YYYY') as TITLE_START_DATE
+        from NJGAZNL.T_POLICE_RANK_INFO t1
+        left join NJGAZNL.sg_query_category t2
+        on t1.TITLE = t2.cvflag
+        where t1.idno =  #{idNumber} and t1.delstatus = '0' and t2.cvtype = 'XA'
+        order by t1.data_source_id asc
+    </select>
+
+    <select id="findAllByIdNoAndMonthLike" resultMap="mymydAndMonth">
+        select SFZH,substr(month,5,6) as MONTH,MYMYD
+        from NJGAZNL.M_PERSON_OPINION t
+        where sfzh = #{idNumber}
+        and month like #{year}
+    </select>
+
+
+    <select id="queryDuty" resultMap="dutyYear1">
+        SELECT t.job_grade,TO_CHAR(t.DURATION_OF_SERVICE, 'YYYY') as year ,s.cvname
+        FROM NJGAZNL.T_JOB_INFO t LEFT JOIN NJGAZNL.SG_QUERY_CATEGORY s
+        ON t.job_grade = s.cvflag
+        WHERE idno = #{idNo}
+        AND delstatus = '0' AND s.cvtype = 'XG' and DURATION_OF_SERVICE &lt;=to_date(#{endTime},'YYYY/MM')
+        ORDER BY TO_CHAR(t.DURATION_OF_SERVICE, 'YYYY') desc
+    </select>
+
+    <select id="queryDutyRank" resultMap="dutyYear1">
+        SELECT t.tz301 as JOB_GRADE,TO_CHAR(t.tz302, 'YYYY') as year ,s.cvname
+        FROM NJGAZNL.RS_TZ3 t LEFT JOIN NJGAZNL.SG_QUERY_CATEGORY s
+        ON t.tz301 = s.cvflag
+        WHERE PERSONID =#{idNo}  AND TZ301 LIKE #{no}
+        AND s.cvtype = 'AK' AND tz302 &lt;=to_date(#{endTime},'YYYY/MM')
+        ORDER BY TO_CHAR(t.tz302, 'YYYY') desc
+    </select>
+
+    <select id="queryPoliceRank" resultMap="dutyYear1">
+        SELECT t.title,TO_CHAR(t.TITLE_START_DATE, 'YYYY') as year ,s.cvname
+        FROM NJGAZNL.T_POLICE_RANK_INFO t LEFT JOIN NJGAZNL.SG_QUERY_CATEGORY s
+        ON t.title = s.cvflag
+        WHERE idno = #{idNo}
+        AND delstatus = '0' AND s.cvtype = 'XA' and t.TITLE_START_DATE &lt;=to_date(#{endTime},'YYYY')
+        ORDER BY TO_CHAR(t.TITLE_START_DATE, 'YYYY') desc
+    </select>
+
+
+
+</mapper>

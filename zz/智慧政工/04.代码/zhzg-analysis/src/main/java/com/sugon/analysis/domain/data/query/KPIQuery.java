@@ -1,0 +1,1 @@
+package com.sugon.analysis.domain.data.query;import lombok.Data;import java.util.List;/** * @program: analysis->TeamDetail * @description: * @author: gaowh * @create: 2019-12-10 17:49 **/@Datapublic class KPIQuery extends TeamDetail{    private List<String> menu;}

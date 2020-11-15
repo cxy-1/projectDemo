@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sugon.zhzg.statistics.repository.qt.SgQueryCateGoryMap">
+
+    <resultMap id="SgQueryCateGoryDao" type="com.sugon.zhzg.statistics.domain.data.object.qt.SgQueryCategory">
+        <result column="CNAME" property="cName"></result>
+        <result column="CTYPE" property="cType"></result>
+        <result column="CVFLAG" property="cvFlag"></result>
+        <result column="CVNAME" property="cvName"></result>
+        <result column="CVSORT" property="cvSort"></result>
+    </resultMap>
+
+    <select id="findAllByCTypeAndCvFlag" resultMap="SgQueryCateGoryDao" >
+        select *
+        from NJGAZNL.SG_QUERY_CATEGORY
+        where CTYPE = #{type} and CVFLAG = #{flag}
+    </select>
+
+    <select id="findByCTypeAndCvName" resultMap="SgQueryCateGoryDao" >
+        select *
+        from NJGAZNL.SG_QUERY_CATEGORY
+        where CTYPE = #{type} and CVNAME = #{name}
+    </select>
+
+    <select id="findByCvName" resultMap="SgQueryCateGoryDao" >
+        select *
+        from NJGAZNL.SG_QUERY_CATEGORY
+        where CVNAME = #{cvName}
+    </select>
+
+
+
+</mapper>

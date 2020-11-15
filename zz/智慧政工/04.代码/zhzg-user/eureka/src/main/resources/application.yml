@@ -1,0 +1,28 @@
+server:
+  port: 11000
+#  enable-self-preservation: false  #禁用自我保护模式
+spring:
+  application:
+    name: eureka-server #指定服务名
+
+eureka:
+  instance:
+    hostname: 127.0.0.1
+    #每间隔30s，向服务端发送一次心跳，证明自己依然"存活"
+    lease-renewal-interval-in-seconds: 30
+    #告诉服务端，如果我60s之内没有给你发心跳，就将我踢出掉
+    lease-expiration-duration-in-seconds: 60
+  client:
+    #由于该应用为注册中心,所以设置为false,代表不向注册中心注册自己
+    registerWithEureka: false
+    #由于注册中心的职责就是维护服务实例,它并不需要去检索服务,所以也设置为false
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+
+security:
+  basic:
+    enabled: true #开启基于HTTP basic的认证
+  user: #配置用户的账号信息
+    name: zhzg
+    password: zhzg123

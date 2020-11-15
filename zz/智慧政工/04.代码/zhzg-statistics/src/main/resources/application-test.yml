@@ -1,0 +1,35 @@
+spring:
+  redis:
+    host: 50.32.9.139
+    port: 6379
+  data:
+    mongodb:
+      uri: mongodb://50.32.9.139:27017/zhzg
+  datasource:
+    primary:
+      url: jdbc:oracle:thin:@10.33.68.219:1551/zhxt
+      username: zhzg
+      password: zhzg_2019
+      driverClassName: oracle.jdbc.driver.OracleDriver
+
+    secondary:
+      url: jdbc:oracle:thin:@10.33.70.199:1521:zzb
+      username: zhzg_ypfx
+      password: zhzg_ypfx2019db
+      driverClassName: oracle.jdbc.driver.OracleDriver
+  jpa:
+    database: oracle
+    properties:
+      hibernate:
+        show_sql: true
+  fielUpload:
+    location: http://50.32.9.139:9999/download/userImage
+  filePath:
+    uploadPath: /home/apache-tomcat-8.5.40/webapps/download/hechahecha/
+    downloadPath: http://50.32.9.139:9999/download/hechahecha/
+
+
+#eureka集群高可用，填写2个eureka的地址
+cluster:
+  eureka:
+    ip: 50.32.9.139

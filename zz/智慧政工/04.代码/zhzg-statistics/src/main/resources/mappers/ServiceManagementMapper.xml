@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sugon.zhzg.statistics.repository.MybatisAndOracl.ServiceManagementMapper" >
+
+
+    <!-- 多条件查询请销假表单 -->
+    <select id="swithCheckBsPleseoffForm" resultType="com.sugon.zhzg.statistics.domain.data.query.EntryAndexitManage.LeaveQuery">
+        SELECT * FROM
+        (SELECT b.POLICE_NO as policeNo ,a.APPLY_FORM_ID as applicationId,b.USER_NAME as name, c.PARENT_NAME as companyName,c.NAME as deptName , a.APPLY_TYPE as reason, a.BEGIN_TIME as startTime, a.END_TIME as endTime, a.APPLICANT_TIME as applicationTime, b.PERSON_ID as personId, a.ADDRESS as distinction
+        FROM BS_PLESEOFF_FORM a LEFT JOIN BASIC_USER b ON a.APPLICANT_PEOPLE = b.PERSON_ID LEFT JOIN BS_COMPANY c ON a.DEPT_ID = c.COMPANY_ID
+        WHERE a.DEPT_ID IN
+        <foreach collection="deptIdList" index="" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>) d
+        <where>
+            <if test="serviceManagementPoJo.name != null and serviceManagementPoJo.name != '' ">
+                AND d.name LIKE concat(concat('%',#{serviceManagementPoJo.name}),'%')
+            </if>
+            <if test="serviceManagementPoJo.policeNo != null and serviceManagementPoJo.policeNo != ''">
+                AND d.policeNo LIKE concat(concat('%',#{serviceManagementPoJo.policeNo}),'%')
+            </if>
+            <if test="serviceManagementPoJo.companyName != null and serviceManagementPoJo.companyName != ''">
+                AND d.companyName||d.deptName LIKE concat(concat('%',#{serviceManagementPoJo.companyName}),'%')
+            </if>
+            <if test="serviceManagementPoJo.applicationId != null and serviceManagementPoJo.applicationId != ''">
+                AND d.applicationId  LIKE concat(concat('%',#{serviceManagementPoJo.applicationId}),'%')
+            </if>
+            <if test="serviceManagementPoJo.reason != null and serviceManagementPoJo.reason != ''">
+                AND d.reason LIKE concat(concat('%',#{serviceManagementPoJo.reason}),'%')
+            </if>
+            <if test="serviceManagementPoJo.startTime != null and serviceManagementPoJo.startTime != ''">
+                AND d.startTime  LIKE concat(concat('%',#{serviceManagementPoJo.startTime}),'%')
+            </if>
+            <if test="serviceManagementPoJo.endTime != null and serviceManagementPoJo.endTime != ''">
+                AND d.endTime LIKE concat(concat('%',#{serviceManagementPoJo.endTime}),'%')
+            </if>
+            <if test="serviceManagementPoJo.personId != null and serviceManagementPoJo.personId != ''">
+                AND d.personId LIKE concat(concat('%',#{serviceManagementPoJo.personId}),'%')
+            </if>
+        </where>
+        ORDER BY d.endTime DESC
+    </select>
+
+
+    <!-- 查询请销假随同人员 -->
+    <select id="selectLeavleWithPeo" resultType="java.lang.String">
+        SELECT USER_NAME FROM BS_PLESEOFF_TOGETHER WHERE PLEASEOFF_FORM = #{application}
+    </select>
+
+
+    <!-- 多条件查询出国境申请表单 -->
+    <select id="swithCheckBsGoBroad" resultType="com.sugon.zhzg.statistics.domain.data.query.EntryAndexitManage.LeaveQuery">
+        SELECT * FROM
+        (SELECT b.POLICE_NO as policeNo ,a.APPLICATION_FORM_ID as applicationId,b.USER_NAME as name, c.PARENT_NAME as companyName,c.NAME as deptName ,a.DEPARTURE_REASON as leaveReason,a.DEPARTURE_FORM as leaveType ,a.START_TIME as startTime, a.END_TIME as endTime, a.APPLICATION_TIME as applicationTime, b.PERSON_ID as personId, a.DESTINATION_BROAD as distinction
+        FROM BS_GOABROAD a LEFT JOIN BASIC_USER b ON a.USER_ID = b.PERSON_ID LEFT JOIN BS_COMPANY c ON a.DEPT_ID = c.COMPANY_ID
+        WHERE a.DEPT_ID IN
+        <foreach collection="deptIdList" index="" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>) d
+        <where>
+            <if test="serviceManagementPoJo.name != null and serviceManagementPoJo.name != ''">
+                AND d.name LIKE concat(concat('%',#{serviceManagementPoJo.name}),'%')
+            </if>
+            <if test="serviceManagementPoJo.policeNo != null and serviceManagementPoJo.policeNo != ''">
+                AND d.policeNo LIKE concat(concat('%',#{serviceManagementPoJo.policeNo}),'%')
+            </if>
+            <if test="serviceManagementPoJo.companyName != null and serviceManagementPoJo.companyName != ''">
+                AND d.companyName||d.deptName LIKE concat(concat('%',#{serviceManagementPoJo.companyName}),'%')
+            </if>
+            <if test="serviceManagementPoJo.applicationId != null and serviceManagementPoJo.applicationId != ''">
+                AND d.applicationId  LIKE concat(concat('%',#{serviceManagementPoJo.applicationId}),'%')
+            </if>
+            <if test="serviceManagementPoJo.leaveType != null and serviceManagementPoJo.leaveType != ''">
+                AND d.leaveType LIKE concat(concat('%',#{serviceManagementPoJo.leaveType}),'%')
+            </if>
+            <if test="serviceManagementPoJo.leaveReason != null and serviceManagementPoJo.leaveReason != ''">
+                AND d.leaveReason  LIKE concat(concat('%',#{serviceManagementPoJo.leaveReason}),'%')
+            </if>
+            <if test="serviceManagementPoJo.endTime != null and serviceManagementPoJo.endTime != ''">
+                AND d.endTime LIKE concat(concat('%',#{serviceManagementPoJo.endTime}),'%')
+            </if>
+            <if test="serviceManagementPoJo.startTime != null and serviceManagementPoJo.startTime != ''">
+                AND d.startTime LIKE concat(concat('%',#{serviceManagementPoJo.startTime}),'%')
+            </if>
+        </where>
+        ORDER BY d.endTime DESC
+    </select>
+
+    <!-- 部门子节点递归树 -->
+    <select id="getAllDeptId" resultType="java.lang.String">
+        SELECT COMPANY_ID FROM  BS_COMPANY start with COMPANY_ID in
+        <foreach collection="deptIdList" index="" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+       connect by prior COMPANY_ID=PARENT_ID
+    </select>
+
+
+</mapper>

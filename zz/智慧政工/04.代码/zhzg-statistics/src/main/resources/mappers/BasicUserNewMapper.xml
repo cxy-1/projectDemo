@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sugon.zhzg.statistics.repository.MybatisAndOracl.BasicUserMapper">
+
+    <resultMap id="BsUserMap" type="com.sugon.zhzg.statistics.domain.data.object.oracle.BasicUserNew">
+        <result column="PERSON_ID" property="personId"></result>
+        <result column="USER_NAME" property="userName"></result>
+        <result column="ID_NUMBER" property="idNumber"></result>
+        <result column="COMPANY_ID" property="companyId"></result>
+        <result column="DEPT_ID" property="unitId"></result>
+        <result column="POLICE_NO" property="policeNo"></result>
+        <result column="PHONE" property="phone"></result>
+        <result column="SEX" property="sex"></result>
+        <result column="STATUS" property="status"></result>
+        <result column="NAME_LOGOGRAM" property="logogram"></result>
+        <result column="DEPT_NAME" property="unitName"></result>
+        <result column="COMPANY_NAME" property="companyName"></result>
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+        PERSON_ID, USER_NAME, ID_NUMBER, COMPANY_ID, DEPT_ID, SEX,
+        POLICE_NO, PHONE, STATUS, NAME_LOGOGRAM, DEPT_NAME, COMPANY_NAME
+    </sql>
+
+
+    <select id="selectUserByDataId" resultMap="BsUserMap">
+        select
+        <include refid="Base_Column_List"></include>
+        from BASIC_USER_NEW
+        where DEPT_ID like concat(#{dataId},'%')
+    </select>
+
+    <select id="selectUserByIdNumber" resultMap="BsUserMap">
+        select
+        <include refid="Base_Column_List"></include>
+        from BASIC_USER_NEW
+        where ID_NUMBER = #{idNumber}
+    </select>
+
+    <select id="selectUserByPersonId" resultMap="BsUserMap">
+        select
+        <include refid="Base_Column_List"></include>
+        from BASIC_USER_NEW
+        where PERSON_ID = #{personId}
+    </select>
+
+
+</mapper>

@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sugon.analysis.mappper.oracle.PersonComparisonMapper" >
+    <resultMap id="result" type="com.sugon.analysis.domain.data.object.oracle.TPersonDo">
+        <result property="idNo" column="IDNO"/>
+        <result property="personName" column="PERSON_NAME"/>
+        <result property="deptName" column="DEPTNAME"/>
+        <result property="sex" column="SEX"/>
+        <result property="nation" column="NATION"/>
+        <result property="birthDay" column="BIRTHDAY"/>
+        <result property="politicalStatus" column="POLITICAL_STATUS"/>
+        <result property="joinPartyTime" column="JOIN_PARTY_TIME"/>
+        <result property="graduatedFrom" column="GRADUATED_FROM"/>
+        <result property="timeToWork" column="TIME_TO_WORK"/>
+        <result property="timeToWorkPsb" column="TIME_TO_WORK_PSB"/>
+        <result property="maritalStatus" column="MARITAL_STATUS"/>
+        <result property="policeRank" column="POLICE_RANK"/>
+        <result property="policeNo" column="POLICE_NO"/>
+        <result property="permanentAddress" column="PERMANENT_ADDRESS"/>
+        <result property="homeAddress" column="HOME_ADDRESS"/>
+        <result property="age" column="PERSON_AGE"/>
+        <result property="source" column="SOURCE"/>
+        <result property="jobGrade" column="JOB_GRADE"/>
+        <result property="policeJobGrade" column="POLICE_JOB_GRADE"/>
+        <result property="bloodType" column="BLOOD_TYPE"/>
+        <result property="professionalName" column="PROFESSIONAL_NAME"/>
+        <result property="trainingCount" column="TRAINING_COUNT"/>
+    </resultMap>
+    <resultMap id="honorResult" type="com.sugon.analysis.domain.view.persondraw.HonorComparisonVo">
+        <result property="name" column="PERSON_NAME"/>
+        <result property="deptName" column="DEPTNAME"/>
+        <result property="awardName" column="AWARD_NAME"/>
+        <result property="approvalDate" column="APPROVAL_DATE"/>
+    </resultMap>
+    <resultMap id="satisfiedResult" type="com.sugon.analysis.domain.view.persondraw.SatisfiedComparisonVo">
+        <result property="idNo" column="IDNO"/>
+        <result property="name" column="PERSON_NAME"/>
+        <result property="deptName" column="DEPTNAME"/>
+        <result property="avgSatisfiedScore" column="AVGMYMYD"/>
+    </resultMap>
+    <resultMap id="rankResult" type="com.sugon.analysis.domain.view.persondraw.RankComparisonVo">
+        <result property="idNo" column="IDNO"/>
+        <result property="name" column="PERSON_NAME"/>
+        <result property="deptName" column="DEPTNAME"/>
+        <result property="policeRank" column="RANK"/>
+        <result property="startDate" column="TITLE_START_DATE"/>
+    </resultMap>
+    <resultMap id="jobLevelResult" type="com.sugon.analysis.domain.view.persondraw.JobLevelComparisonVo">
+        <result property="personId" column="PERSONID"/>
+        <result property="jobLevelCode" column="JOB_LEVEL_CODE"/>
+        <result property="jobLevelName" column="JOB_LEVEL"/>
+        <result property="jobLevelTime" column="JOB_LEVEL_TIME"/>
+    </resultMap>
+    <resultMap id="postResult" type="com.sugon.analysis.domain.view.persondraw.PostComparisonVo">
+        <result property="idNo" column="IDNO"/>
+        <result property="postName" column="JOB_GRADE"/>
+        <result property="postTime" column="DURATION_OF_SERVICE"/>
+    </resultMap>
+
+    <!-- 对比看看条件查询(人员基本信息) -->
+    <select id="findPersonByType" resultMap="result">
+        SELECT T1.*, T2.PROFESSIONAL_NAME, CASE WHEN T3.TRAINING_COUNT IS NULL THEN 0 ELSE T3.TRAINING_COUNT END AS TRAINING_COUNT FROM (
+            SELECT
+                IDNO, PERSON_NAME, POLICE_NO,
+                ORG_SIMPLE_NAME || OFFICE_SIMPLE_NAME AS DEPTNAME,
+                CASE WHEN SEX = 1 THEN '男' ELSE  '女' END AS SEX, PERSON_AGE AS AGE,
+                BIRTHDAY, JOIN_PARTY_TIME, TIME_TO_WORK, TIME_TO_WORK_PSB,
+                PERMANENT_ADDRESS, HOME_ADDRESS,
+                SG1.CVNAME AS NATION,
+                SG2.CVNAME AS POLITICAL_STATUS,
+                SG3.CVNAME AS POLICE_JOB_GRADE,
+                SG4.CVNAME AS POLICE_RANK,
+                SG5.CVNAME AS JOB_GRADE,
+                SG6.CVNAME AS SOURCE,
+                SG7.CVNAME AS MARITAL_STATUS,
+                SG8.CVNAME AS BLOOD_TYPE,
+                GRADUATED_FROM
+            FROM(
+                (SELECT * FROM NJGAZNL.T_PERSON WHERE DELSTATUS ='0' AND PCLASSID = '00001') L
+                LEFT JOIN (SELECT * FROM NJGAZNL.SG_QUERY_CATEGORY WHERE CVTYPE = 'AE' ) SG1 ON SG1.CVFLAG = L.NATION
+                LEFT JOIN (SELECT * FROM NJGAZNL.SG_QUERY_CATEGORY WHERE CVTYPE = 'AT' ) SG2 ON SG2.CVFLAG = L.POLITICAL_STATUS
+                LEFT JOIN (SELECT * FROM NJGAZNL.SG_QUERY_CATEGORY WHERE CVTYPE = 'XG' ) SG3 ON SG3.CVFLAG = L.POLICE_JOB_GRADE
+                LEFT JOIN (SELECT * FROM NJGAZNL.SG_QUERY_CATEGORY WHERE CVTYPE = 'XA' ) SG4 ON SG4.CVFLAG = L.POLICE_RANK
+                LEFT JOIN (SELECT * FROM NJGAZNL.SG_QUERY_CATEGORY WHERE CVTYPE = 'AK' ) SG5 ON SG5.CVFLAG = L.JOB_GRADE
+                LEFT JOIN (SELECT * FROM NJGAZNL.SG_QUERY_CATEGORY WHERE CVTYPE = 'HA' ) SG6 ON SG6.CVFLAG = L.SOURCE
+                LEFT JOIN (SELECT * FROM NJGAZNL.SG_QUERY_CATEGORY WHERE CVTYPE = 'BG' ) SG7 ON SG7.CVFLAG = L.MARITAL_STATUS
+                LEFT JOIN (SELECT * FROM NJGAZNL.SG_QUERY_CATEGORY WHERE CVTYPE = 'XX' ) SG8 ON SG8.CVFLAG = L.BLOOD_TYPE)
+        ) T1
+        LEFT JOIN
+        (SELECT PROFESSIONAL_NAME, IDNO FROM
+            (SELECT ROW_NUMBER() OVER(PARTITION BY IDNO ORDER BY TO_NUMBER(SUBSTR(DATA_SOURCE_ID,12,13)) DESC) rn,P.* FROM (SELECT * FROM NJGAZNL.T_EDUCATION_INFO WHERE DELSTATUS ='0') P)
+        WHERE rn = 1 AND DELSTATUS ='0') T2
+        ON T1.IDNO = T2.IDNO
+        LEFT JOIN (SELECT IDNO, COUNT(IDNO) TRAINING_COUNT FROM (SELECT * FROM NJGAZNL.T_TRAINING_HISTORY WHERE DELSTATUS = '0'
+            <if test="personAndType.year != '%全部%'">
+                AND TO_CHAR(TRAINING_START_TIME, 'YYYY-MM-DD') LIKE #{personAndType.year}
+            </if>
+        ) GROUP BY IDNO) T3
+        ON T1.IDNO = T3.IDNO
+        WHERE 1=1
+            <if test="personAndType.isAge">
+                AND AGE = #{tPersonDo.age}
+            </if>
+            <if test="personAndType.isInPolice">
+                AND TIME_TO_WORK_PSB = TO_DATE(SUBSTR(#{tPersonDo.timeToWorkPsb},1,10),'yyyy-MM-dd')
+            </if>
+            <if test="personAndType.isToWork">
+                AND TIME_TO_WORK = TO_DATE(SUBSTR(#{tPersonDo.timeToWork},1,10),'yyyy-MM-dd')
+            </if>
+            <if test="personAndType.isInParty">
+                AND JOIN_PARTY_TIME = TO_DATE(SUBSTR(#{tPersonDo.joinPartyTime},1,10),'yyyy-MM-dd')
+            </if>
+            <if test="personAndType.isSchool">
+                AND GRADUATED_FROM = #{tPersonDo.graduatedFrom}
+            </if>
+            <if test="personAndType.isSubject">
+                AND PROFESSIONAL_NAME = #{tPersonDo.professionalName}
+            </if>
+    </select>
+
+    <!-- 对比看看条件查询(身份证号) -->
+    <select id="findIdNoByType" resultType="java.lang.String">
+        SELECT IDNO FROM (SELECT T1.*, T2.PROFESSIONAL_NAME FROM(
+        (SELECT * FROM NJGAZNL.T_PERSON WHERE DELSTATUS ='0' AND PCLASSID = '00001') T1
+        LEFT JOIN (SELECT PROFESSIONAL_NAME, IDNO FROM (SELECT ROW_NUMBER() OVER(PARTITION BY IDNO ORDER BY
+        TO_NUMBER(SUBSTR(DATA_SOURCE_ID,12,13)) DESC) rn,P.* FROM (SELECT * FROM NJGAZNL.T_EDUCATION_INFO WHERE DELSTATUS ='0') P) WHERE
+        rn = 1 AND DELSTATUS ='0') T2
+        ON T1.IDNO = T2.IDNO
+        )WHERE 1 = 1
+        <if test="personAndType.isAge">
+            AND PERSON_AGE = #{tPersonDo.age}
+        </if>
+        <if test="personAndType.isInPolice">
+            AND TO_CHAR(TIME_TO_WORK_PSB, 'YYYY') = SUBSTR(#{tPersonDo.timeToWorkPsb},1,4)
+        </if>
+        <if test="personAndType.isToWork">
+            AND TO_CHAR(TIME_TO_WORK, 'YYYY') = SUBSTR(#{tPersonDo.timeToWork},1,4)
+        </if>
+        <if test="personAndType.isInParty">
+            AND TO_CHAR(JOIN_PARTY_TIME, 'YYYY') = SUBSTR(#{tPersonDo.joinPartyTime},1,4)
+        </if>
+        <if test="personAndType.isSchool">
+            AND GRADUATED_FROM = #{tPersonDo.graduatedFrom}
+        </if>
+        <if test="personAndType.isSubject">
+            AND PROFESSIONAL_NAME = #{tPersonDo.professionalName, jdbcType=VARCHAR}
+        </if>
+        )
+    </select>
+
+    <!-- 根据身份证号查询表彰奖励信息 -->
+    <select id="findHonorByIdNo" resultMap="honorResult">
+        SELECT T2.PERSON_NAME, T2.DEPTNAME, T1.AWARD_NAME, T1.APPROVAL_DATE FROM
+        (SELECT IDNO, AWARD_NAME, APPROVAL_DATE FROM NJGAZNL.T_COMMEND_INFO WHERE DELSTATUS = '0' ) T1
+        LEFT JOIN (SELECT PERSON_AGE, TIME_TO_WORK_PSB, PERSON_NAME, IDNO, ORG_SIMPLE_NAME || OFFICE_SIMPLE_NAME AS DEPTNAME FROM NJGAZNL.T_PERSON WHERE DELSTATUS = '0' AND PCLASSID = '00001') T2
+        ON T1.IDNO = T2.IDNO
+        WHERE TIME_TO_WORK_PSB &lt;= APPROVAL_DATE
+        <if test="personAndType.year != '%全部%'">
+            AND TO_CHAR(APPROVAL_DATE, 'YYYY-MM-DD') LIKE #{personAndType.year}
+        </if>
+        AND T2.IDNO IN
+        <foreach collection="idNoList" index="" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <!-- 根据身份证号查询民意满意度信息 -->
+    <select id="findSatisfiedByIdNo" resultMap="satisfiedResult">
+        SELECT IDNO, PERSON_NAME, DEPTNAME, AVG(MYMYD) AS AVGMYMYD FROM (
+        SELECT T2.IDNO, T2.PERSON_NAME, T2.DEPTNAME, T1.MONTH, T1.MYMYD FROM
+        NJGAZNL.M_PERSON_OPINION T1
+        LEFT JOIN (SELECT PERSON_AGE, TIME_TO_WORK_PSB, PERSON_NAME, IDNO, ORG_SIMPLE_NAME || OFFICE_SIMPLE_NAME AS DEPTNAME FROM NJGAZNL.T_PERSON WHERE DELSTATUS = '0' AND PCLASSID = '00001') T2
+        ON T1.SFZH = T2.IDNO
+        WHERE IDNO IN
+        <foreach collection="idNoList" index="" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        <if test="personAndType.year != '%全部%'">
+            AND SUBSTR(MONTH,1,4) LIKE #{personAndType.year}
+        </if>
+        ) GROUP BY IDNO, PERSON_NAME, DEPTNAME
+    </select>
+
+    <!-- 根据身份证号查询警衔信息 -->
+    <select id="findRankByIdNo" resultMap="rankResult">
+        SELECT IDNO, SG.CVNAME AS RANK, TITLE_START_DATE FROM
+        (SELECT IDNO, TITLE, TO_CHAR(TITLE_START_DATE,'YYYY') AS TITLE_START_DATE FROM
+        (SELECT ROW_NUMBER() OVER(PARTITION BY IDNO ORDER BY TO_NUMBER(SUBSTR(DATA_SOURCE_ID,12,13)) DESC) rn,P.* FROM (SELECT * FROM NJGAZNL.T_POLICE_RANK_INFO WHERE DELSTATUS ='0') P
+        WHERE 1 = 1
+        <if test="personAndType.year != '%全部%'">
+            AND TO_CHAR(TITLE_START_DATE,'YYYY') &lt;= #{personAndType.year}
+        </if>
+        )
+        WHERE DELSTATUS ='0' AND RN = 1) L
+        LEFT JOIN (SELECT * FROM NJGAZNL.SG_QUERY_CATEGORY WHERE CVTYPE = 'XA' ) SG ON SG.CVFLAG = L.TITLE
+        WHERE TITLE_START_DATE IS NOT NULL AND IDNO IN
+        <foreach collection="idNoList" index="" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+<!--    &lt;!&ndash; 根据personid查询职级信息(受时间控制) &ndash;&gt;-->
+<!--    <select id="findJobLevelByPersonId" resultMap="jobLevelResult">-->
+<!--        SELECT RN, PERSONID, L.TZ301 AS JOB_LEVEL_CODE, SG.CVNAME AS JOB_LEVEL, TO_CHAR(TZ302,'YYYY') AS JOB_LEVEL_TIME-->
+<!--        FROM-->
+<!--        (SELECT * FROM-->
+<!--        (SELECT ROW_NUMBER() OVER(PARTITION BY PERSONID ORDER BY TO_NUMBER(DISPORDER) DESC) rn,NJGAZNL.RS_TZ3.* FROM-->
+<!--        NJGAZNL.RS_TZ3-->
+<!--        WHERE 1 = 1-->
+<!--        <if test="personAndType.year != '%全部%'">-->
+<!--            AND TO_CHAR(TZ302,'YYYY') &lt;= #{personAndType.year}-->
+<!--        </if>-->
+<!--        )-->
+<!--        WHERE RN = 1) L-->
+<!--        LEFT JOIN (SELECT * FROM NJGAZNL.SG_QUERY_CATEGORY WHERE CVTYPE = 'AK' ) SG ON SG.CVFLAG = L.TZ301-->
+<!--        WHERE L.TZ301 IS NOT NULL-->
+<!--        AND PERSONID IN-->
+<!--        <foreach collection="personIdList" index="" item="item" open="(" separator="," close=")">-->
+<!--            #{item}-->
+<!--        </foreach>-->
+<!--        ORDER BY L.TZ301-->
+<!--    </select>-->
+
+    <!-- 根据personid查询职级信息 -->
+    <select id="findJobLevelByPersonId" resultMap="jobLevelResult">
+        SELECT RN, PERSONID, L.TZ301 AS JOB_LEVEL_CODE, SG.CVNAME AS JOB_LEVEL, TO_CHAR(TZ302,'YYYY') AS JOB_LEVEL_TIME
+        FROM
+        (SELECT * FROM
+        (SELECT ROW_NUMBER() OVER(PARTITION BY PERSONID ORDER BY TO_NUMBER(DISPORDER) DESC) rn,T.* FROM
+        (SELECT * FROM NJGAZNL.RS_TZ3 WHERE TZ305 = '1') T
+        )
+        WHERE RN = 1) L
+        LEFT JOIN (SELECT * FROM NJGAZNL.SG_QUERY_CATEGORY WHERE CVTYPE = 'AK' ) SG ON SG.CVFLAG = L.TZ301
+        WHERE L.TZ301 IS NOT NULL
+        AND PERSONID IN
+        <foreach collection="personIdList" index="" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        ORDER BY L.TZ301
+    </select>
+
+<!--    &lt;!&ndash; 根据身份证号查询职务信息(受时间控制) &ndash;&gt;-->
+<!--    <select id="findPostByPersonId" resultMap="postResult">-->
+<!--        SELECT IDNO, SG.CVNAME AS JOB_GRADE, DURATION_OF_SERVICE FROM-->
+<!--        (SELECT IDNO, JOB_GRADE, TO_CHAR(DURATION_OF_SERVICE,'YYYY') AS DURATION_OF_SERVICE FROM-->
+<!--        (SELECT ROW_NUMBER() OVER(PARTITION BY IDNO ORDER BY TO_NUMBER(SUBSTR(DATA_SOURCE_ID,12,13)) DESC)-->
+<!--        rn,P.* FROM (SELECT * FROM NJGAZNL.T_JOB_INFO WHERE DELSTATUS ='0') P-->
+<!--        WHERE 1 = 1-->
+<!--        <if test="personAndType.year != '%全部%'">-->
+<!--            AND TO_CHAR(DURATION_OF_SERVICE,'YYYY') &lt;= #{personAndType.year}-->
+<!--        </if>-->
+<!--        )-->
+<!--        WHERE DELSTATUS ='0' AND RN = 1) L-->
+<!--        LEFT JOIN (SELECT * FROM NJGAZNL.SG_QUERY_CATEGORY WHERE CVTYPE = 'XG' ) SG ON SG.CVFLAG = L.JOB_GRADE-->
+<!--        WHERE DURATION_OF_SERVICE IS NOT NULL-->
+<!--        AND IDNO IN-->
+<!--        <foreach collection="idNoList" index="" item="item" open="(" separator="," close=")">-->
+<!--            #{item}-->
+<!--        </foreach>-->
+<!--    </select>-->
+
+    <!-- 根据身份证号查询职务信息 -->
+    <select id="findPostByPersonId" resultMap="postResult">
+        SELECT IDNO, SG.CVNAME AS JOB_GRADE, DURATION_OF_SERVICE FROM
+        (SELECT IDNO, JOB_GRADE, TO_CHAR(DURATION_OF_SERVICE,'YYYY') AS DURATION_OF_SERVICE FROM
+        (SELECT ROW_NUMBER() OVER(PARTITION BY IDNO ORDER BY TO_NUMBER(SUBSTR(DATA_SOURCE_ID,12,13)) DESC)
+        rn,P.* FROM (SELECT * FROM NJGAZNL.T_JOB_INFO WHERE DELSTATUS ='0') P
+        )
+        WHERE DELSTATUS ='0' AND RN = 1) L
+        LEFT JOIN (SELECT * FROM NJGAZNL.SG_QUERY_CATEGORY WHERE CVTYPE = 'XG' ) SG ON SG.CVFLAG = L.JOB_GRADE
+        WHERE DURATION_OF_SERVICE IS NOT NULL
+        AND IDNO IN
+        <foreach collection="idNoList" index="" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+</mapper>

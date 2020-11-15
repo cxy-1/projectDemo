@@ -1,0 +1,40 @@
+spring:
+  redis:
+    host: 192.168.8.11
+    port: 6379
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/zhzg
+  datasource:
+
+    primary:
+      url: jdbc:oracle:thin:@localhost:1521:orcl
+      username: zhzg
+      password: zhzg_2019
+      driverClassName: oracle.jdbc.driver.OracleDriver
+
+    secondary:
+      url: jdbc:oracle:thin:@localhost:1521:orcl
+      username: njgaznl
+      password: zhzg_2019
+      driverClassName: oracle.jdbc.driver.OracleDriver
+
+
+
+  jpa:
+    database: oracle
+    properties:
+      hibernate:
+        show_sql: true
+  fielUpload:
+    location: http://10.33.66.86:9999/download/userImage
+  filePath:
+    uploadPath: C:\Users\ly\Desktop\上传文件\
+    downloadPath: C:\Users\ly\Desktop\上传文件\
+
+
+#eureka集群高可用，填写2个eureka的地址
+cluster:
+  eureka:
+    ip: 192.168.8.11
+

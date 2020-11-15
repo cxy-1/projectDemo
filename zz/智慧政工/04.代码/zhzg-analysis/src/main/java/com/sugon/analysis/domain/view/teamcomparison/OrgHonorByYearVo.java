@@ -1,0 +1,1 @@
+package com.sugon.analysis.domain.view.teamcomparison;import com.sugon.analysis.domain.view.teambuild.TrainCountVo;import lombok.Data;import java.util.List;/** * @author: create by huangxb * @version: v1.0 * @description: * @date:2020/1/9 */@Datapublic class OrgHonorByYearVo {    private TrainCountVo maxHonor;    private List<TrainCountVo> trainCountVoList;}

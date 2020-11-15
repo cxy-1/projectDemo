@@ -1,0 +1,57 @@
+
+{
+    "timeline":
+    {
+        "type":"default",
+        "date": [
+            {
+                "startDate":"1992,8",
+                "headline":"参加公安工作时间"
+            },
+            {
+                "startDate":"1996,5",
+                "headline":"中共党员"
+            },
+            {
+                "startDate":"2002,2",
+                "headline":"优秀学员"
+            },
+            {
+                "startDate":"2003,4",
+                "headline":"嘉奖"
+            },
+            {
+                "startDate":"2004,3",
+                "headline":"优秀工会积极分子优秀工会积极分子"
+            },
+            {
+                "startDate":"2005,3",
+                "headline":"爱民警察"
+            },
+            {
+                "startDate":"2007,2",
+                "headline":"个人嘉奖"
+            },
+            {
+                "startDate":"2013,2",
+                "headline":"个人三等功"
+            },
+            {
+                "startDate":"2015,2",
+                "headline":"个人嘉奖"
+            },
+            {
+                "startDate":"2016,2",
+                "headline":"嘉奖"
+            },
+            {
+                "startDate":"2017,2",
+                "headline":"个人嘉奖"
+            },
+            {
+                "startDate":"2018,3",
+                "headline":"三等功"
+            }
+        ]
+    }
+}

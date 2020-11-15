@@ -1,0 +1,44 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://192.168.8.11:27017/zhzg
+
+  datasource:
+    primary:
+      url: jdbc:oracle:thin:@192.168.8.11:1521:orcl
+      username: sugon
+      password: zhzg_2019
+      driverClassName: oracle.jdbc.driver.OracleDriver
+
+    secondary:
+      url: jdbc:oracle:thin:@192.168.8.11:1521:orcl
+      username: sugon
+      password: zhzg_2019
+      driverClassName: oracle.jdbc.driver.OracleDriver
+
+    tertiary:
+      url: jdbc:oracle:thin:@192.168.8.11:1521:orcl
+      username: zhzg
+      password: zhzg_2019
+      driverClassName: oracle.jdbc.driver.OracleDriver
+    hikari:
+      validation-query: SELECT 1
+
+  jpa:
+    database: oracle
+    properties:
+      hibernate:
+        show_sql: true
+  file:
+    template: /home/apache-tomcat-8.5.40/template/
+    outPath: /home/apache-tomcat-8.5.40/webapps/download/applyDir/
+    picPath: /home/apache-tomcat-8.5.40/template/pic/
+
+mymyd:
+  webPath: http://192.168.8.11:8188/queryData/
+
+ftpimg:
+  ip: 50.32.9.137
+
+local:
+  url: http://192.168.8.11:${server.port}/

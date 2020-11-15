@@ -1,0 +1,1 @@
+package com.sugon.analysis.domain.data.subset;import lombok.Data;import java.util.List;/** * @author: create by huangxb * @version: v1.0 * @description: * @date:2019/10/28 */@Datapublic class CompanyNewTreeSubset {    private String ID;    private List<com.sugon.analysis.domain.data.subset.CompanyNew> companyList;}

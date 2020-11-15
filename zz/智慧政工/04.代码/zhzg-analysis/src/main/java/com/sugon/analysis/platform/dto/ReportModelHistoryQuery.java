@@ -1,0 +1,1 @@
+package com.sugon.analysis.platform.dto;import lombok.Data;/** * @description: 模板日志查询 * @author: liuwei * @create: 2020-05-28 14:21 **/@Datapublic class ReportModelHistoryQuery {    private String type;    private String level;    private String[] dateRange;    private int pageNo;    private int size;}

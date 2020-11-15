@@ -1,0 +1,1 @@
+package com.sugon.analysis.domain.view;import lombok.Data;/** * @program: analysis->EchartsVo * @description: * @author: gaowh * @create: 2019-12-16 15:39 **/@Datapublic class EchartsVo {    /**     * x÷·     */    private String name;    /**     * y÷·     */    private String value;}

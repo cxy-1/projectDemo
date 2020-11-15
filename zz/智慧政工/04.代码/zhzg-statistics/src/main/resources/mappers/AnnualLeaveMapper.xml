@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sugon.zhzg.statistics.repository.oracle.AnnualLeaveDao">
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        <selectKey keyProperty="id" resultType="java.lang.Integer" order="AFTER">
+            select ANNUAL_LEAVE_SCHEME_SEQ.CURRVAL as id from dual
+        </selectKey>
+        INSERT INTO ANNUAL_LEAVE_SCHEME(ID, PERSON_ID, AN_YEAR, WORKING_YEARS, ANNUAL_LEAVE_DAYS,
+        PLANNED_VACATION_DAYS, START_TIME, END_TIME, STATE, APPLY_FORM_ID)
+        select ANNUAL_LEAVE_SCHEME_SEQ.NEXTVAL, a.personId, a.year, a.workingYears,
+        a.annualLeaveDays, a.plannedVacationDays, a.startTime, a.endTime, a.state, a.applyFromId from
+        (<foreach collection="list" index="" item="item" separator="union all">
+        select
+        #{item.personId} personId,
+        #{item.year} year,
+        #{item.workingYears} workingYears,
+        #{item.annualLeaveDays} annualLeaveDays,
+        #{item.plannedVacationDays} plannedVacationDays,
+        #{item.startTime} startTime,
+        #{item.endTime} endTime,
+        #{item.state} state,
+        #{item.applyFromId} applyFromId
+        from dual
+    </foreach>) a
+    </insert>
+
+    <!--    <insert id="insertBatch" parameterType="java.util.List">-->
+    <!--        <selectKey keyProperty="id" resultType="java.lang.Integer" order="AFTER">-->
+    <!--            select ANNUAL_LEAVE_SCHEME_SEQ.CURRVAL as id from dual-->
+    <!--        </selectKey>-->
+    <!--        MERGE INTO ANNUAL_LEAVE_SCHEME a1-->
+    <!--        USING (-->
+    <!--        <foreach collection="list" item="item" index="index" separator="union">-->
+    <!--            select-->
+    <!--            #{item.personId} personId,-->
+    <!--            #{item.year} year,-->
+    <!--            #{item.workingYears} workingYears,-->
+    <!--            #{item.annualLeaveDays} annualLeaveDays,-->
+    <!--            #{item.plannedVacationDays} plannedVacationDays,-->
+    <!--            #{item.startTime} startTime,-->
+    <!--            #{item.endTime} endTime,-->
+    <!--            #{item.state} state,-->
+    <!--            #{item.applyFromId} applyFromId-->
+    <!--            from dual-->
+    <!--        </foreach>) a-->
+    <!--        ON (a1.PERSON_ID = a.personId AND a1.AN_YEAR = a.year AND a1.STATE = a.state)-->
+    <!--        WHEN MATCHED THEN-->
+    <!--        UPDATE SET a1.WORKING_YEARS = a.workingYears, a1.ANNUAL_LEAVE_DAYS = a.annualLeaveDays,-->
+    <!--        a1.PLANNED_VACATION_DAYS = a.plannedVacationDays, a1.APPLY_FORM_ID = a.applyFromId-->
+    <!--        WHEN NOT MATCHED THEN-->
+    <!--        INSERT(ID, PERSON_ID, AN_YEAR, WORKING_YEARS, ANNUAL_LEAVE_DAYS,-->
+    <!--        PLANNED_VACATION_DAYS, START_TIME, END_TIME, STATE, APPLY_FORM_ID)-->
+    <!--        VALUES (ANNUAL_LEAVE_SCHEME_SEQ.NEXTVAL, a.personId, a.year, a.workingYears,-->
+    <!--        a.annualLeaveDays, a.plannedVacationDays, a.startTime, a.endTime, a.state, a.applyFromId)-->
+    <!--    </insert>-->
+
+    <insert id="insertLeaveStatistics" parameterType="java.util.List">
+        <selectKey keyProperty="id" resultType="java.lang.Integer" order="AFTER">
+            select ANNUAL_LEAVE_STATISTICS_SEQ.CURRVAL as id from dual
+        </selectKey>
+        INSERT INTO ANNUAL_LEAVE_STATISTICS(ID, PERSON_ID, WORKING_YEARS, ANNUAL_LEAVE_DAYS,
+        LEAVE_DAYS, AN_MONTH, STATE, AN_YEAR)
+        select ANNUAL_LEAVE_STATISTICS_SEQ.NEXTVAL, a.personId, a.workingYears, a.annualLeaveDays,
+        a.leaveDays, a.month, a.state, a.year from
+        (<foreach collection="statistics" index="" item="item" separator="union all">
+        select
+        #{item.personId,jdbcType=VARCHAR} personId,
+        #{item.workingYears,jdbcType=INTEGER} workingYears,
+        #{item.annualLeaveDays,jdbcType=INTEGER} annualLeaveDays,
+        #{item.leaveDays,jdbcType=INTEGER} leaveDays,
+        #{item.month,jdbcType=INTEGER} month,
+        #{item.state,jdbcType=INTEGER} state,
+        #{item.year,jdbcType=VARCHAR} year
+        from dual
+    </foreach>) a
+    </insert>
+
+    <!--    <insert id="insertLeaveStatistics" parameterType="java.util.List">-->
+    <!--        <selectKey keyProperty="id" resultType="java.lang.Integer" order="AFTER">-->
+    <!--            select ANNUAL_LEAVE_STATISTICS_SEQ.CURRVAL as id from dual-->
+    <!--        </selectKey>-->
+    <!--        MERGE INTO ANNUAL_LEAVE_STATISTICS a1-->
+    <!--        USING (-->
+    <!--        <foreach collection="statistics" item="item" index="index" separator="union">-->
+    <!--            select-->
+    <!--            #{item.personId,jdbcType=VARCHAR} personId,-->
+    <!--            #{item.workingYears,jdbcType=INTEGER} workingYears,-->
+    <!--            #{item.annualLeaveDays,jdbcType=INTEGER} annualLeaveDays,-->
+    <!--            #{item.leaveDays,jdbcType=INTEGER} leaveDays,-->
+    <!--            #{item.month,jdbcType=INTEGER} month,-->
+    <!--            #{item.state,jdbcType=INTEGER} state,-->
+    <!--            #{item.year,jdbcType=VARCHAR} year-->
+    <!--            from dual-->
+    <!--        </foreach>) a-->
+    <!--        ON (a1.PERSON_ID = a.personId AND a1.AN_YEAR = a.year AND a1.AN_MONTH = a.month AND a1.STATE = a.state)-->
+    <!--        WHEN MATCHED THEN-->
+    <!--        UPDATE SET a1.WORKING_YEARS = a.workingYears, a1.ANNUAL_LEAVE_DAYS = a.annualLeaveDays,-->
+    <!--        a1.LEAVE_DAYS = a.leaveDays-->
+    <!--        WHEN NOT MATCHED THEN-->
+    <!--        INSERT(ID, PERSON_ID, WORKING_YEARS, ANNUAL_LEAVE_DAYS, LEAVE_DAYS, AN_MONTH, STATE, AN_YEAR)-->
+    <!--        VALUES (ANNUAL_LEAVE_STATISTICS_SEQ.NEXTVAL, a.personId, a.workingYears, a.annualLeaveDays,-->
+    <!--        a.leaveDays, a.month, a.state, a.year)-->
+    <!--    </insert>-->
+
+    <select id="selectLeaveStatistics" resultType="java.lang.String">
+        select
+        distinct a.PERSON_ID as personId
+        from ANNUAL_LEAVE_STATISTICS a left join BASIC_USER u
+        on a.PERSON_ID = u.PERSON_ID and u.STATE = 'A'
+        where 1=1
+        <if test="userName != null and userName != ''">
+            and u.USER_NAME LIKE '%' || #{userName} || '%'
+        </if>
+        <if test="policeNo != null and policeNo != ''">
+            and u.POLICE_NO LIKE '%' || #{policeNo} || '%'
+        </if>
+        <if test="year != null">
+            and a.AN_YEAR = #{year}
+        </if>
+    </select>
+
+    <select id="selectLeaveStatisticsByPersonId"
+            resultType="com.sugon.zhzg.statistics.domain.data.vo.ApplicationResponse">
+        select
+        a.PERSON_ID as personId,
+        u.USER_NAME as userName, u.POLICE_NO as policeNo,
+        a.ID as id, a.WORKING_YEARS as workingYears, a.ANNUAL_LEAVE_DAYS as annualLeaveDays,
+        a.AN_MONTH as month, a.LEAVE_DAYS as leaveDays, a.STATE as state, a.AN_YEAR as year
+        from ANNUAL_LEAVE_STATISTICS a left join BASIC_USER u
+        on a.PERSON_ID = u.PERSON_ID and u.STATE = 'A'
+        where a.PERSON_ID = #{personId}
+        and a.AN_YEAR = #{year}
+        order by a.AN_MONTH
+    </select>
+
+    <update id="updateAnnualLeaveSchemeState">
+        update ANNUAL_LEAVE_SCHEME
+        set STATE = #{state}
+        <if test="opinion != null">
+            , OPINION = #{opinion}
+        </if>
+        where PERSON_ID = #{personId} and AN_YEAR = #{year}
+    </update>
+
+    <update id="updateAnnualLeaveStatisticsState">
+        update ANNUAL_LEAVE_STATISTICS
+        set STATE = #{state}
+        <if test="opinion != null">
+            , OPINION = #{opinion}
+        </if>
+        where PERSON_ID = #{personId} and AN_YEAR = #{year}
+    </update>
+
+    <update id="batchUpdateState">
+        update ANNUAL_LEAVE_SCHEME
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="STATE =case" suffix="end,">
+                <foreach collection="approvalOpinionList" item="item" index="index">
+                    when PERSON_ID=#{item.personId} then #{item.state}
+                </foreach>
+            </trim>
+            <trim prefix="OPINION =case" suffix="end,">
+                <foreach collection="approvalOpinionList" item="item" index="index">
+                    when PERSON_ID=#{item.personId} then #{item.opinion}
+                </foreach>
+            </trim>
+        </trim>
+        where PERSON_ID in
+        <foreach collection="approvalOpinionList" index="index" item="item" separator="," open="(" close=")">
+            #{item.personId,jdbcType=VARCHAR}
+        </foreach>
+    </update>
+
+    <update id="batchUpdateStatisticsState">
+        update ANNUAL_LEAVE_STATISTICS
+        <trim prefix="set" suffixOverrides=",">
+            <trim prefix="STATE =case" suffix="end,">
+                <foreach collection="approvalOpinionList" item="item" index="index">
+                    when PERSON_ID=#{item.personId} then #{item.state}
+                </foreach>
+            </trim>
+            <trim prefix="OPINION =case" suffix="end,">
+                <foreach collection="approvalOpinionList" item="item" index="index">
+                    when PERSON_ID=#{item.personId} then #{item.opinion}
+                </foreach>
+            </trim>
+        </trim>
+        where PERSON_ID in
+        <foreach collection="approvalOpinionList" index="index" item="item" separator="," open="(" close=")">
+            #{item.personId,jdbcType=VARCHAR}
+        </foreach>
+    </update>
+
+    <select id="selectAnnualLeaveScheme"
+            resultType="com.sugon.zhzg.statistics.domain.data.object.oracle.AnnualLeaveScheme"
+            parameterType="java.lang.String">
+        select ID as id, PERSON_ID as personId, AN_YEAR as year, WORKING_YEARS as workingYears, ANNUAL_LEAVE_DAYS as
+        annualLeaveDays,
+        PLANNED_VACATION_DAYS as plannedVacationDays, START_TIME as startTime, END_TIME as endTime, STATE as state
+        from ANNUAL_LEAVE_SCHEME
+        where PERSON_ID = #{personId}
+        <if test="year != null and year != ''">
+            and AN_YEAR = #{year}
+        </if>
+    </select>
+
+    <!-- 查询提交记录 -->
+    <select id="selectLeaveStatisticsRecord"
+            resultType="com.sugon.zhzg.statistics.domain.data.object.oracle.AnnualLeaveScheme"
+            parameterType="java.lang.String">
+        select ID as id, PERSON_ID as personId, AN_YEAR as year, WORKING_YEARS as workingYears, ANNUAL_LEAVE_DAYS as annualLeaveDays,
+        PLANNED_VACATION_DAYS as plannedVacationDays, START_TIME as startTime, END_TIME as endTime, STATE as state
+        from ANNUAL_LEAVE_SCHEME
+        where PERSON_ID = #{personId} and AN_YEAR = #{year} and STATE <![CDATA[!= ]]> 0
+    </select>
+
+    <!--  个人年休假统计  -->
+    <select id="queryAnnualLeaveSchemeList"
+            resultType="com.sugon.zhzg.statistics.domain.data.object.oracle.AnnualLeaveScheme">
+        select PERSON_ID as personId, AN_YEAR as year, WORKING_YEARS as workingYears,
+        ANNUAL_LEAVE_DAYS as annualLeaveDays, STATE as state, sum(PLANNED_VACATION_DAYS) as plannedVacationDays
+        from ANNUAL_LEAVE_SCHEME
+        where PERSON_ID = #{personId}
+        <if test="year != null and year != ''">
+            and AN_YEAR = #{year}
+        </if>
+        group by PERSON_ID, AN_YEAR, ANNUAL_LEAVE_DAYS, WORKING_YEARS, STATE
+    </select>
+
+    <delete id="delAnnualLeaveScheme" >
+        delete from ANNUAL_LEAVE_SCHEME
+        where PERSON_ID = #{personId} and AN_YEAR = #{year}
+    </delete>
+
+    <delete id="delAnnualLeaveStatistics" >
+        delete from ANNUAL_LEAVE_STATISTICS
+        where PERSON_ID = #{personId} and AN_YEAR = #{year}
+    </delete>
+
+</mapper>

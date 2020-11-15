@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sugon.zhzg.statistics.repository.qt.SgQueryOutBoundDaoMap">
+
+    <resultMap id="SgQueryOutBoundDao" type="com.sugon.zhzg.statistics.domain.data.object.qt.SgQueryOutBound">
+        <result column="USER_NAME" property="userName"></result>
+        <result column="USER_IDNO" property="userIdNo"></result>
+        <result column="DEPT_NAME" property="deptName"></result>
+        <result column="DEPT_CODE" property="deptCode"></result>
+        <result column="DESTINATION" property="destination"></result>
+        <result column="START_TIME" property="startTime"></result>
+        <result column="END_TIME" property="endTime"></result>
+        <result column="APPLY_TIME" property="applyTime"></result>
+        <result column="STATUS" property="status"></result>
+    </resultMap>
+
+    <select id="findAllByDeptCodeInAndEndTimeBetween" resultMap="SgQueryOutBoundDao" >
+        select *
+        from NJGAZNL.SG_QUERY_OUTBOUND
+        where  DEPT_CODE IN
+        <foreach collection="deptIds" index="" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and START_TIME BETWEEN #{startTime} and #{endTime}
+    </select>
+
+
+    <select id="countByDeptCodeInAndEndTimeLike" resultType="java.lang.Integer" >
+        select count (*)
+        from NJGAZNL.SG_QUERY_OUTBOUND
+        where  DEPT_CODE IN
+        <foreach collection="deptIds" index="" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and START_TIME like concat(#{endTimeLike},'%')
+    </select>
+
+
+
+</mapper>

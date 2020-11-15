@@ -1,0 +1,1 @@
+package com.sugon.analysis.domain.view.teambuild;import lombok.Data;/** * @program: analysis->TeamInfoVo * @description: * @author: gaowh * @create: 2019-12-05 14:48 **/@Datapublic class TeamInfoVo {    /**单位id*/    private String id;    /**单位名称*/    private String teamName;    /**单位简称*/    private String simpleName;    /**是否可下钻*/    private Boolean isZoom;}

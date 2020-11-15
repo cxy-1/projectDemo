@@ -1,0 +1,8 @@
+.DS_Store
+node_modules/
+dist/
+npm-debug.log
+src/components/page/IndexHome2_first.vue
+src/components/page/IndexManage_first.vue
+src/components/page/IndexManage_second.vue
+dist/

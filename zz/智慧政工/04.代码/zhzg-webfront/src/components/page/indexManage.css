@@ -1,0 +1,771 @@
+.manageBox {
+    width: 100%;
+    min-width: 1360px;
+    background: url('../../../static/img/manage/bg.png') no-repeat center;
+    background-size: cover;
+    position: relative;
+}
+
+.manageBox .manageHead {
+    height: 80px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.manageBox .leftBg {
+    height: 50px;
+    background: url('../../../static/img/manage/title_bg_left.png') no-repeat center;
+    background-size: 100% 100%;
+    width: calc(50% - 230px);
+}
+
+.manageBox ._WHITE .leftBg {
+    background: none;
+}
+
+.manageBox .headInfo {
+    font-family: 'PingFangSC-Medium';
+    font-size: 30px;
+    color: #FFFFFF;
+    letter-spacing: 0;
+    text-align: center;
+    height: 50px;
+    line-height: 50px;
+    /**text-shadow: 0 0 6px 0 #1882FF;*/
+    background-image: -webkit-linear-gradient(bottom, #1890FF, #C3F1FF, #fff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.manageBox ._WHITE .manageHead {
+    background: url('../../../static/img/manage/title_headInfo.png') no-repeat center;
+}
+
+.manageBox ._WHITE .headInfo {
+    color: #1890FF;
+    -webkit-text-fill-color: inherit;
+    background: none;
+}
+
+.manageBox .rightBg {
+    height: 50px;
+    background: url('../../../static/img/manage/title_bg_right.png') no-repeat center;
+    background-size: 100% 100%;
+    width: calc(50% - 230px);
+}
+
+.manageBox ._WHITE .rightBg {
+    background: none;
+}
+
+.manageBox .linkManage {
+    position: absolute;
+    color: #fff;
+    right: 40px;
+}
+
+.manageBox .linkManage>a {
+    font-family: "PingFangSC-Regular";
+    font-size: 14px;
+    color: #fff;
+}
+
+.manageBox .manageMain {
+    width: 100%;
+    height: calc(100% - 81px);
+    padding: 2px 20px 20px 20px;
+    box-sizing: border-box;
+}
+
+.manageBox ._WHITE .manageMain>.el-row {
+    background: #f5f5f5;
+    border-radius: 4px;
+}
+
+.manageBox .manageMain .el-row {
+    height: 100%;
+}
+
+.manageBox .threeBox {
+    background: none;
+}
+
+/* 排行列表 */
+    .manageBox .panel {
+        width: calc(50% - 1px);   
+        float: left;
+        height: 100%;     
+    }
+    .manageBox .p-header {
+        padding: 0 16%;
+        height: 100%;
+        height: 140px;
+    }
+    .manageBox .p-header .partTit {
+        position: absolute;
+        top: 0px;
+        line-height: 20px;
+        font-size: 16px!important;
+        cursor: pointer;
+    }
+    .manageBox .treeSelect {
+        position: absolute;
+        z-index: 20;
+        right: 0;
+        top: 20px;
+        width: 200px;
+        height: 280px;
+        background-color: rgba(16,85,184,0.90);
+        color: #fff;
+        overflow: auto;
+    }
+    .manageBox .treeSelect
+    ::-webkit-scrollbar  
+    {  
+        width: 6px;  
+        height: 6px;  
+        background-color: transparent;  
+    }  
+      
+    /*定义滚动条轨道 内阴影+圆角*/  
+    .manageBox .treeSelect::-webkit-scrollbar-track  
+    {  
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);  
+        border-radius: 10px;  
+        background-color: transparent;  
+    }  
+      
+    /*定义滑块 内阴影+圆角*/  
+    .manageBox .treeSelect::-webkit-scrollbar-thumb  
+    {  
+        border-radius: 10px;  
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);  
+        background-color: transparent;  
+    }  
+    .manageBox ::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px transparent;
+        border-radius: 4px;
+        /*滚动条的背景区域的圆角*/
+        background-color: transparent;
+        /*滚动条的背景颜色*/
+    }
+    
+    .manageBox .p-text {
+        position: relative;
+        max-width: 220px;
+        margin: 0 auto;
+        top: 25px;
+        line-height: 18px;
+        color: #fff;
+        font-size: 14px;
+    }
+    .manageBox .p-text p {
+        position: relative;
+    }
+    .manageBox .p-jiangtai {
+        width: 100%;
+        max-width: 220px;
+        margin: 0 auto;
+        top: 80px;
+        height: 89px;
+        position: relative;
+        background: url('../../../static/img/manage/jiangtai1.png') no-repeat center;
+        background-size: 100% auto;
+    }
+    .manageBox .p-body {
+        position: relative;
+        top: 35px;
+    }
+    .manageBox .p-list {
+        height: 397px;
+        width: 92%;
+        left: 4%;
+        position: relative;
+        background: url('../../../static/img/manage/content_bg6.png') no-repeat center;
+        background-size: 100% 100%;
+    }
+    .manageBox .p-list ul {
+        padding-top: 15px;        
+    }
+    .manageBox .p-list ul li {
+        width: 100%;
+        list-style: none;
+    }
+    .manageBox .p-list ul {
+        height: 100%;
+        line-height: 39px;
+    }
+    .manageBox .p-list ul li {
+        height: 39px;
+    }
+    .manageBox .p-list-num,.p-list-name,.p-list-progress {
+        text-align: center;
+        float: left;    
+        font-size: 14px;
+        color: #fff;
+    }
+    .manageBox .p-list-num {
+        width: 30px;
+    }
+    .manageBox .p-list-name {
+        width: 100px;
+    }
+    .manageBox .p-list-progress {
+        width: calc(100% - 150px);
+        position: relative;
+        left: 10px;
+        top: 13px;
+    }
+    .manageBox .el-progress-bar__outer {
+        border-radius: 0;
+    }
+
+/**大于1600分辨率 */
+
+@media screen and (min-width: 1600px) {
+
+    .manageBox .dwgkBox,
+    .manageBox .threeBox {
+        min-height: 840px;
+        height: 56%;
+        margin: 10px;
+        position: relative;
+        background: url('../../../static/img/manage/content_bg1.png') no-repeat center;
+        background-size: 100% 100%;
+    }
+
+    .manageBox ._WHITE .dwgkBox {
+        background: #fff;
+        border-radius: 4px;
+    }
+
+    .manageBox .rygkBox {
+        min-height: 420px;
+        box-sizing: border-box;
+        background: url('../../../static/img/manage/content_bg4.png') no-repeat center;
+        background-size: 100% 100%;
+    }
+
+    .manageBox ._WHITE .rygkBox {
+        background: #fff;
+        border-radius: 4px;
+    }
+
+    .manageBox .zzmmBox,
+    .manageBox .xlxwBox {
+        min-height: 398px;
+        height: 32%;
+        position: relative;
+        margin: 20px 10px 0 10px;
+        background: url('../../../static/img/manage/content_bg6.png') no-repeat center;
+        background-size: 100% 100%;
+    }
+
+    .manageBox ._WHITE .zzmmBox,
+    .manageBox ._WHITE .xlxwBox {
+        background: #fff;
+        border-radius: 4px;
+    }
+
+    .manageBox .threeBox {
+        background: none;
+    }
+
+    .manageBox .cgjBox,
+    .manageBox .qjglBox {
+        min-height: 420px;
+        margin: 10px;
+        position: relative;
+        background: url('../../../static/img/manage/content_bg2.png') no-repeat center;
+        background-size: 100% 100%;
+    }
+
+    .manageBox ._WHITE .cgjBox,
+    .manageBox ._WHITE .qjglBox {
+        background: #fff;
+        border-radius: 4px;
+    }
+}
+
+/**小于1600分辨率 */
+
+@media screen and (max-width: 1600px) {
+
+    .manageBox .dwgkBox,
+    .manageBox .threeBox {
+        min-height: 680px;
+        height: 56%;
+        margin: 10px;
+        position: relative;
+        background: url('../../../static/img/manage/content_bg1.png') no-repeat center;
+        background-size: 100% 100%;
+    }
+
+    .manageBox ._WHITE .dwgkBox {
+        background: #fff;
+        border-radius: 4px;
+    }
+
+    .manageBox .rygkBox {
+        min-height: 320px;
+        box-sizing: border-box;
+        background: url('../../../static/img/manage/content_bg4.png') no-repeat center;
+        background-size: 100% 100%;
+    }
+
+    .manageBox ._WHITE .rygkBox {
+        background: #fff;
+        border-radius: 4px;
+    }
+
+    .manageBox .zzmmBox,
+    .manageBox .xlxwBox {
+        min-height: 340px;
+        height: 32%;
+        position: relative;
+        margin: 20px 10px 0 10px;
+        background: url('../../../static/img/manage/content_bg6.png') no-repeat center;
+        background-size: 100% 100%;
+    }
+
+    .manageBox ._WHITE .zzmmBox,
+    .manageBox ._WHITE .xlxwBox {
+        background: #fff;
+        border-radius: 4px;
+    }
+
+    .manageBox .threeBox {
+        background: none;
+    }
+
+    .manageBox .cgjBox,
+    .manageBox .qjglBox {
+        min-height: 330px;
+        margin: 10px;
+        position: relative;
+        background: url('../../../static/img/manage/content_bg2.png') no-repeat center;
+        background-size: 100% 100%;
+    }
+
+    .manageBox ._WHITE .cgjBox,
+    .manageBox ._WHITE .qjglBox {
+        background: #fff;
+        border-radius: 4px;
+    }
+}
+
+.manageBox .zzmmBox {
+    margin-left: 0
+}
+
+.manageBox .xlxwBox {
+    margin-right: 0
+}
+
+.manageBox .partHead {
+    height: 59px;
+    width: 100%;
+    line-height: 59px;
+    padding: 0 20px;
+    box-sizing: border-box;
+    border-bottom: 1px solid rgba(232, 232, 232, .2);
+}
+
+.manageBox .partSelect {
+    float: right;
+    width: 60%;
+    font-family: 'PingFangSC-Regular';
+    font-size: 12px;
+    color: #fff;
+    letter-spacing: 0;
+    text-align: right;
+}
+
+.manageBox ._WHITE .partSelect {
+    color: rgba(0, 0, 0, 0.65);
+}
+
+.manageBox .partSelect .el-select {
+    width: 35% !important;
+}
+
+/**文字渐变 */
+
+.manageBox .partTit {
+    font-family: 'PingFangSC-Medium';
+    font-size: 18px;
+    color: #262626;
+    background-image: -webkit-linear-gradient(bottom, #1890FF, #C3F1FF, #fff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.manageBox ._WHITE .partTit {
+    color: #262626;
+    background-image: none;
+    -webkit-text-fill-color: #262626;
+}
+
+.manageBox .partTab {
+    float: right;
+}
+
+.manageBox .partCon,
+.manageBox .qjglCon,
+.manageBox .cgjCon {
+    width: 100%;
+    height: calc(100% - 60px);
+    left: 0;
+    bottom: 0;
+    position: absolute;
+}
+
+.manageBox .cgjCon {
+    display: flex;
+}
+
+.manageBox .zzmmCon {
+    width: 100%;
+    height: calc(100% - 60px);
+    position: absolute;
+    padding-top: 16px;
+    box-sizing: border-box;
+    bottom: 0;
+    left: 0;
+}
+
+.manageBox .zzmmInfo {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.manageBox .zzmmInfo>i {
+    color: #fff;
+    font-size: 36px;
+}
+
+.manageBox ._WHITE .zzmmInfo>i {
+    color: rgba(0, 0, 0, 0.65);
+}
+
+.manageBox .zzmmInfo p,
+.manageBox .zzmmInfo span {
+    font-family: 'PingFangSC-Regular';
+    font-size: 12px;
+    text-align: center;
+}
+
+.manageBox .zzmmInfo p,
+.manageBox .zzmmInfo span.unit {
+    color: #fff;
+}
+
+.manageBox ._WHITE .zzmmInfo p,
+.manageBox ._WHITE .zzmmInfo span.unit {
+    color: rgba(0, 0, 0, 0.65);
+}
+
+.manageBox .zzmmInfo span {
+    color: #1890FF;
+}
+
+.manageBox .zzmmdy {
+    display: inline-block;
+    width: 45px;
+    height: 45px;
+    background: url('../../../static/img/manage/dy.png') no-repeat center;
+    background-size: 100% 100%;
+}
+
+.manageBox .zzmmybdy {
+    display: inline-block;
+    width: 45px;
+    height: 45px;
+    background: url('../../../static/img/manage/ybdy.png') no-repeat center;
+    background-size: 100% 100%;
+}
+
+.manageBox .zzmmty {
+    display: inline-block;
+    width: 45px;
+    height: 45px;
+    background: url('../../../static/img/manage/ty.png') no-repeat center;
+    background-size: 100% 100%;
+}
+
+.manageBox .zzmmqz {
+    display: inline-block;
+    width: 45px;
+    height: 45px;
+    background: url('../../../static/img/manage/qz.png') no-repeat center;
+    background-size: 100% 100%;
+}
+
+.manageBox .zzmmqtdp {
+    display: inline-block;
+    width: 45px;
+    height: 45px;
+    background: url('../../../static/img/manage/qtdp.png') no-repeat center;
+    background-size: 100% 100%;
+}
+
+.manageBox .toggleSkin {
+    position: absolute;
+    color: #fff;
+    left: 40px;
+    cursor: pointer;
+    font-size: 13px;
+    user-select: none;
+}
+
+.manageBox .toggleSkin .skin-arrow {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background: url(../../../static/img/manage/arrow-right.png) no-repeat center;
+    background-size: 100% 100%;
+    vertical-align: middle;
+}
+
+/**头部tab切换样式 */
+.partTab .el-tabs__item {
+    font-family: 'PingFangSC-Regular' !important;
+    font-size: 14px !important;
+    color: #fff !important;
+}
+
+._WHITE .partTab .el-tabs__item {
+    color: rgba(0, 0, 0, 0.65) !important;
+}
+
+.partTab .el-tabs__item.is-active {
+    font-family: 'PingFangSC-Regular' !important;
+    font-size: 14px !important;
+    color: #18C3FF !important;
+    text-shadow: 0 0 4px rgba(0, 78, 255, 0.50) !important;
+}
+
+._WHITE .partTab .el-tabs__item.is-active {
+    text-shadow: none !important;
+}
+
+.partTab .el-tabs__active-bar {
+    background-color: transparent;
+}
+
+.partTab .el-tabs__nav-wrap::after {
+    background-color: transparent;
+}
+
+.partTab .el-tabs__header {
+    margin: 0 !important;
+}
+
+.partTab .el-tabs__content {
+    width: 100% !important;
+    height: calc(100% - 60px) !important;
+    position: absolute;
+    left: 0;
+    top: 60px;
+}
+
+.partTab .el-tabs__content>div {
+    width: 100%;
+    height: 100%;
+}
+
+.partSelect .el-select .el-input__inner {
+    background: rgba(0, 0, 0, 0.10) !important;
+    color: #fff !important;
+}
+
+._WHITE .partSelect .el-select .el-input__inner {
+    color: rgba(0, 0, 0, 0.65) !important;
+}
+
+.partTab .el-carousel__arrow {
+    background: transparent;
+    color: #fff;
+    border: 1px solid #fff;
+    font-weight: 900;
+    width: 22px;
+    height: 22px;
+}
+
+._WHITE .partTab .el-carousel__arrow {
+    color: #58C1FD;
+    border: 1px solid #58C1FD;
+}
+
+.partTab .el-carousel__arrow {
+    background: none;
+}
+
+.v-charts-data-empty,
+.v-charts-data-error {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    color: #fff;
+    font-size: 14px;
+    background: none;
+}
+
+._WHITE .v-charts-data-empty,
+._WHITE .v-charts-data-error {
+    color: rgba(0, 0, 0, 0.65);
+}
+
+.el-loading-mask,
+.v-charts-component-loading {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    background: none;
+}
+
+.v-charts-mask-status {
+    filter: blur(1px);
+}
+
+.el-loading-mask .circular,
+.v-charts-component-loading .circular {
+    width: 42px;
+    height: 42px;
+    -webkit-animation: loading-rotate 2s linear infinite;
+    animation: loading-rotate 2s linear infinite;
+}
+
+.el-loading-mask .path,
+.v-charts-component-loading .path {
+    -webkit-animation: loading-dash 1.5s ease-in-out infinite;
+    animation: loading-dash 1.5s ease-in-out infinite;
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: 0;
+    stroke-width: 2;
+    stroke: #c1e3fd;
+    stroke-linecap: round;
+}
+
+@keyframes loading-rotate {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes loading-dash {
+    0% {
+        stroke-dasharray: 1, 200;
+        stroke-dashoffset: 0;
+    }
+
+    50% {
+        stroke-dasharray: 90, 150;
+        stroke-dashoffset: -40px;
+    }
+
+    100% {
+        stroke-dasharray: 90, 150;
+        stroke-dashoffset: -120px;
+    }
+}
+
+.partTab .el-tabs__header .el-dropdown {
+    margin: 0 20px;
+    height: 40px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    line-height: 40px;
+    display: inline-block;
+    list-style: none;
+    font-size: 14px;
+    font-weight: 500;
+    position: relative;
+    font-family: 'PingFangSC-Regular';
+    color: #fff;
+}
+
+._WHITE .partTab .el-tabs__header .el-dropdown {
+    color: rgba(0, 0, 0, 0.65);
+}
+
+.partTab .el-tabs__header .el-dropdown:first-child {
+    margin-left: 0;
+}
+
+.partTab .el-tabs__header .el-dropdown:last-child {
+    margin-right: 0;
+}
+
+.partTab .el-tabs__header .el-dropdown.is-active {
+    color: #18C3FF;
+    text-shadow: 0 0 4px rgba(0, 78, 255, 0.50);
+}
+
+._WHITE .partTab .el-tabs__header .el-dropdown.is-active {
+    text-shadow: none;
+}
+
+.partTab .el-tabs__header .el-dropdown .el-dropdown-link {
+    cursor: pointer;
+}
+
+.part-toggle {
+    background: rgba(255, 255, 255, .3) !important;
+    margin-top: 8px !important;
+    border: none !important;
+    border-top: 1px solid #1890FF !important;
+    border-radius: 0 0 4px 4px !important;
+}
+
+._WHITE.part-toggle {
+    background: rgba(255, 255, 255, 1) !important;
+}
+
+.part-toggle>.el-dropdown-menu__item {
+    line-height: 26px !important;
+    padding: 0 20px !important;
+    cursor: pointer !important;
+    color: #fff;
+}
+
+._WHITE.part-toggle>.el-dropdown-menu__item {
+    color: rgba(0, 0, 0, 0.65);
+}
+
+.part-toggle>.el-dropdown-menu__item.active {
+    color: #1890FF;
+}
+
+.part-toggle>.el-dropdown-menu__item:focus,
+.part-toggle>.el-dropdown-menu__item:not(.is-disabled):hover {
+    background: none !important;
+}
+
+.part-toggle>.popper__arrow {
+    display: none !important;
+}

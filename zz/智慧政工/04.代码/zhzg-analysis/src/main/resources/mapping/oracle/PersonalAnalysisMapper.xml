@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sugon.analysis.mappper.oracle.PersonalAnalysisMapper">
+
+    <resultMap id="sourceAndCount" type="com.sugon.analysis.domain.data.query.SourceAndCount">
+        <result column="SOURCENAME" property="sourceName"></result>
+        <result column="SCHOOLTYPE" property="schoolType"></result>
+        <result column="COUNT" property="count"></result>
+    </resultMap>
+
+    <resultMap id="yearAndCount" type="com.sugon.analysis.domain.data.query.YearCount">
+        <result column="YEAR" property="year"></result>
+        <result column="COUNT" property="count"></result>
+    </resultMap>
+
+    <resultMap id="rewardCount" type="com.sugon.analysis.domain.data.query.RewardAndCount">
+        <result column="AWARD_NAME" property="award"></result>
+        <result column="COUNT" property="count"></result>
+    </resultMap>
+
+    <resultMap id="dutyYear" type="com.sugon.analysis.domain.data.query.DutyAndYear">
+        <result column="JOB_GRADE" property="dutyCode"></result>
+        <result column="YEAR" property="year"></result>
+        <result column="CVNAME" property="cvName"></result>
+    </resultMap>
+
+    <resultMap id="opinionData" type="com.sugon.analysis.domain.data.query.PersonAnalysisVo">
+        <result column="JCJ" property="jq"></result>
+        <result column="XZAJ" property="xzaj"></result>
+        <result column="MYMYD" property="mymyd"></result>
+    </resultMap>
+
+    <resultMap id="assessYear" type="com.sugon.analysis.domain.data.query.AssessAndYear">
+        <result column="ASSESSMENT_YEAR" property="year"></result>
+        <result column="ASSESSMENT_RESULT" property="grade"></result>
+    </resultMap>
+
+    <resultMap id="person" type="com.sugon.analysis.domain.data.query.PersonQo">
+        <result column="IDNO" property="idNo"></result>
+        <result column="PERSON_NAME" property="personName"></result>
+        <result column="SEX" property="sex"></result>
+        <result column="NATION" property="nation"></result>
+        <result column="BIRTHDAY" property="birthDay"></result>
+        <result column="TIME_TO_WORK_PSB" property="timeToWorkPsb"></result>
+        <result column="TIME_TO_WORK" property="timeToWork"></result>
+        <result column="POLICE_RANK" property="policeRank"></result>
+        <result column="PERSON_AGE" property="age"></result>
+        <result column="OFFICE_SIMPLE_NAME" property="officeSimpleName"></result>
+        <result column="ORG_SIMPLE_NAME" property="orgSimpleName"></result>
+        <result column="POLICE_NO" property="policeNo"></result>
+        <result column="POST" property="post"></result>
+        <result column="POLICE_JOB_GRADE" property="policeJobGrade"></result>
+    </resultMap>
+
+    
+<resultMap id="nationMap" type="com.sugon.analysis.entity.NationMapPojo">
+        <result column="cvname" property="nationName"></result>
+        <result column="num" property="nationNum"></result>
+    </resultMap>
+
+    <select id="querySourceCount" resultMap="sourceAndCount">
+        SELECT NVL(T4.CVNAME,'其他') SOURCENAME,NVL(t5.LAW_MARK,'-1') SCHOOLTYPE,COUNT(*) COUNT
+        FROM(
+        SELECT IDNO,SOURCE
+        FROM NJGAZNL.T_PERSON L
+        WHERE IDNO IN
+        <foreach collection="idNos" index="" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND DELSTATUS=0 AND PCLASSID = '00001') T1
+        LEFT JOIN (
+        SELECT CVFLAG, CVNAME
+        FROM NJGAZNL.SG_QUERY_CATEGORY
+        WHERE CVTYPE = 'HA') T4
+        ON T1. SOURCE = T4.CVFLAG
+        LEFT JOIN (
+        SELECT IDNO,LAW_MARK
+        FROM (
+        SELECT IDNO,LAW_MARK,ROW_NUMBER()OVER(PARTITION BY IDNO ORDER BY TO_NUMBER(SUBSTR(DATA_SOURCE_ID,12,13)) DESC)
+        RN
+        FROM (
+        SELECT L1.*,L2.TIME_TO_WORK FROM NJGAZNL.T_EDUCATION_INFO L1
+        LEFT JOIN (SELECT * FROM NJGAZNL.T_PERSON WHERE DELSTATUS=0 AND PCLASSID = '00001') L2 ON L1.IDNO = L2.IDNO
+        WHERE L1.DELSTATUS ='0' AND L2.TIME_TO_WORK >= L1.GRADUATION_DATE)) WHERE RN=1) T5
+        ON T1.IDNO = T5.IDNO GROUP BY T4.CVNAME, T5.LAW_MARK
+    </select>
+
+    <select id="queryTcommenCount" resultMap="yearAndCount">
+        SELECT TO_CHAR(T.APPROVAL_DATE, 'YYYY') YEAR, COUNT(*) COUNT
+        FROM NJGAZNL.T_COMMEND_INFO T
+        WHERE idno = #{idNo}
+        GROUP BY TO_CHAR(T.APPROVAL_DATE, 'YYYY')
+        ORDER BY TO_CHAR(T.APPROVAL_DATE, 'YYYY') ASC NULLS LAST
+    </select>
+
+    <select id="queryTrainCount" resultMap="yearAndCount">
+        SELECT TO_CHAR(T.TRAINING_START_TIME, 'YYYY') YEAR, COUNT(*) COUNT
+        FROM NJGAZNL.T_TRAINING_HISTORY T
+        WHERE idno = #{idNo}
+        GROUP BY TO_CHAR(T.TRAINING_START_TIME, 'YYYY')
+        ORDER BY TO_CHAR(T.TRAINING_START_TIME, 'YYYY') ASC NULLS LAST
+    </select>
+
+    <select id="queryDuty" resultMap="dutyYear">
+        SELECT t.job_grade,TO_CHAR(t.DURATION_OF_SERVICE, 'YYYY') as year ,s.cvname
+        FROM NJGAZNL.T_JOB_INFO t LEFT JOIN NJGAZNL.SG_QUERY_CATEGORY s
+        ON t.job_grade = s.cvflag
+        WHERE idno = #{idNo} and job_grade in
+        <foreach collection="dutys" index="" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND delstatus = '0' AND s.cvtype = 'XG'
+        ORDER BY TO_CHAR(t.DURATION_OF_SERVICE, 'YYYY') asc
+    </select>
+
+    <select id="queryAssessment" resultMap="yearAndCount">
+        SELECT ASSESSMENT_YEAR AS YEAR,COUNT(*) AS COUNT
+        FROM NJGAZNL.T_ANNUAL_ASSESSMENT_INFO t
+        WHERE idno= #{idNo} and delstatus = '0' and ASSESSMENT_RESULT = '1'
+        GROUP BY ASSESSMENT_YEAR
+    </select>
+
+
+    <select id="queryAllOrgName" resultType="java.lang.String">
+        SELECT t.org_name
+        FROM(SELECT *
+        FROM NJGAZNL.T_RESUME_INFO t
+        WHERE idno = #{idNo} AND delstatus = '0'
+        AND starting_date >= to_date(#{startTime},'YYYY/MM/DD')
+        AND starting_date is not null
+        ORDER BY starting_date desc) t
+        GROUP BY t.org_name
+    </select>
+
+    <select id="queryAssessmentByYearAndIdNo" resultMap="assessYear">
+        SELECT ASSESSMENT_YEAR,ASSESSMENT_RESULT
+        FROM NJGAZNL.T_ANNUAL_ASSESSMENT_INFO t
+        WHERE idno = #{idNo} AND delstatus ='0'
+        AND ASSESSMENT_YEAR &lt;=#{endTime}
+        AND ASSESSMENT_YEAR > =#{startTime}
+    </select>
+
+    <select id="queryHornorByYearAndIdNo" resultMap="rewardCount">
+        SELECT AWARD_NAME,
+        COUNT(*) as COUNT
+        FROM NJGAZNL.T_COMMEND_INFO t
+        WHERE  idno =#{idNo}
+        AND APPROVAL_DATE >=to_date(#{startTime},'YYYY/MM/DD')
+        AND APPROVAL_DATE &lt;=to_date(#{endTime},'YYYY/MM/DD')
+        GROUP BY AWARD_NAME
+    </select>
+
+    <select id="queryDutyRank" resultMap="dutyYear">
+        SELECT t.tz301 as JOB_GRADE,TO_CHAR(t.tz302, 'YYYY') as year ,s.cvname
+        FROM NJGAZNL.RS_TZ3 t LEFT JOIN NJGAZNL.SG_QUERY_CATEGORY s
+        ON t.tz301 = s.cvflag
+        WHERE PERSONID =#{idNo}  AND TZ301 LIKE #{no}
+        AND s.cvtype = 'AK'
+        ORDER BY TO_CHAR(t.tz302, 'YYYY') asc
+    </select>
+
+
+    <select id="queryOpinion" resultMap="opinionData">
+        select sum(JCJ) as JCJ,sum(xzaj) as XZAJ,AVG(MYMYD) AS MYMYD
+        from NJGAZNL.M_PERSON_OPINION t
+        where sfzh =#{idNo} and month >=#{startTime} and month &lt;=#{endTime}
+    </select>
+
+    <select id="queryPeopleByAge" resultMap="person">
+        select *
+        from(
+        select id, PERSON_AGE,
+        idNo ,person_name,org_simple_name,office_simple_name,police_no
+        from NJGAZNL.T_PERSON
+        where delstatus='0' AND PCLASSID = '00001')
+        where 1=1
+        and
+        <foreach item="item" index="index" collection="idNoList" open="(" separator="or" close=")">
+            idNo = #{item}
+        </foreach>
+        <if test="startAge!=null and startAge!=''">
+            and PERSON_AGE &gt;=#{startAge}
+        </if>
+        <if test="endAge!=null and endAge!=''">
+            and PERSON_AGE &lt;#{endAge}
+        </if>
+
+    </select>
+
+    <select id="queryPeopleByJoinTime" resultMap="person">
+       select * from (
+        SELECT ID,TRUNC(MONTHS_BETWEEN(SYSDATE, TIME_TO_WORK_PSB)/12)  AS TIME_TO_WORK_PSB,
+       IDNO ,PERSON_NAME,ORG_SIMPLE_NAME,OFFICE_SIMPLE_NAME,POLICE_NO,POST,POLICE_JOB_GRADE,TO_CHAR(BIRTHDAY,'yyyymmdd') BIRTHDAY
+       FROM NJGAZNL.T_PERSON WHERE DELSTATUS='0' AND PCLASSID = '00001'
+        <if test="null != idNoList and idNoList.size > 0">
+        AND
+        <foreach item="item" index="index" collection="idNoList" open="(" separator="or" close=")">
+            idNo = #{item}
+        </foreach>
+        )
+        </if>
+        where TIME_TO_WORK_PSB IS NOT NULL
+        <if test="startTime !=null and startTime !=''">
+            and TIME_TO_WORK_PSB &gt;= #{startTime}
+        </if>
+        <if test="endTime !=null and endTime !=''">
+            and TIME_TO_WORK_PSB &lt; #{endTime}
+        </if>
+    </select>
+
+    <sql id="queryPeople">
+        SELECT ID,CASE WHEN SEX=1 THEN '男' WHEN SEX=2 THEN '女' END SEX,IDNO
+        ,PERSON_NAME,ORG_SIMPLE_NAME,OFFICE_SIMPLE_NAME,POLICE_NO,POST,POLICE_JOB_GRADE
+        FROM NJGAZNL.T_PERSON T3 WHERE EXISTS (SELECT distinct T2.IDENTITYNUM FROM NJGAZNL.SYS_USER T2, NJGAZNL.SYS_DEPT T1
+        WHERE 1=1
+        <if test="null != deptIds and deptIds.size > 0">
+            AND
+            <foreach item="item" index="index" collection="deptIds" open="(" separator="or" close=")">
+                deptId = #{item}
+            </foreach>
+        </if>
+        AND T2.IDENTITYNUM = T3.IDNO AND T2.DELSTATUS = '0' AND T2.POST_TYPE = '0' AND T1.ID = T2.DEPTID) AND DELSTATUS
+        ='0' AND PCLASSID='00001'
+        <if test="null != idNoList and idNoList.size > 0">
+            AND
+            <foreach
+                    item="item" index="index" collection="idNoList" open="(" separator="or" close=")">idNo = #{item}
+            </foreach>
+        </if>
+        <if test="null != policeNo and '' != policeNo">
+            AND
+            POLICE_NO = #{policeNo}
+        </if>
+        <if test="null != personName  and '' != personName">
+            AND
+            PERSON_NAME LIKE #{personName}
+        </if>
+    </sql>
+
+    <select id="countPeople" resultType="java.lang.Integer">
+        select count(*) from (
+        <include refid="queryPeople" />
+        )
+    </select>
+
+    <select id="pageQueryPeople" resultMap="person">
+        select * from (select T.*,ROWNUM RN from (
+        <include refid="queryPeople" />
+        ) T where ROWNUM &lt;= #{end}) where RN &gt;=#{start}
+    </select>
+
+
+    <select id="queryPeopleByWorkTime" resultMap="person">
+       select * from (
+        SELECT ID,TRUNC(MONTHS_BETWEEN(SYSDATE, TIME_TO_WORK)/12)  AS TIME_TO_WORK,
+       IDNO ,PERSON_NAME,ORG_SIMPLE_NAME,OFFICE_SIMPLE_NAME,POLICE_NO,POST
+       FROM NJGAZNL.T_PERSON WHERE DELSTATUS='0' AND PCLASSID = '00001'
+        <if test="null != idNoList and idNoList.size > 0">
+        AND
+        <foreach item="item" index="index" collection="idNoList" open="(" separator="or" close=")">
+            idNo = #{item}
+        </foreach>
+        )
+        </if>
+        where TIME_TO_WORK IS NOT NULL
+    </select>
+
+    <select id="queryDutyByTime" resultMap="dutyYear">
+        SELECT t.job_title as CVNAME,TO_CHAR(t.DURATION_OF_SERVICE, 'YYYY/MM') as year
+        FROM NJGAZNL.T_JOB_INFO t
+        WHERE idno = #{idNo}
+        AND delstatus = '0' and DURATION_OF_SERVICE &lt;=to_date(#{endTime},'YYYY/MM')
+        and DURATION_OF_SERVICE >=to_date(#{startTime},'YYYY/MM')
+        ORDER BY TO_CHAR(t.DURATION_OF_SERVICE, 'YYYY-MM')
+        asc
+    </select>
+
+
+<!--queryNationByIdNum-->
+    <select id="queryNationByIdNum" resultMap="nationMap">
+        select cvname,num from
+(select nation,count(1)as num from NJGAZNL.T_PERSON where idno in
+        <foreach collection="idNoList" index="index" item="item" open="(" separator="," close=")">
+            <if test="(index % 999) == 998">
+                NULL) OR IDNO IN (
+            </if>
+            #{item}
+        </foreach>
+ group by nation)t1
+left join (select CVFLAG,CVNAME from NJGAZNL.SG_QUERY_CATEGORY where CVTYPE='AE')t2
+on t1.nation=t2.cvflag order by num desc
+    </select>
+
+    <!--queryAppointmentTime-->
+    <select id="queryAppointmentTime" resultType="java.util.LinkedHashMap">
+        SELECT T.*,DENSE_RANK() OVER(ORDER BY YEAR) RN FROM (SELECT
+            FLOOR(MONTHS_BETWEEN ( SYSDATE, NVL ( T1.JOB_LEADER_TIME, T2.CURRENT_JOB_TIME ))/12) YEAR,T2.IDNO,T2.POLICE_JOB_GRADE,T2.PERSON_NAME,T2.ORG_SIMPLE_NAME||T2.OFFICE_SIMPLE_NAME DEPTNAME,T2.POST,TO_CHAR(T2.BIRTHDAY,'yyyymmdd') BIRTHDAY
+        FROM (
+        SELECT * FROM ( SELECT T .IDNO, T .JOB_LEADER_TIME, ROW_NUMBER () OVER ( PARTITION BY IDNO ORDER BY DURATION_OF_SERVICE DESC ) RN FROM NJGAZNL.T_JOB_INFO T
+        WHERE DURATION_OF_SERVICE IS NOT NULL
+        AND
+        <foreach collection="idNoList" index="index" item="item" open="(" separator="OR" close=")">
+                IDNO = #{item}
+        </foreach>
+        )
+        WHERE RN = 1
+        ) T1
+        LEFT JOIN NJGAZNL.T_PERSON T2 ON T1.IDNO = T2.IDNO ORDER BY YEAR) T WHERE YEAR IS NOT NULL
+    </select>
+
+</mapper>

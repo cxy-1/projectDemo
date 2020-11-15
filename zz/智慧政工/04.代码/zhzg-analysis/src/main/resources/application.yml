@@ -1,0 +1,28 @@
+#端口号的公共配置，开发和测试环境都是用8085
+server:
+  port: 8085
+
+#springboot使用的开发环境，dev(测试环境) or prod(生产环境)
+spring:
+  profiles:
+    active: prod
+  aop:
+    proxy-target-class: true
+    auto: true
+  resources:
+    static-locations: file:${spring.file.template}
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+thymeleaf:
+  cache: false
+mybatis:
+  mapper-locations: classpath:mapping/oracle/*xml
+  type-aliases-package: com.sugon.analysis.entity
+
+logging:
+  level:
+    com.sugon.analysis.mappper.oracle : debug
+
+

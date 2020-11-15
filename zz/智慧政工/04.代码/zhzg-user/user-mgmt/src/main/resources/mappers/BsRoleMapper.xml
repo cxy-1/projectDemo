@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zksg.smartpolitical.usermgmt.dao.BsRoleMapper" >
+
+    <resultMap id="BsRoleMap" type="com.zksg.smartpolitical.usermgmt.entity.BsRole">
+        <result column="ROLE_ID" property="roleId"></result>
+        <result column="NAME" property="name"></result>
+        <result column="TYPE" property="type"></result>
+        <result column="SORT" property="sort"></result>
+        <result column="STATE" property="state"></result>
+        <result column="REMARK" property="remark"></result>
+    </resultMap>
+    <sql id="Base_Column_List" >
+        ROLE_ID, NAME, TYPE, SORT, REMARK
+    </sql>
+
+    <!-- 新增角色 -->
+    <insert id="insertRole" >
+        <selectKey keyProperty="id" resultType="java.lang.Integer" order="AFTER">
+            select SEQ_BS_ROLE_ID.CURRVAL as id from dual
+        </selectKey>
+        insert into BS_ROLE(ID, NAME, COMPANY_ID, STATE, INSERT_TIME, DESCRIPTION, TYPE)
+        values(SEQ_BS_ROLE_ID.NEXTVAL, #{name, jdbcType=VARCHAR},#{companyId, jdbcType=VARCHAR},
+        'A', sysdate, #{description, jdbcType=VARCHAR}, #{type, jdbcType=INTEGER})
+    </insert>
+
+    <!-- 删除角色 -->
+    <delete id="deleteRole">
+        delete from BS_ROLE
+        where ID = #{id}
+    </delete>
+
+    <!-- 根据id查询 -->
+    <select id="selectRole" resultMap="BsRoleMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List" />
+        from BS_ROLE
+        where STATE = 'A' and ID = #{id}
+    </select>
+
+    <!-- 根据id查询 -->
+    <select id="selectRoleByUserId" resultType="com.zksg.smartpolitical.usermgmt.entity.BsRole" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List" />
+        from BS_ROLE
+        where STATE = 'A' and ID in
+        (select ROLE_ID from USER_ROLE_KEY where STATE = 'A' and USER_ID = #{userId})
+    </select>
+
+    <!-- 查询用户所有角色 -->
+    <select id="queryRoleList" resultType="com.zksg.smartpolitical.usermgmt.vo.UserRoleVO" parameterType="java.lang.Integer">
+        SELECT
+        r.ROLE_ID as roleId, r.NAME, r.TYPE, r.SORT, r.REMARK, o.RO_ID as roId,
+        o.UNIT_ID as unitId, o.DATA_ID as dataId, u.RU_ID as ruId
+        FROM BS_ROLE_NEW r left join ROLE_ORG_KEY_NEW o
+        on r.ROLE_ID = o.ROLE_ID and r.STATE = 'A'
+        left join USER_ROLE_NEW u
+        on o.RO_ID = u.RO_ID
+        where u.PERSON_ID = #{personId} and u.STATE = 'A' and o.STATE = 'A'
+    </select>
+
+    <!-- 查询角色列表 -->
+    <select id="selectRoleList" resultMap="BsRoleMap" parameterType="Object">
+        select
+        <include refid="Base_Column_List" />
+        from BS_ROLE
+        where STATE = 'A' and TYPE = #{type}
+        <if test="name != null and name != ''">
+            and NAME LIKE '%' || #{name} || '%'
+        </if>
+    </select>
+
+    <!--  更新角色信息  -->
+    <delete id="updateRole">
+        update BS_ROLE
+        set COMPANY_ID = #{companyId}
+        where ID = #{id} and STATE = 'A'
+    </delete>
+
+    <!--  查询角色部门  -->
+    <select id="selectRoleDept" resultType="java.lang.String" parameterType="java.util.List">
+        SELECT COMPANY_ID FROM BS_ROLE
+        WHERE ID IN
+        <foreach collection="roleList" index="index" item="roleId" open="(" separator="," close=")">
+            #{roleId}
+        </foreach>
+    </select>
+
+<!--    1-->
+    <!-- 根据用户id查询 -->
+    <select id="selectRoleId" resultType="java.lang.Integer" parameterType="java.lang.String">
+        select
+        distinct r.ROLE_ID
+        from BASIC_USER_NEW u left join USER_ROLE_NEW urk
+		on u.PERSON_ID = urk.PERSON_ID and urk.STATE = 'A'
+		left join BS_ROLE_NEW r
+		on urk.ROLE_ID = r.ROLE_ID and r.STATE = 'A'
+        where u.PERSON_ID = #{personId}
+    </select>
+
+
+<!--    1-->
+    <!-- 根据roleId 查询角色 -->
+    <select id="selectRoleByRoleId" resultMap="BsRoleMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"></include>
+        from BS_ROLE_NEW
+        where ROLE_ID = #{roleId}
+        and STATE = 'A'
+    </select>
+
+</mapper>

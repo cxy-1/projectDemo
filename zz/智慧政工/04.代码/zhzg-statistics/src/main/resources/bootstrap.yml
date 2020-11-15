@@ -1,0 +1,18 @@
+﻿spring:
+  application:
+    name: statistics
+  profiles:
+    active: prod
+
+security:
+  user:
+    name: zhzg
+    password: zhzg123
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: http://${security.user.name}:${security.user.password}@${cluster.eureka.ip}:11000/eureka/
+

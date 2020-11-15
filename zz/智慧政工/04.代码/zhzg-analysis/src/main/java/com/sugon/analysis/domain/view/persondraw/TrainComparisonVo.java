@@ -1,0 +1,1 @@
+package com.sugon.analysis.domain.view.persondraw;import lombok.Data;/** * @program: analysis->TrainComparisonVo * @description: * @author: gaowh * @create: 2019-12-02 14:41 **/@Datapublic class TrainComparisonVo {    /**姓名*/    private String name;    /**单位名称*/    private String deptName;    /**教育培训次数*/    private int trainingCount;}

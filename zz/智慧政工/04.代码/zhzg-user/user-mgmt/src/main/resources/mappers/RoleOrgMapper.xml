@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zksg.smartpolitical.usermgmt.dao.RoleOrgMapper" >
+
+    <resultMap id="UserRoleMap" type="com.zksg.smartpolitical.usermgmt.entity.RoleOrgKey">
+        <result column="RO_ID" property="roId"></result>
+        <result column="ROLE_ID" property="roleId"></result>
+        <result column="UNIT_ID" property="unitId"></result>
+        <result column="DATA_ID" property="dataId"></result>
+        <result column="STATE" property="state"></result>
+    </resultMap>
+    <sql id="Base_Column_List" >
+        RO_ID, ROLE_ID, DEPT_ID, DATA_ID
+    </sql>
+
+<!-- 1 -->
+    <!-- 批量插入角色组织表 -->
+    <insert id="insertRoleDepartKey" parameterType="java.util.List" useGeneratedKeys="false">
+        <selectKey keyProperty="id" resultType="java.lang.Integer" order="AFTER">
+            select ROLE_ORG_KEY_NEW_SEQ.CURRVAL as id from dual
+        </selectKey>
+        INSERT INTO ROLE_ORG_KEY_NEW(RO_ID,ROLE_ID,UNIT_ID,DATA_ID,STATE)
+        select ROLE_ORG_KEY_NEW_SEQ.NEXTVAL,a.* from
+        (<foreach collection="list" index="" item="item" separator="union all">
+        select
+        #{item.roleId},
+        #{item.unitId},
+        #{item.dataId},
+        'A'
+        from dual
+        </foreach>) a
+    </insert>
+
+
+<!-- 1 -->
+    <!-- 批量删除角色组织表 -->
+    <delete id="deleteRoleOrg" parameterType="java.util.List">
+        DELETE  FROM ROLE_ORG_KEY_NEW WHERE RO_ID IN
+        <foreach collection="roIds" index="index" item="roleId" open="(" separator="," close=")">
+            #{roleId}
+        </foreach>
+    </delete>
+
+
+<!-- 1 -->
+    <!-- 关联角色表查询当前权限下的角色-部门 -->
+    <select id="selectBsRoleAndRoleOrgJoin" resultType="com.zksg.smartpolitical.usermgmt.entity.model.BsRoleAndRoleOrgModel" >
+        SELECT
+        a.RO_ID as roId,a.ROLE_ID as roleId,a.UNIT_ID as unitId,a.DATA_ID as dataId,
+        b.NAME as name,b.TYPE as type,b.SORT as sort,b.REMARK as remark
+        FROM ROLE_ORG_KEY_NEW a left join BS_ROLE_NEW b
+        on a.ROLE_ID = b.ROLE_ID and b.STATE = 'A'
+        WHERE a.STATE = 'A'
+        AND a.UNIT_ID IN
+        <foreach collection="unitIds" index="index" item="unitId" open="(" separator="," close=")">
+                #{unitId}
+        </foreach>
+        order by roleId desc
+    </select>
+
+
+<!-- 1 -->
+    <!-- 查询超级管理员账户下各部门已有角色的绑定状态 -->
+    <select id="selectOrgRoleBindStatus" resultType="com.zksg.smartpolitical.usermgmt.entity.BsRole" >
+        SELECT
+        a.ROLE_ID as roleId,a.NAME as name,a.TYPE as type,a.SORT as sort,a.REMARK as remark,b.RO_ID as roId,nvl2(b.RO_ID,1,0) as isBind
+        FROM BS_ROLE_NEW a left join ROLE_ORG_KEY_NEW b
+        on a.ROLE_ID = b.ROLE_ID and a.STATE = 'A' and b.STATE = 'A'
+        and b.DATA_ID = #{dataId}
+        where a.ROLE_ID > 1
+        ORDER BY roleId desc
+    </select>
+
+
+</mapper>

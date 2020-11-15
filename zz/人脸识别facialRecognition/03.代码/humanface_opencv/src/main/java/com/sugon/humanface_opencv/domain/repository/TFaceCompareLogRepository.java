@@ -1,0 +1,1 @@
+package com.sugon.humanface_opencv.domain.repository;import com.sugon.humanface_opencv.domain.entity.TFaceCompareLog;import org.springframework.data.jpa.repository.JpaRepository;/** * Description: * Author     : Dawn.Ji * Date       : Created in 17:15 2018/11/7 */public interface TFaceCompareLogRepository  extends JpaRepository<TFaceCompareLog,String>  {}

@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sugon.analysis.mappper.oracle.TeamPersonnelMapper">
+
+    <resultMap id="ageRand" type="com.sugon.analysis.domain.data.query.AgeRandCount">
+        <result column="AGE_RAND" property="ageRand"></result>
+        <result column="COUNT" property="count"></result>
+    </resultMap>
+
+    <resultMap id="education" type="com.sugon.analysis.domain.data.query.EducationCount">
+        <result column="EDUCATIONAL_TITLE" property="educationTitile"></result>
+        <result column="COUNT" property="count"></result>
+    </resultMap>
+
+    <resultMap id="sourceCount" type="com.sugon.analysis.domain.data.query.SourceCount">
+        <result column="SOURCENAME" property="sourceName"></result>
+        <result column="SCHOOLTYPE" property="schoolType"></result>
+        <result column="COUNT" property="count"></result>
+    </resultMap>
+
+    <resultMap id="workAgeCount" type="com.sugon.analysis.domain.data.query.WorkAgeCount">
+        <result column="WORK_AGE" property="workAgeRand"></result>
+        <result column="COUNT" property="count"></result>
+    </resultMap>
+
+
+    <resultMap id="maritalCount" type="com.sugon.analysis.domain.data.query.MaritalCount">
+        <result column="CVNAME" property="cvName"></result>
+        <result column="COUNT" property="count"></result>
+    </resultMap>
+
+
+    <select id="queryAgeRange" resultMap="ageRand">
+        select
+        case when PERSON_AGE &lt;35 then '35岁以下'
+        when PERSON_AGE between 35 and 50 then '35-50岁'
+        when PERSON_AGE>=50 then '50岁以上' end as AGE_RAND,
+        count(*) as COUNT
+        from (select *
+        from NJGAZNL.T_PERSON
+        where delstatus = '0' AND PCLASSID = '00001' AND idno in (
+        select identitynum
+        from NJGAZNL.SYS_USER t
+        where deptId in
+        <foreach collection="deptIds" index="" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and delstatus = '0'))
+        group by case
+        when PERSON_AGE &lt;35 then '35岁以下'
+        when PERSON_AGE between 35 and 50 then '35-50岁'
+        when PERSON_AGE>=50 then '50岁以上' end
+        order by count desc
+    </select>
+
+    <select id="queryEducation" resultMap="education">
+        select *
+        from(
+        select educational_title,
+        count(educational_title) as count
+        from(
+        SELECT *
+        FROM (
+        SELECT ROW_NUMBER() OVER(PARTITION BY IDNO ORDER BY TO_NUMBER(SUBSTR(DATA_SOURCE_ID,12,13)) DESC) rn,NJGAZNL.T_EDUCATION_INFO.*
+        FROM NJGAZNL.T_EDUCATION_INFO)
+        WHERE rn = 1 AND idno in (select distinct idno from NJGAZNL.T_PERSON T3 WHERE EXISTS (SELECT distinct T2.IDENTITYNUM FROM NJGAZNL.SYS_USER T2, NJGAZNL.SYS_DEPT T1 WHERE deptId in
+        <foreach collection="deptIds" index="" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach> AND T2.IDENTITYNUM = T3.IDNO AND T2.DELSTATUS = '0' AND T2.POST_TYPE = '0' AND T1.ID = T2.DEPTID) AND DELSTATUS ='0' AND PCLASSID='00001'
+        ))
+        group by educational_title order by count desc)
+    </select>
+
+    <select id="queryAllUniversity" resultType="java.lang.Integer">
+        select sum(count) as educount
+        from(
+        select educational_title,
+        count(educational_title) as count
+        from(
+        SELECT *
+        FROM (
+        SELECT ROW_NUMBER() OVER(PARTITION BY IDNO ORDER BY DATA_SOURCE_ID DESC) rn,NJGAZNL.T_EDUCATION_INFO.*
+        FROM NJGAZNL.T_EDUCATION_INFO)
+        WHERE rn = 1 AND idno in (select distinct idno from NJGAZNL.T_PERSON T3 WHERE EXISTS (SELECT distinct T2.IDENTITYNUM FROM NJGAZNL.SYS_USER T2, NJGAZNL.SYS_DEPT T1 WHERE  T2.IDENTITYNUM = T3.IDNO AND T2.DELSTATUS = '0' AND T2.POST_TYPE = '0' AND T1.ID = T2.DEPTID) AND DELSTATUS ='0' AND PCLASSID='00001'
+        )) group by educational_title ) where educational_title like '2%'
+    </select>
+
+    <select id="querySource" resultMap="sourceCount">
+        SELECT NVL(T4.CVNAME,'其他') SOURCENAME,NVL(t5.LAW_MARK,'-1') SCHOOLTYPE,COUNT(*) COUNT
+        FROM(
+        SELECT IDNO,SOURCE FROM NJGAZNL.T_PERSON L
+        WHERE IDNO IN (
+        SELECT DISTINCT IDENTITYNUM FROM NJGAZNL.SYS_USER WHERE DELSTATUS=0 AND POST_TYPE = '0'
+        AND deptId in
+        <foreach collection="deptIds" index="" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        )
+        AND DELSTATUS=0 AND PCLASSID='00001') T1
+        LEFT JOIN (
+        SELECT CVFLAG, CVNAME
+        FROM NJGAZNL.SG_QUERY_CATEGORY
+        WHERE CVTYPE = 'HA') T4 ON T1. SOURCE = T4.CVFLAG
+        LEFT JOIN (
+        SELECT IDNO,LAW_MARK FROM (
+        SELECT IDNO,LAW_MARK,ROW_NUMBER()OVER(PARTITION BY IDNO ORDER BY DATA_SOURCE_ID DESC) RN FROM
+        NJGAZNL.T_EDUCATION_INFO )
+        WHERE RN=1) T5 ON T1.IDNO = T5.IDNO
+        GROUP BY T4.CVNAME, T5.LAW_MARK
+    </select>
+
+
+    <select id="queryAgeCount" resultMap="ageRand">
+        select
+        case when PERSON_AGE between 0 and 20 then '20岁以下'
+        when PERSON_AGE between 21 and 30 then '20-30岁'
+        when PERSON_AGE between 31 and 40 then '30-40岁'
+        when PERSON_AGE between 41 and 50 then '40-50岁'
+        when PERSON_AGE>=51 then '50岁以上' end as AGE_RAND,
+        count(*) as COUNT
+        from (select *
+        from NJGAZNL.T_PERSON
+        where idno in (
+        select identitynum
+        from NJGAZNL.SYS_USER t
+        where deptId in
+        <foreach collection="deptIds" index="" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and delstatus = '0' and post_type = '0') and PERSON_AGE is not null and delstatus = '0' and PCLASSID = '00001' )
+        group by case
+        when PERSON_AGE between 0 and 20 then '20岁以下'
+        when PERSON_AGE between 21 and 30 then '20-30岁'
+        when PERSON_AGE between 31 and 40 then '30-40岁'
+        when PERSON_AGE between 41 and 50 then '40-50岁'
+        when PERSON_AGE>=51 then '50岁以上' end
+        order by count desc
+    </select>
+
+
+    <select id="queryWorkAgeCount" resultMap="workAgeCount">
+        SELECT
+        case when AGE between 0 and 4 then '5年以下'
+        when AGE between 5 and 9 then '5(含)-10'
+        when AGE between 10 AND 19 then '10(含)-20'
+        when AGE between 20 AND 29 then '20(含)-30'
+        when age>=30 then '30(含)以上' end as work_age,count(*) as count
+        FROM(
+        SELECT TIME_TO_WORK_PSB,IDNO,TRUNC(months_between(sysdate, time_to_work_psb)/12) AS AGE
+        FROM NJGAZNL.T_PERSON
+        where idno in(
+        select identitynum
+        from NJGAZNL.SYS_USER t
+        where deptId in
+        <foreach collection="deptIds" index="" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and delstatus ='0' and post_type = '0') and delstatus = '0'  and PCLASSID = '00001')
+        GROUP BY
+        CASE when AGE between 0 and 4 then '5年以下'
+        when AGE between 5 AND 9 then '5(含)-10'
+        when AGE between 10 AND 19 then '10(含)-20'
+        when AGE between 20 AND 29 then '20(含)-30'
+        when age>=30 then '30(含)以上' end
+    </select>
+
+    <select id="queryMaritalCount" resultMap="maritalCount">
+        SELECT CVNAME,COUNT(*) as count
+        FROM(
+        select *
+        from NJGAZNL.T_PERSON
+        where delstatus = '0' and PCLASSID = '00001'
+        AND IDNO IN(
+        select identitynum from NJGAZNL.SYS_USER
+        where deptId in
+        <foreach collection="deptIds" index="" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        and delstatus ='0' and post_type = '0')) T1
+        LEFT JOIN NJGAZNL.SG_QUERY_CATEGORY T2
+        ON T1.MARITAL_STATUS = T2.CVFLAG
+        WHERE T2.CVTYPE ='BG'
+        GROUP BY CVNAME
+    </select>
+
+    <select id="queryPoliceSchoolCount" resultType="java.util.List">
+        select IDNO
+        from(
+        SELECT ROW_NUMBER() OVER(PARTITION BY IDNO ORDER BY IDNO DESC) rn,NJGAZNL.T_EDUCATION_INFO.*
+        FROM NJGAZNL.T_EDUCATION_INFO)
+        where rn =1 and law_mark in('1003','1')
+        and idno in(
+        select identitynum from NJGAZNL.SYS_USER
+        where deptId in
+        <foreach collection="deptIds" index="" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        )
+    </select>
+
+    <select id="queryArmySchoolCount" resultType="java.util.List">
+        select IDNO
+        from(
+        SELECT ROW_NUMBER() OVER(PARTITION BY IDNO ORDER BY IDNO DESC) rn,NJGAZNL.T_EDUCATION_INFO.*
+        FROM NJGAZNL.T_EDUCATION_INFO)
+        where rn =1 and law_mark not in('1003','1')
+        and school_name like '%解放军%' and idno in(
+        select identitynum from NJGAZNL.SYS_USER
+        where deptId in
+        <foreach collection="deptIds" index="" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        )
+    </select>
+
+    <select id="queryElseSchoolCount" resultType="java.util.List">
+        select IDNO
+        from(
+        SELECT ROW_NUMBER() OVER(PARTITION BY IDNO ORDER BY IDNO DESC) rn,NJGAZNL.T_EDUCATION_INFO.*
+        FROM NJGAZNL.T_EDUCATION_INFO)
+        where rn =1 and law_mark not in('1003','1')
+        and school_name not like '%解放军%' and idno in(
+        select identitynum from NJGAZNL.SYS_USER
+        where deptId in
+        <foreach collection="deptIds" index="" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        )
+    </select>
+
+
+</mapper>

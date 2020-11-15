@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zksg.smartpolitical.usermgmt.dao.RolePermissionMapper">
+
+    <resultMap id="RolePermissionMap" type="com.zksg.smartpolitical.usermgmt.entity.RolePermissionKey">
+        <result column="RP_ID" property="rpId"></result>
+        <result column="ROLE_ID" property="roleId"></result>
+        <result column="PERM_ID" property="permId"></result>
+        <result column="STATE" property="state"></result>
+    </resultMap>
+    <sql id="Base_Column_List" >
+        RP_ID, ROLE_ID, PERM_ID
+    </sql>
+
+    <insert id="insertRolePermissionKey" parameterType="java.util.List" useGeneratedKeys="false">
+        <selectKey keyProperty="id" resultType="java.lang.Integer" order="AFTER">
+            select ROLE_PERMISSION_KEY_SEQ.CURRVAL as id from dual
+        </selectKey>
+        INSERT INTO ROLE_PERMISSION_KEY_NEW(RP_ID, ROLE_ID, PERM_ID, STATE)
+        select ROLE_PERMISSION_KEY_SEQ.NEXTVAL, a.roleId, a.permId, a.state from
+        (<foreach collection="rolePermissionKeys" index="" item="item" separator="union all">
+        select
+            #{item.roleId} roleId,
+            #{item.permId} permId,
+            'A' state
+        from dual
+        </foreach>) a
+    </insert>
+
+    <!-- 1 -->
+    <select id="findRolePermissionList" resultType="java.lang.Integer" parameterType="java.util.List">
+        SELECT PERM_ID FROM ROLE_PERMISSION_KEY_NEW
+        WHERE STATE = 'A' and ROLE_ID IN
+        <foreach collection="roleList" index="index" item="roleId" open="(" separator="," close=")">
+            #{roleId}
+        </foreach>
+    </select>
+
+<!--    1-->
+    <delete id="delByRoleId">
+        delete from ROLE_PERMISSION_KEY_NEW
+        where ROLE_ID = #{roleId}
+    </delete>
+
+    <delete id="delRolePerm">
+        delete from ROLE_PERMISSION_KEY
+        where ROLE_ID = #{roleId} and PERM_ID = #{permId}
+    </delete>
+</mapper>

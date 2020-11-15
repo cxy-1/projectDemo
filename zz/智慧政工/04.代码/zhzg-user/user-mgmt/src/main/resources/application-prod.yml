@@ -1,0 +1,17 @@
+spring:
+  redis:
+    host: 10.33.72.236
+    port: 6379
+  datasource:
+    url: jdbc:oracle:thin:@10.33.68.219:1551/zhxt
+    username: zhzg
+    password: zhzg_2019
+    driverClassName: oracle.jdbc.driver.OracleDriver
+  data:
+    mongodb:
+      uri: mongodb://10.33.72.239:27017/zhzg
+
+#eureka集群高可用，填写2个eureka的地址
+cluster:
+  eureka:
+    ip: 10.33.72.237

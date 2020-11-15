@@ -1,0 +1,1 @@
+package com.sugon.analysis.domain.data.query;import lombok.Data;/** * @author: create by huangxb * @version: v1.0 * @description: * @date:2019/12/5 */@Datapublic class PersonAnalysisVo {	/**	 * 警情	 */	private int jq;	/**	 * 行政案件	 */	private int xzaj;	/**	 * 民意满意度	 */	private String mymyd;}

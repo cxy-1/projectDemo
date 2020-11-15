@@ -1,0 +1,1 @@
+package com.sugon.analysis.domain.view.personstereo;import lombok.Data;import java.util.List;/** * @author: create by huangxb * @version: v1.0 * @description: * @date:2019/12/19 */@Datapublic class ResultPerformVo {    private String id;    private String name;    List<ResultPerformVo> performVoList;}

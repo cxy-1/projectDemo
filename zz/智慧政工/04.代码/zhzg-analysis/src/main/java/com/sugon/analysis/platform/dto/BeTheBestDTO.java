@@ -1,0 +1,1 @@
+package com.sugon.analysis.platform.dto;import com.sugon.analysis.platform.entity.BeTheBestEntity;import lombok.Data;import java.util.List;/** * @description: Ä£°åÉÏ´« * @author: liuwei * @create: 2020-05-27 17:09 **/@Datapublic class BeTheBestDTO {    private String idNo;    private List<BeTheBestEntity> data;}

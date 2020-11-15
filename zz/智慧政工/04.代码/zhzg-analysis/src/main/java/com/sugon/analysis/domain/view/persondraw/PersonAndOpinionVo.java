@@ -1,0 +1,1 @@
+package com.sugon.analysis.domain.view.persondraw;import lombok.Data;/** * @author: create by huangxb * @version: v1.0 * @description: * @date:2019/12/25 */@Datapublic class PersonAndOpinionVo {    private String sfzh;    private double jcjmyl;    private double ajmyl;}

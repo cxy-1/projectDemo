@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zksg.smartpolitical.usermgmt.dao.BsUsageLogMapper" >
+
+    <resultMap id="BsUserMap" type="com.zksg.smartpolitical.usermgmt.entity.BsUsageLog">
+        <result column="PERSON_ID" property="personId"></result>
+        <result column="PERSON_Name" property="personName"></result>
+        <result column="POLICE_NO" property="policeNo"></result>
+        <result column="OPERATE_TYPE" property="operateType"></result>
+        <result column="OPERATE_TIME" property="operateTime"></result>
+        <result column="COMPANY_ID" property="companyId"></result>
+        <result column="COMPANY_NAME" property="companyName"></result>
+        <result column="DEPT_ID" property="deptId"></result>
+        <result column="DEPT_NAME" property="deptName"></result>
+    </resultMap>
+
+    <!-- 根据id查询 -->
+    <select id="queryUsageLogs" resultType="com.zksg.smartpolitical.usermgmt.entity.BsUsageLog" parameterType="java.util.Map">
+        select POLICE_NO as policeNo,PERSON_ID as personId,'' as PERSON_NAME,OPERATE_TYPE as operateType,OPERATE_TIME as operateTime,COMPANY_ID as companyId,COMPANY_NAME as companyName,DEPT_ID as deptId,DEPT_NAME as deptName from BS_USAGE_LOG
+        <where>
+            <![CDATA[ and OPERATE_TIME >= #{startDate} and OPERATE_TIME <= #{endDate} ]]>
+        </where>
+        <if test="companyId != null and companyId != ''">
+            and COMPANY_ID=#{companyId}
+        </if>
+        order by OPERATE_TIME desc
+    </select>
+    <!-- 查询累计登陆次数 -->
+    <select id="queryLoginTimes" resultType="String" parameterType="java.util.Map">
+        select count(1) from BS_USAGE_LOG
+        <where>
+        <![CDATA[ and OPERATE_TIME >= #{startDate} and OPERATE_TIME <= #{endDate} ]]>
+        </where>
+        <if test="companyId != null and companyId != ''">
+            and COMPANY_ID=#{companyId}
+        </if>
+    </select>
+    <!-- 查询累计登陆人数 -->
+    <select id="queryLoginPersons" resultType="String" parameterType="java.util.Map">
+        select count(1) from (select PERSON_ID from BS_USAGE_LOG
+        <where>
+            <![CDATA[ and OPERATE_TIME >= #{startDate} and OPERATE_TIME <= #{endDate} ]]>
+        </where>
+        <if test="companyId != null and companyId != ''">
+            and COMPANY_ID=#{companyId}
+        </if>
+        group by PERSON_ID) tmp
+    </select>
+    <!-- 统计一段时间登陆次数 -->
+    <select id="queryLoginTimesByDays" resultType="com.zksg.smartpolitical.usermgmt.vo.DayCountVo" parameterType="java.util.Map">
+        select OPERATE_TIME as dayString,sum(1) as dayCount from
+        (select substr(OPERATE_TIME, 0,10) as OPERATE_TIME from BS_USAGE_LOG
+        <where>
+            <![CDATA[ and OPERATE_TIME >= #{startDate} and OPERATE_TIME <= #{endDate} ]]>
+        </where>
+        <if test="companyId != null and companyId != ''">
+            and COMPANY_ID=#{companyId}
+        </if>
+        ) tmp
+        group by OPERATE_TIME
+    </select>
+    <!-- 统计一段时间登陆人数 -->
+    <select id="queryLoginPersonsByDays" resultType="com.zksg.smartpolitical.usermgmt.vo.DayCountVo" parameterType="java.util.Map">
+        select OPERATE_TIME as dayString,sum(1) as dayCount from(
+            select OPERATE_TIME,PERSON_ID from(
+                select PERSON_ID, substr(OPERATE_TIME, 0, 10) as OPERATE_TIME from BS_USAGE_LOG
+                <where>
+                    <![CDATA[ and OPERATE_TIME >= #{startDate} and OPERATE_TIME <= #{endDate} ]]>
+                </where>
+                <if test="companyId != null and companyId != ''">
+                    and COMPANY_ID=#{companyId}
+                </if>
+            )
+            group by OPERATE_TIME,PERSON_ID)
+        group by OPERATE_TIME
+    </select>
+    <!-- 查询登陆次数,根据单位id分组 -->
+    <select id="queryLoginTimesByCompany" resultType="com.zksg.smartpolitical.usermgmt.vo.CompanyCountVo" parameterType="java.util.Map">
+        select COMPANY_ID as companyId,count(1) as totalInfo from BS_USAGE_LOG
+        <where>
+            <![CDATA[ and OPERATE_TIME >= #{startDate} and OPERATE_TIME <= #{endDate} ]]>
+        </where>
+        <if test="companyId != null and companyId != ''">
+            and COMPANY_ID=#{companyId}
+        </if>
+        group by COMPANY_ID
+    </select>
+    <!-- 查询登陆人数,根据单位id分组 -->
+    <select id="queryLoginPersonsByCompany" resultType="com.zksg.smartpolitical.usermgmt.vo.CompanyCountVo" parameterType="java.util.Map">
+        select companyId,count(1) as totalInfo from (select COMPANY_ID as companyId,COMPANY_NAME as companyName from BS_USAGE_LOG
+        <where>
+            <![CDATA[ and OPERATE_TIME >= #{startDate} and OPERATE_TIME <= #{endDate} ]]>
+        </where>
+        <if test="companyId != null and companyId != ''">
+            and COMPANY_ID=#{companyId}
+        </if>
+        group by PERSON_ID,COMPANY_ID) tmp
+        group by companyId order by totalInfo desc
+    </select>
+    <!-- 查询登陆次数,根据部门id分组 -->
+    <select id="queryLoginTimesByDept" resultType="com.zksg.smartpolitical.usermgmt.vo.CompanyCountVo" parameterType="java.util.Map">
+        select COMPANY_ID as companyId,count(1) as totalInfo from BS_USAGE_LOG
+        <where>
+            <![CDATA[ and OPERATE_TIME >= #{startDate} and OPERATE_TIME <= #{endDate} ]]>
+        </where>
+        <if test="companyId != null and companyId != ''">
+            and COMPANY_ID=#{companyId}
+        </if>
+        group by COMPANY_ID
+    </select>
+    <!-- 查询登陆人数,根据部门id分组 -->
+    <select id="queryLoginPersonsByDept" resultType="com.zksg.smartpolitical.usermgmt.vo.CompanyCountVo" parameterType="java.util.Map">
+        select companyId,count(1) as totalInfo from (select COMPANY_ID as companyId,COMPANY_NAME as companyName from BS_USAGE_LOG
+        <where>
+            <![CDATA[ and OPERATE_TIME >= #{startDate} and OPERATE_TIME <= #{endDate} ]]>
+        </where>
+        <if test="companyId != null and companyId != ''">
+            and COMPANY_ID=#{companyId}
+        </if>
+        group by PERSON_ID,COMPANY_ID) tmp
+        group by companyId order by totalInfo desc
+    </select>
+    <insert id="insertUsageLog" parameterType="com.zksg.smartpolitical.usermgmt.entity.BsUsageLog" useGeneratedKeys="false">
+        INSERT INTO BS_USAGE_LOG(PERSON_ID, POLICE_NO, OPERATE_TYPE, OPERATE_TIME, COMPANY_ID, COMPANY_NAME, DEPT_ID, DEPT_NAME) values(#{personId},#{policeNo},#{operateType},#{operateTime},#{companyId,jdbcType=VARCHAR},#{companyName,jdbcType=VARCHAR},#{deptId,jdbcType=VARCHAR},#{deptName,jdbcType=VARCHAR})
+    </insert>
+
+
+</mapper>

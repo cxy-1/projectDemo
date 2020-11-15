@@ -1,0 +1,242 @@
+{
+    "list": [
+        {
+            "id":"1",
+            "label": " 南京市公安局",
+            "number": 234,
+            "className": "iconfont iconwenjianjia1",
+            "children": [
+                {
+                    "id": "1-1",
+                    "label": " 国内安全保卫支队",
+                    "number": 234,
+                    "className": "iconfont iconfolder"
+                },
+                {
+                    "id": "1-2",
+                    "label": " 经济犯罪侦查支队",
+                    "number": 234,
+                    "className": "iconfont iconfolder"
+                },
+                {
+                    "id": "1-3",
+                    "label": " 治安警察支队",
+                    "number": 234,
+                    "className": "iconfont iconfolder"
+                },
+                {
+                    "id": "1-4",
+                    "label": " 国内安全保卫支队",
+                    "number": 112,
+                    "className": "iconfont iconfolder"
+                },
+                {
+                    "id": "1-5",
+                    "label": " 经济犯罪侦查支队",
+                    "number": 24,
+                    "className": "iconfont iconfolder"
+                },
+                {
+                    "id": "1-6",
+                    "label": " 法制支队",
+                    "number": 34,
+                    "className": "iconfont iconwenjianjia1",
+                    "children": [
+                        {
+                            "id": "1-6-1",
+                            "label": " 经济犯罪侦查支队",
+                            "number": 214,
+                            "className": "iconfont iconfolder"
+                        },
+                        {
+                            "id": "1-6-2",
+                            "label": " 治安警察支队",
+                            "number": 211,
+                            "className": "iconfont iconwenjianjia1",
+                            "children":[{
+                                "id": "1-6-2-1",
+                                "label": "经济犯罪侦查支队",
+                                "number": 14,
+                                "className": "iconfont icondoc-s"
+                            }]
+                        }
+                    ]
+                },
+                {
+                    "id": "1-7",
+                    "label": " 国内安全保卫支队",
+                    "number": 10,
+                    "className": "iconfont iconfolder"
+                },
+                {
+                    "id": "1-8",
+                    "label": " 国内安全保卫支队",
+                    "number": 14,
+                    "className": "iconfont iconfolder"
+                },
+                {
+                    "id": "1-9",
+                    "label": " 经济犯罪侦查支队",
+                    "number": 114,
+                    "className": "iconfont iconfolder"
+                },
+                {
+                    "id": "1-10",
+                    "label": " 治安警察支队",
+                    "number": 30,
+                    "className": "iconfont iconfolder"
+                },
+                {
+                    "id": "1-11",
+                    "label": " 国内安全保卫支队",
+                    "number": 99,
+                    "className": "iconfont iconfolder"
+                },
+                {
+                    "id": "1-12",
+                    "label": " 经济犯罪侦查支队",
+                    "number": 4,
+                    "className": "iconfont iconfolder"
+                },
+                {
+                    "id": "1-13",
+                    "label": " 法制支队",
+                    "number": 230,
+                    "className": "iconfont iconfolder"
+                },
+                {
+                    "id": "1-14",
+                    "label": " 国内安全保卫支队",
+                    "number": 304,
+                    "className": "iconfont iconfolder"
+                },
+                {
+                    "id": "1-15",
+                    "label": " 国内安全保卫支队",
+                    "number": 84,
+                    "className": "iconfont iconfolder"
+                },
+                {
+                    "id": "1-16",
+                    "label": " 经济犯罪侦查支队",
+                    "number": 234,
+                    "className": "iconfont iconfolder"
+                },
+                {
+                    "id": "1-17",
+                    "label": " 治安警察支队",
+                    "number": 110,
+                    "className": "iconfont iconfolder"
+                },
+                {
+                    "id": "1-18",
+                    "label": " 国内安全保卫支队",
+                    "number": 97,
+                    "className": "iconfont iconfolder"
+                },
+                {
+                    "id": "1-19",
+                    "label": " 经济犯罪侦查支队",
+                    "number": 76,
+                    "className": "iconfont iconfolder"
+                },
+                {
+                    "id": "1-20",
+                    "label": " 法制支队",
+                    "number": 45,
+                    "className": "iconfont iconfolder"
+                },
+                {
+                    "id": "1-21",
+                    "label": " 国内安全保卫支队",
+                    "number": 34,
+                    "className": "iconfont iconfolder"
+                },
+                {
+                    "id": "1-22",
+                    "label": " 国内安全保卫支队",
+                    "number": 45,
+                    "className": "iconfont iconfolder"
+                },
+                {
+                    "id": "1-23",
+                    "label": " 经济犯罪侦查支队",
+                    "number": 34,
+                    "className": "iconfont iconfolder"
+                },
+                {
+                    "id": "1-24",
+                    "label": " 治安警察支队",
+                    "number": 234,
+                    "className": "iconfont iconfolder"
+                },
+                {
+                    "id": "1-25",
+                    "label": " 国内安全保卫支队",
+                    "number": 314,
+                    "className": "iconfont iconfolder"
+                },
+                {
+                    "id": "1-26",
+                    "label": " 经济犯罪侦查支队",
+                    "number": 324,
+                    "className": "iconfont iconfolder"
+                },
+                {
+                    "id": "1-27",
+                    "label": " 法制支队",
+                    "number": 340,
+                    "className": "iconfont iconfolder"
+                },
+                {
+                    "id": "1-28",
+                    "label": " 国内安全保卫支队",
+                    "number": 34,
+                    "className": "iconfont iconfolder"
+                },
+                {
+                    "id": "1-29",
+                    "label": " 国内安全保卫支队",
+                    "number": 34,
+                    "className": "iconfont iconfolder"
+                },
+                {
+                    "id": "1-30",
+                    "label": " 经济犯罪侦查支队",
+                    "number": 34,
+                    "className": "iconfont iconfolder"
+                },
+                {
+                    "id": "1-31",
+                    "label": " 治安警察支队",
+                    "number": 34,
+                    "className": "iconfont iconfolder"
+                },
+                {
+                    "id": "1-32",
+                    "label": " 国内安全保卫支队",
+                    "number": 34,
+                    "className": "iconfont iconfolder"
+                },
+                {
+                    "id": "1-33",
+                    "label": " 经济犯罪侦查支队",
+                    "number": 34,
+                    "className": "iconfont iconfolder"
+                },
+                {
+                    "id": "1-34",
+                    "label": " 法制支队",
+                    "number": 34,
+                    "className": "iconfont iconfolder"
+                },
+                {
+                    "id": "1-35",
+                    "label": " 国内安全保卫支队",
+                    "number": 34,
+                    "className": "iconfont iconfolder"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,1 @@
+package com.sugon.analysis.domain.view.return2view;import lombok.Data;/** * @author: create by huangxb * @version: v1.0 * @description: * @date:2019/11/5 */@Datapublic class NameAndTimeInfo {    /**     * @职务     */    private String name;    /**     * @任职时间     */    private String time;}

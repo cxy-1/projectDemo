@@ -1,0 +1,129 @@
+{
+    "list": [{
+        "operat": "林丽",
+        "clientIP":"10.101.10.114",
+        "operatType":"操作类型民警",
+        "operatResult":"派出所",
+        "operatTime":"12:23",
+        "menuName":"菜单名称"
+    }, {
+        "operat": "文敏",
+        "clientIP":"101.10.10.114",
+        "operatType":"操作类型巡警",
+        "operatResult":"本人",
+        "operatTime":"12:23",
+        "menuName":"菜单名称"
+    }, {
+        "operat": "杨秀兰",
+        "clientIP":"102.10.10.114",
+        "operatType":"操作类型领导",
+        "operatResult":"市局",
+        "operatTime":"12:23",
+        "menuName":"菜单名称"
+    }, {
+        "operat": "魏强",
+        "clientIP":"10.102.10.114",
+        "operatType":"操作类型巡警",
+        "operatResult":"本人",
+        "operatTime":"12:23",
+        "menuName":"菜单名称"
+    }, {
+        "operat": "石秀兰",
+        "clientIP":"103.10.10.114",
+        "operatType":"操作类型巡警",
+        "operatResult":"市局",
+        "operatTime":"12:23",
+        "menuName":"菜单名称"
+    }, {
+        "operat": "朱洋",
+        "clientIP":"10.104.10.114",
+        "operatType":"操作类型巡警",
+        "operatResult":"派出所",
+        "operatTime":"12:23",
+        "menuName":"菜单名称"
+    }, {
+        "operat": "傅敏",
+        "clientIP":"102.10.10.114",
+        "operatType":"操作类型巡警",
+        "operatResult":"本人",
+        "operatTime":"12:23",
+        "menuName":"菜单名称"
+    }, {
+        "operat": "毛明",
+        "clientIP":"10.104.10.114",
+        "operatType":"操作类型巡警",
+        "operatResult":"派出所",
+        "operatTime":"12:23",
+        "menuName":"菜单名称"
+    }, {
+        "operat": "何静",
+        "clientIP":"105.10.10.114",
+        "operatType":"操作类型巡警",
+        "operatResult":"本人",
+        "operatTime":"12:23",
+        "menuName":"菜单名称"
+    }, {
+        "operat": "郭秀英",
+        "clientIP":"10.105.10.114",
+        "operatType":"操作类型巡警最多50个汉字",
+        "operatResult":"市局",
+        "operatTime":"12:23",
+        "menuName":"菜单名称"
+    },{
+        "operat": "杨秀兰",
+        "clientIP":"106.10.10.114",
+        "operatType":"操作类型领导",
+        "operatResult":"本人",
+        "operatTime":"12:23",
+        "menuName":"菜单名称"
+    }, {
+        "operat": "魏强",
+        "clientIP":"10.106.10.114",
+        "operatType":"操作类型巡警",
+        "operatResult":"派出所",
+        "operatTime":"12:23",
+        "menuName":"菜单名称"
+    }, {
+        "operat": "石秀兰",
+        "clientIP":"107.10.10.114",
+        "operatType":"操作类型巡警",
+        "operatResult":"本人",
+        "operatTime":"12:23",
+        "menuName":"菜单名称"
+    }, {
+        "operat": "朱洋",
+        "clientIP":"108.10.10.114",
+        "operatType":"操作类型巡警",
+        "operatResult":"本人",
+        "operatTime":"12:23",
+        "menuName":"菜单名称"
+    }, {
+        "operat": "傅敏",
+        "clientIP":"10.107.10.114",
+        "operatType":"操作类型巡警",
+        "operatResult":"市局",
+        "operatTime":"12:23",
+        "menuName":"菜单名称"
+    }, {
+        "operat": "毛明",
+        "clientIP":"10.108.10.114",
+        "operatType":"操作类型巡警",
+        "operatResult":"市局",
+        "operatTime":"12:23",
+        "menuName":"菜单名称"
+    }, {
+        "operat": "何静",
+        "clientIP":"10.10.108.114",
+        "operatType":"操作类型巡警",
+        "operatResult":"本人",
+        "operatTime":"12:23",
+        "menuName":"菜单名称"
+    }, {
+        "operat": "郭秀英",
+        "clientIP":"10.10.109.114",
+        "operatType":"操作类型巡警",
+        "operatResult":"派出所",
+        "operatTime":"12:23",
+        "menuName":"菜单名称"
+    }]
+}

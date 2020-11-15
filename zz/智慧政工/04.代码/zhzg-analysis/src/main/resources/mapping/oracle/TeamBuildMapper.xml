@@ -1,0 +1,488 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sugon.analysis.mappper.oracle.TeamBuildMapper" >
+    <resultMap id="result" type="com.sugon.analysis.domain.view.teambuild.TeamInfoVo">
+        <result property="id" column="ID"/>
+        <result property="teamName" column="CHINANAME"/>
+    </resultMap>
+
+    <resultMap id="teamCountResult" type="com.sugon.analysis.domain.view.teambuild.TeamCountVo">
+        <result property="teamName" column="CHINANAME"/>
+        <result property="count" column="COUNT"/>
+    </resultMap>
+
+    <resultMap id="femaleResult" type="com.sugon.analysis.domain.view.teambuild.TeamCountVo">
+        <result property="teamName" column="CHINANAME"/>
+        <result property="count" column="FEMALE"/>
+    </resultMap>
+
+    <resultMap id="honorAllResult" type="java.util.HashMap">
+        <result property="teamName" column="CHINANAME"/>
+        <result property="honorCount" column="COUNT"/>
+        <result property="honorProportion" column="PROPORTION"/>
+    </resultMap>
+
+    <resultMap id="ageDetailResult" type="com.sugon.analysis.domain.view.teambuild.AgeDetailVo">
+        <result property="personName" column="PERSON_NAME"/>
+        <result property="policeNo" column="POLICE_NO"/>
+        <result property="age" column="PERSON_AGE"/>
+        <result property="sex" column="SEX"/>
+        <result property="unitName" column="UNITNAME"/>
+    </resultMap>
+
+    <resultMap id="trainDetailResult" type="com.sugon.analysis.domain.view.teambuild.TrainDetailVo">
+        <result property="personName" column="PERSON_NAME"/>
+        <result property="policeNo" column="POLICE_NO"/>
+        <result property="unitName" column="UNITNAME"/>
+        <result property="startTime" column="TRAINING_START_TIME"/>
+        <result property="endTime" column="TRAINING_END_TIME"/>
+        <result property="trainingCourse" column="TRAINING_COURSE"/>
+        <result property="trainingResult" column="TRAINING_RESULT"/>
+    </resultMap>
+
+    <resultMap id="trainCountResult" type="com.sugon.analysis.domain.view.teambuild.TrainCountVo">
+        <result property="year" column="YEAR"/>
+        <result property="count" column="COUNT"/>
+    </resultMap>
+
+    <resultMap id="orgHonorDetailResult" type="com.sugon.analysis.domain.view.teambuild.OrgHonorVo">
+        <result property="honorName" column="HONOURNAME"/>
+        <result property="deptName" column="BRANCHNAME"/>
+        <result property="date" column="HDATE"/>
+        <result property="awardDept" column="HDEPTNAME"/>
+    </resultMap>
+
+    <resultMap id="personHonorDetailResult" type="com.sugon.analysis.domain.view.teambuild.PersonHonorVo">
+        <result property="personName" column="PERSON_NAME"/>
+        <result property="policeNo" column="POLICE_NO"/>
+        <result property="deptName" column="UNITNAME"/>
+        <result property="awardName" column="AWARD_NAME"/>
+        <result property="date" column="APPROVAL_DATE"/>
+        <result property="awardDept" column="AWARD_WINNING_UNIT"/>
+    </resultMap>
+
+    <resultMap id="caseResult" type="com.sugon.analysis.domain.view.teambuild.BreakRuleCaseVo">
+        <result property="personName" column="XM"/>
+        <result property="policeNo" column="POLICE_NO"/>
+        <result property="deptName" column="DW"/>
+        <result property="date" column="CFJDSJ"/>
+        <result property="date1" column="CFDQSJ"/>
+        <result property="detail" column="WTXZ"/>
+        <result property="idNo" column="SFZH"/>
+        <result property="post" column="ZW"/>
+    </resultMap>
+
+    <resultMap id="caseCountResult" type="com.sugon.analysis.domain.view.EchartsVo">
+        <result property="name" column="CFJDSJ"/>
+        <result property="value" column="COUNT"/>
+    </resultMap>
+
+    <resultMap id="countWtxz" type="com.sugon.analysis.domain.view.teambuild.RulesAndCount">
+        <result property="wtxz" column="WTXZ"/>
+        <result property="count" column="COUNT"/>
+    </resultMap>
+
+    <!-- 查询队伍 -->
+    <select id="findAllTeam" resultMap="result" >
+        SELECT ID,CHINANAME FROM NJGAZNL.SYS_DEPT WHERE LENGTH(NVL(SEARCHCODE,'')) &gt; 5 AND LENGTH(NVL(SEARCHCODE,'')) &lt;= 10 AND DELSTATUS = '0'
+        AND (((SEARCHCODE &gt;= '0000100048' AND SEARCHCODE &lt; '0000100065') AND 1=#{type1})
+        OR ((SEARCHCODE &lt; '0000100048' OR SEARCHCODE &gt;= '0000100065') AND 1=#{type2}))
+        AND ID NOT IN ('2014111018472484800000000567', '2014111018472484800000000566', '2014111018472522300000002932', '2014111018472481700000000388',
+            '2014111018472487900000000748', '2014111018472480100000000340', '1609121651201070000000004947','2014111018472495800000001181','2014111018472489500000000794','2001191147572760000000001778','2014111018472487900000000747')
+        ORDER BY SEARCHCODE
+    </select>
+
+    <!-- 查询分局及部门id -->
+    <select id="findUnitId" resultType="java.lang.String" >
+        SELECT ID FROM NJGAZNL.SYS_DEPT WHERE LENGTH(NVL(SEARCHCODE,'')) &gt; 5 AND LENGTH(NVL(SEARCHCODE,'')) &lt;= 10 AND DELSTATUS = '0'
+        AND (((SEARCHCODE &gt;= '0000100048' AND SEARCHCODE &lt; '0000100065') AND 1=1)
+        OR ((SEARCHCODE &lt; '0000100048' OR SEARCHCODE &gt;= '0000100065') AND 1=1))
+        AND ID NOT IN ('2014111018472484800000000567', '2014111018472484800000000566', '2014111018472522300000002932', '2014111018472481700000000388',
+            '2014111018472487900000000748', '2014111018472480100000000340', '1609121651201070000000004947','2014111018472495800000001181','2014111018472489500000000794','2001191147572760000000001778','2014111018472487900000000747')
+        ORDER BY SEARCHCODE
+    </select>
+
+    <!-- 查询队伍平均年龄 -->
+    <select id="findAgeInfo" resultType="java.lang.Double">
+        SELECT AVG(PERSON_AGE) FROM NJGAZNL.T_PERSON WHERE 1 = 1 AND DELSTATUS='0' AND PCLASSID='00001'
+        AND IDNO IN
+        <foreach collection="idNoList" index="index" item="item" open="(" separator="," close=")">
+            <if test="(index % 999) == 998">
+                NULL) OR IDNO IN (
+            </if>
+            #{item}
+        </foreach>
+        AND IDNO IS NOT NULL
+    </select>
+
+    <!-- 查询队伍女警占比 -->
+    <select id="findFemaleCount" resultType="java.lang.Integer" >
+        SELECT COUNT(*) FROM (
+        SELECT * FROM NJGAZNL.T_PERSON WHERE 1 = 1 AND DELSTATUS='0' AND PCLASSID='00001'
+        AND
+        <foreach collection="idNoList" index="index" item="item" open="(" separator="or" close=")">
+            IDNO = #{item}
+        </foreach>
+        AND IDNO IS NOT NULL
+        )
+        WHERE SEX = '2'
+    </select>
+
+    <!-- 查询集体荣誉排名 -->
+    <select id="findOrgHonor" resultMap="teamCountResult" >
+        SELECT ID,NVL(ORGCOUNT,0) COUNT FROM
+        (SELECT ID,CHINANAME FROM NJGAZNL.SYS_DEPT WHERE DELSTATUS = '0'
+        <if test="level == 2">
+            AND DEPTLEVEL = #{level} AND ID NOT IN ('2014111018472484800000000567', '2014111018472484800000000566', '2014111018472522300000002932', '2014111018472481700000000388',
+            '2014111018472487900000000748', '2014111018472480100000000340', '1609121651201070000000004947','2014111018472495800000001181','2014111018472489500000000794','2001191147572760000000001778','2014111018472487900000000747')
+        </if>
+        <if test="level == 3">
+            AND (DEPTLEVEL = #{level} OR ID  IN ('2014111018472484800000000567', '2014111018472484800000000566', '2014111018472522300000002932', '2014111018472481700000000388',
+            '2014111018472487900000000748', '2014111018472480100000000340', '1609121651201070000000004947','2014111018472495800000001181','2014111018472489500000000794','2001191147572760000000001778','2014111018472487900000000747'))
+        </if>
+        ORDER BY SEARCHCODE) T1
+        <if test="level == 2">
+            LEFT JOIN
+            (SELECT * FROM (SELECT STDDEPTNAME,COUNT(STDDEPTNAME) ORGCOUNT FROM NJGAZNL.T_ORG_HONOR WHERE HONOURNAME IN ('全国优秀公安局', '全国优秀公安基层单位','全省优秀公安局','集体一等功','集体二等功','集体三等功','集体嘉奖','通报表扬','荣誉称号','先进集体') GROUP BY STDDEPTNAME)
+            WHERE STDDEPTNAME != '已撤销机构' AND STDDEPTNAME != '南京市公安局' AND STDDEPTNAME IS NOT NULL) T3
+            ON T3.STDDEPTNAME=T1.CHINANAME
+        </if>
+        <if test="level == 3">
+            LEFT JOIN
+            ((SELECT * FROM (SELECT STDDEPTNAME,COUNT(STDDEPTNAME) ORGCOUNT FROM (SELECT STDDEPTNAME || BRANCHNAME STDDEPTNAME FROM NJGAZNL.T_ORG_HONOR
+            WHERE STDDEPTNAME != '已撤销机构' AND STDDEPTNAME != '南京市公安局' AND STDDEPTNAME IS NOT NULL AND HONOURNAME IN ('全国优秀公安局', '全国优秀公安基层单位','全省优秀公安局','集体一等功','集体二等功','集体三等功','集体嘉奖','通报表扬','荣誉称号','先进集体')) GROUP BY STDDEPTNAME))
+            UNION
+            (SELECT * FROM (SELECT STDDEPTNAME,COUNT(STDDEPTNAME) ORGCOUNT FROM (SELECT BRANCHNAME STDDEPTNAME FROM NJGAZNL.T_ORG_HONOR
+            WHERE BRANCHNAME = '人民警察训练学校' AND HONOURNAME IN ('全国优秀公安局', '全国优秀公安基层单位','全省优秀公安局','集体一等功','集体二等功','集体三等功','集体嘉奖','通报表扬','荣誉称号','先进集体')) GROUP BY STDDEPTNAME)))
+            T3
+            ON T3.STDDEPTNAME=T1.CHINANAME
+        </if>
+        ORDER BY COUNT DESC
+    </select>
+
+    <!-- 查询集体荣誉数量 -->
+    <select id="findOrgHonorCount" resultType="java.lang.Integer" >
+        SELECT COUNT(*) FROM (
+        SELECT STDDEPTNAME AS UNITNAME, STDDEPTNAME || BRANCHNAME AS DEPTNAME, HONOURNAME, HDATE FROM NJGAZNL.T_ORG_HONOR WHERE HONOURNAME IN ('全国优秀公安局', '全国优秀公安基层单位','全省优秀公安局','集体一等功','集体二等功','集体三等功','集体嘉奖','通报表扬','荣誉称号','先进集体')
+        )
+        WHERE UNITNAME = #{name} OR DEPTNAME = #{name}
+    </select>
+
+    <!-- 查询个人荣誉排名 -->
+    <select id="findPersonHonor" resultMap="teamCountResult" >
+        SELECT ID,NVL(PERSONCOUNT,0) COUNT FROM
+        (SELECT ID,CHINANAME FROM NJGAZNL.SYS_DEPT WHERE DELSTATUS = '0'
+        <if test="level == 2">
+            AND DEPTLEVEL = #{level} AND ID NOT IN ('2014111018472484800000000567', '2014111018472484800000000566', '2014111018472522300000002932', '2014111018472481700000000388',
+            '2014111018472487900000000748', '2014111018472480100000000340', '1609121651201070000000004947','2014111018472495800000001181','2014111018472489500000000794','2001191147572760000000001778','2014111018472487900000000747')
+        </if>
+        <if test="level == 3">
+            AND (DEPTLEVEL = #{level} OR ID IN ('2014111018472484800000000567', '2014111018472484800000000566', '2014111018472522300000002932', '2014111018472481700000000388',
+            '2014111018472487900000000748', '2014111018472480100000000340', '1609121651201070000000004947','2014111018472495800000001181','2014111018472489500000000794','2001191147572760000000001778','2014111018472487900000000747'))
+        </if>
+        ORDER BY SEARCHCODE) P4
+        LEFT JOIN
+        (SELECT UNITID,COUNT(UNITID) PERSONCOUNT FROM
+        (SELECT * FROM NJGAZNL.T_COMMEND_INFO WHERE AWARD_NAME LIKE '%一等功%' OR AWARD_NAME LIKE '%二等功%' OR AWARD_NAME LIKE '%三等功%' OR
+        AWARD_NAME IN ('革命烈士','全国公安系统一级英雄模范','全国公安系统二级英雄模范','全国劳模',
+        '全国特级优秀人民警察','全国优秀人民警察','全国三八红旗手','省劳模','省三八红旗手','省五四青年奖章','市劳动模范','市三八红旗手','市五四青年奖章')
+        AND DELSTATUS = '0' ) P1
+        LEFT JOIN
+        (SELECT CHINANAME,IDENTITYNUM,UNITID FROM (SELECT * FROM NJGAZNL.SYS_USER WHERE DELSTATUS = '0' AND POST_TYPE = '0' AND IDENTITYNUM IS NOT NULL) GROUP BY CHINANAME,IDENTITYNUM,UNITID) P2
+        ON P1.IDNO = P2.IDENTITYNUM
+        WHERE UNITID IS NOT NULL GROUP BY UNITID) P3
+        ON P3.UNITID = P4.ID ORDER BY COUNT DESC
+    </select>
+
+    <!-- 查询个人荣誉数量 -->
+    <select id="findPersonHonorCount" resultType="java.lang.Integer" >
+        SELECT COUNT(*) FROM
+        (SELECT * FROM NJGAZNL.T_COMMEND_INFO WHERE AWARD_NAME LIKE '%一等功%' OR AWARD_NAME LIKE '%二等功%' OR AWARD_NAME LIKE '%三等功%' OR
+        AWARD_NAME IN ('革命烈士','全国公安系统一级英雄模范','全国公安系统二级英雄模范','全国劳模',
+        '全国特级优秀人民警察','全国优秀人民警察','全国三八红旗手','省劳模','省三八红旗手','省五四青年奖章','市劳动模范','市三八红旗手','市五四青年奖章'))
+        WHERE DELSTATUS = '0'
+        AND IDNO IN
+        <foreach collection="idNoList" index="index" item="item" open="(" separator="," close=")">
+            <if test="(index % 999) == 998">
+                NULL) OR IDNO IN (
+            </if>
+            #{item}
+        </foreach>
+        AND IDNO IS NOT NULL
+    </select>
+
+    <!-- 查询纪检案件数量 -->
+    <select id="findBreakRuleCaseCount" resultType="java.lang.Integer" >
+        SELECT COUNT(*) FROM NJGAZNL.M_JLSC_AJJB WHERE DW LIKE #{name} AND CFJDSJ IS NOT NULL
+    </select>
+
+    <!-- 查询队伍党员人数 -->
+    <select id="findPartyCountByIdNo" resultType="java.lang.Integer" >
+        SELECT COUNT(*) FROM (
+        SELECT * FROM NJGAZNL.T_PERSON WHERE 1 = 1 AND DELSTATUS='0' AND PCLASSID='00001'
+        AND IDNO IN
+        <foreach collection="idNoList" index="index" item="item" open="(" separator="," close=")">
+            <if test="(index % 999) == 998">
+                NULL) OR IDNO IN (
+            </if>
+            #{item}
+        </foreach>
+        AND IDNO IS NOT NULL
+        )
+        WHERE POLITICAL_STATUS IN ('01', '02')
+    </select>
+
+    <!-- 查询年龄结构及详情 -->
+    <select id="findAgeDetail" resultMap="ageDetailResult" >
+        SELECT PERSON_NAME,IDNO,POLICE_NO,PERSON_AGE,CASE WHEN SEX = 1 THEN '男' WHEN SEX = 2 THEN '女' END SEX,ORG_SIMPLE_NAME||OFFICE_SIMPLE_NAME UNITNAME FROM
+        NJGAZNL.T_PERSON WHERE 1 = 1 AND DELSTATUS='0' AND PCLASSID='00001'
+        and
+        <foreach item="item" index="index" collection="idNoList" open="(" separator="or" close=")">
+            idNo = #{item}
+        </foreach>
+        AND IDNO IS NOT NULL
+    </select>
+
+    <!-- 查询教育培训及详情 -->
+    <select id="findTrainDetail" resultMap="trainDetailResult">
+        SELECT PERSON_NAME,POLICE_NO,UNITNAME,TO_CHAR(TRAINING_START_TIME, 'YYYY-MM-DD') TRAINING_START_TIME,TO_CHAR(TRAINING_END_TIME, 'YYYY-MM-DD') TRAINING_END_TIME,TRAINING_COURSE,TRAINING_RESULT FROM (
+        SELECT T2.PERSON_NAME,T2.IDNO,T2.POLICE_NO,T2.ORG_SIMPLE_NAME||T2.OFFICE_SIMPLE_NAME UNITNAME,T1.* FROM
+        (SELECT * FROM NJGAZNL.T_TRAINING_HISTORY WHERE TRAINING_START_TIME IS NOT NULL AND DELSTATUS = '0' AND TO_CHAR(TRAINING_START_TIME,'YYYY')>='2016'
+        <if test="null != year">
+            AND
+            TO_CHAR(TRAINING_START_TIME,'YYYY') = #{year}
+        </if>
+        <if test="null != idNoList and idNoList.size > 0">
+            AND
+            <foreach collection="idNoList" index="index" item="item" open="(" separator="OR" close=")">
+                IDNO = #{item}
+            </foreach>
+        </if>
+        ) T1
+        INNER JOIN (SELECT * FROM NJGAZNL.T_PERSON WHERE DELSTATUS='0' AND PCLASSID='00001') T2 ON T1.IDNO = T2.IDNO
+        INNER JOIN NJGAZNL.SYS_USER T3 ON T3.IDENTITYNUM = T2.IDNO
+        INNER JOIN NJGAZNL.SYS_DEPT   T4 ON T3.DEPTID = T4. ID
+        WHERE T1.IDNO IS NOT NULL  AND T3.DELSTATUS = 0 AND T3.POST_TYPE = '0'  ORDER BY T1.TRAINING_START_TIME DESC)
+    </select>
+
+    <!-- 教育培训按年份统计 -->
+    <select id="trainCountByYear" resultMap="trainCountResult">
+        SELECT YEAR, COUNT(*) COUNT FROM (
+        SELECT YEAR FROM
+        (SELECT * FROM (SELECT TO_CHAR(TRAINING_START_TIME,'YYYY') YEAR,IDNO FROM NJGAZNL.T_TRAINING_HISTORY WHERE TRAINING_START_TIME IS NOT NULL AND TO_CHAR(TRAINING_START_TIME,'YYYY')>='2016' AND DELSTATUS = '0') WHERE 1=1
+        <if test="null != idNoList and idNoList.size > 0">
+            AND
+            <foreach collection="idNoList" index="index" item="item" open="(" separator="OR" close=")">
+                IDNO = #{item}
+            </foreach>
+        </if>
+        ) T1
+        INNER JOIN (SELECT * FROM NJGAZNL.T_PERSON WHERE DELSTATUS='0' AND PCLASSID='00001') T2 ON T1.IDNO = T2.IDNO
+        INNER JOIN NJGAZNL.SYS_USER T3 ON T3.IDENTITYNUM = T2.IDNO
+        INNER JOIN NJGAZNL.SYS_DEPT   T4 ON T3.DEPTID = T4. ID
+        WHERE T1.IDNO IS NOT NULL AND T3.DELSTATUS = 0 AND T3.POST_TYPE = '0')  GROUP BY YEAR ORDER BY YEAR
+    </select>
+
+
+    <!-- 教育培训按统计次数 -->
+    <select id="trainCountByIdNos" resultType="java.lang.Integer">
+	 SELECT COUNT (*) VALUE FROM
+			( SELECT * FROM NJGAZNL.T_TRAINING_HISTORY WHERE DELSTATUS = '0' AND TO_CHAR (TRAINING_START_TIME, 'YYYY') > '2016'
+			) T1
+		INNER JOIN ( SELECT * FROM NJGAZNL.T_PERSON WHERE DELSTATUS = '0' AND PCLASSID = '00001'
+        <if test="null != idNoList and idNoList.size > 0">
+            AND
+            <foreach collection="idNoList" index="index" item="item" open="(" separator="OR" close=")">
+                IDNO = #{item}
+            </foreach>
+        </if>
+        ) T2 ON T1.IDNO = T2.IDNO
+		INNER JOIN NJGAZNL.SYS_USER T3 ON T3.IDENTITYNUM = T2.IDNO
+		INNER JOIN NJGAZNL.SYS_DEPT   T4 ON T3.DEPTID = T4. ID
+		WHERE T1.IDNO IS NOT NULL AND T3.DELSTATUS = 0 AND T3.POST_TYPE = '0'
+
+    </select>
+
+    <!-- 查询集体荣誉及详情 -->
+    <select id="findOrgHonorDetail" resultMap="orgHonorDetailResult">
+        SELECT * FROM NJGAZNL.T_ORG_HONOR WHERE (STDDEPTNAME IN
+        (SELECT CHINANAME FROM NJGAZNL.SYS_DEPT WHERE ID IN
+        <foreach collection="unitId" index="index" item="item" open="(" separator="," close=")">
+            <if test="(index % 999) == 998">
+                NULL) OR ID IN (
+            </if>
+            #{item}
+        </foreach>
+        )
+        OR (STDDEPTNAME || BRANCHNAME) IN (SELECT CHINANAME FROM NJGAZNL.SYS_DEPT WHERE ID IN
+        <foreach collection="unitId" index="index" item="item" open="(" separator="," close=")">
+            <if test="(index % 999) == 998">
+                NULL) OR ID IN (
+            </if>
+            #{item}
+        </foreach>
+        )) AND HONOURNAME IN ('全国优秀公安局', '全国优秀公安基层单位','全省优秀公安局','集体一等功','集体二等功','集体三等功','集体嘉奖','通报表扬','荣誉称号','先进集体')
+        ORDER BY HDATE DESC
+    </select>
+
+    <!-- 查询个人荣誉及详情 -->
+    <select id="findPersonHonorDetail" resultMap="personHonorDetailResult">
+        SELECT T2.PERSON_NAME,T2.IDNO,T2.POLICE_NO,T2.ORG_SIMPLE_NAME||T2.OFFICE_SIMPLE_NAME UNITNAME,T1.AWARD_NAME,T1.APPROVAL_DATE,T1.AWARD_WINNING_UNIT FROM (
+        SELECT IDNO, AWARD_NAME, TO_CHAR(APPROVAL_DATE, 'YYYY-MM-DD') APPROVAL_DATE, AWARD_WINNING_UNIT FROM (
+        SELECT * FROM NJGAZNL.T_COMMEND_INFO WHERE (INSTR(AWARD_NAME,'一等功')>0  OR INSTR(AWARD_NAME,'二等功')>0 OR INSTR(AWARD_NAME,'三等功')>0 OR
+        AWARD_NAME IN ('革命烈士','全国公安系统一级英雄模范','全国公安系统二级英雄模范','全国劳模',
+        '全国特级优秀人民警察','全国优秀人民警察','全国三八红旗手','省劳模','省三八红旗手','省五四青年奖章','市劳动模范','市三八红旗手','市五四青年奖章'))
+        AND DELSTATUS = '0'
+        AND IDNO IS NOT NULL
+        <if test="awardName != null">
+            <choose>
+                <when test='"一等功"== awardName || "二等功"== awardName || "三等功"== awardName'>
+                    AND INSTR(AWARD_NAME,#{awardName})>0
+                </when>
+                <otherwise>
+                    AND AWARD_NAME=#{awardName}
+                </otherwise>
+            </choose>
+        </if>
+
+        )
+        WHERE 1 = 1
+        <if test="null != idNoList and idNoList.size > 0">
+            AND
+            <foreach item="item" index="index" collection="idNoList" open="(" separator="or" close=")">
+                idNo = #{item}
+            </foreach>
+        </if>
+        ) T1
+        INNER JOIN (SELECT * FROM NJGAZNL.T_PERSON WHERE DELSTATUS='0' AND PCLASSID='00001') T2 ON T1.IDNO = T2.IDNO
+        INNER JOIN NJGAZNL.SYS_USER T3 ON T3.IDENTITYNUM = T2.IDNO
+        INNER JOIN NJGAZNL.SYS_DEPT   T4 ON T3.DEPTID = T4. ID
+        WHERE T1.IDNO IS NOT NULL  AND T3.DELSTATUS = 0 AND T3.POST_TYPE = '0' ORDER BY  T1.APPROVAL_DATE DESC
+    </select>
+
+    <!-- 按年份统计纪检案件数量 -->
+    <select id="findBreakRuleCaseCountByYear" resultMap="caseCountResult" >
+        SELECT CFJDSJ, COUNT(CFJDSJ) COUNT FROM
+        (
+        SELECT T1.XM, T1.DW, T2.POLICE_NO, T1.SFZH, SUBSTR(T1.CFJDSJ, 0, 4) CFJDSJ, T1.WTXZ FROM NJGAZNL.M_JLSC_AJJB T1
+        LEFT JOIN (SELECT * FROM NJGAZNL.T_PERSON WHERE DELSTATUS='0' AND PCLASSID='00001') T2 ON T1.SFZH = T2.IDNO WHERE DW LIKE #{name} AND CFJDSJ IS NOT NULL
+        <if test="null != idNoList and idNoList.size > 0">
+            AND
+            <foreach item="item" index="index" collection="idNoList" open="(" separator="or" close=")">
+                SFZH = #{item}
+            </foreach>
+        </if>
+        )
+        GROUP BY CFJDSJ ORDER BY CFJDSJ
+    </select>
+
+    <!-- 查询纪检案件详情 -->
+    <select id="findBreakRuleCaseDetail" resultMap="caseResult" >
+        SELECT T1.XM, T1.DW, T2.POLICE_NO, T1.SFZH, T1.CFJDSJ,T1.CFDQSJ, T1.WTXZ,T1.ZW FROM NJGAZNL.M_JLSC_AJJB T1
+        LEFT JOIN (SELECT * FROM NJGAZNL.T_PERSON WHERE DELSTATUS='0' AND PCLASSID='00001') T2 ON T1.SFZH = T2.IDNO WHERE DW LIKE #{name} AND CFJDSJ IS NOT NULL
+        <if test="null != idNoList and idNoList.size > 0">
+            AND
+            <foreach item="item" index="index" collection="idNoList" open="(" separator="or" close=")">
+                SFZH = #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <!-- 市局领导班子人数 -->
+    <select id="findOneLeaderCount" resultType="java.lang.Integer" >
+        select COUNT(1) from NJGAZNL.T_PERSON WHERE IDNO IN(
+        SELECT IDENTItynum FROM NJGAZNL.SYS_USER WHERE DELSTATUS = '0'
+        AND POST_TYPE = '0' AND
+        (INSTR(','||PERSONROLES||',', ',8,')&lt;&gt;0 OR INSTR(','||PERSONROLES||',', ',7,')&lt;&gt;0)
+        ) AND POLICE_JOB_GRADE NOT IN ('0530','0630','0718','0740','0840') AND DELSTATUS='0'AND PCLASSID='00001'
+    </select>
+
+
+    <!-- 市局领导班子人身份证号码 -->
+    <select id="findOneLeaderIdNum" resultType="java.lang.String" >
+        select IDNO AS IDENTITYNUM from NJGAZNL.T_PERSON WHERE IDNO IN(
+        SELECT IDENTItynum FROM NJGAZNL.SYS_USER WHERE DELSTATUS = '0'
+        AND POST_TYPE = '0' AND
+        (INSTR(','||PERSONROLES||',', ',8,')&lt;&gt;0 OR INSTR(','||PERSONROLES||',', ',7,')&lt;&gt;0)
+        ) AND POLICE_JOB_GRADE NOT IN ('0530','0630','0718','0740','0840') AND DELSTATUS='0'AND PCLASSID='00001'
+    </select>
+
+    <!-- 分局领导班子人数 -->
+    <select id="findTwoLeaderCount" resultType="java.lang.Integer" >
+        select COUNT(1) from NJGAZNL.T_PERSON WHERE IDNO IN(
+        SELECT IDENTITYNUM FROM NJGAZNL.SYS_USER WHERE DELSTATUS = '0'
+        AND POST_TYPE = '0' AND (IDENTITYNUM IN
+        <foreach collection="idNoList" index="index" item="item" open="(" separator="," close=")">
+            <if test="(index % 999) == 998">
+                NULL) OR IDENTITYNUM IN (
+            </if>
+            #{item}
+        </foreach>
+        ) AND
+        (INSTR(','||PERSONROLES||',', ',20,')&lt;&gt;0 OR INSTR(','||PERSONROLES||',', ',18,')&lt;&gt;0
+        OR INSTR(','||PERSONROLES||',', ',19,')&lt;&gt;0 OR INSTR(','||PERSONROLES||',', ',21,')&lt;&gt;0)
+        ) AND POLICE_JOB_GRADE NOT IN ('0530','0630','0718','0740','0840') AND DELSTATUS='0'AND PCLASSID='00001'
+    </select>
+
+    <!-- 分局领导班子人身份证号码 -->
+    <select id="findTwoLeaderIdNum" resultType="java.lang.String" >
+        select IDNO AS IDENTITYNUM from NJGAZNL.T_PERSON WHERE IDNO IN(
+        SELECT IDENTITYNUM FROM NJGAZNL.SYS_USER WHERE DELSTATUS = '0'
+        AND POST_TYPE = '0' AND (IDENTITYNUM IN
+        <foreach collection="idNoList" index="index" item="item" open="(" separator="," close=")">
+            <if test="(index % 999) == 998">
+                NULL) OR IDENTITYNUM IN (
+            </if>
+            #{item}
+        </foreach>
+        ) AND
+        (INSTR(','||PERSONROLES||',', ',20,')&lt;&gt;0 OR INSTR(','||PERSONROLES||',', ',18,')&lt;&gt;0
+        OR INSTR(','||PERSONROLES||',', ',19,')&lt;&gt;0 OR INSTR(','||PERSONROLES||',', ',21,')&lt;&gt;0)
+        ) AND POLICE_JOB_GRADE NOT IN ('0530','0630','0718','0740','0840') AND DELSTATUS='0'AND PCLASSID='00001'
+    </select>
+
+    <!-- 派出所领导班子人数 -->
+    <select id="findThreeLeaderCount" resultType="java.lang.Integer" >
+        select COUNT(1) from NJGAZNL.T_PERSON WHERE IDNO IN(
+        SELECT IDENTITYNUM FROM NJGAZNL.SYS_USER WHERE DELSTATUS = '0'
+        AND POST_TYPE = '0' AND (IDENTITYNUM IN
+        <foreach collection="idNoList" index="index" item="item" open="(" separator="," close=")">
+            <if test="(index % 999) == 998">
+                NULL) OR IDENTITYNUM IN (
+            </if>
+            #{item}
+        </foreach>
+        ) AND
+        (INSTR(','||PERSONROLES||',', ',32,')&lt;&gt;0 OR INSTR(','||PERSONROLES||',', ',33,')&lt;&gt;0
+        OR INSTR(','||PERSONROLES||',', ',30,')&lt;&gt;0 OR INSTR(','||PERSONROLES||',', ',31,')&lt;&gt;0
+        OR INSTR(','||PERSONROLES||',', ',34,')&lt;&gt;0 OR INSTR(','||PERSONROLES||',', ',35,')&lt;&gt;0)
+        ) AND POLICE_JOB_GRADE NOT IN ('0530','0630','0718','0740','0840') AND DELSTATUS='0'AND PCLASSID='00001'
+    </select>
+
+
+    <!-- 派出所领导班子人身份证号码 -->
+    <select id="findThreeLeaderIdNum" resultType="java.lang.String" >
+        select IDNO AS IDENTITYNUM from NJGAZNL.T_PERSON WHERE IDNO IN(
+        SELECT IDENTITYNUM FROM NJGAZNL.SYS_USER WHERE DELSTATUS = '0'
+        AND POST_TYPE = '0' AND (IDENTITYNUM IN
+        <foreach collection="idNoList" index="index" item="item" open="(" separator="," close=")">
+            <if test="(index % 999) == 998">
+                NULL) OR IDENTITYNUM IN (
+            </if>
+            #{item}
+        </foreach>
+        ) AND
+        (INSTR(','||PERSONROLES||',', ',32,')&lt;&gt;0 OR INSTR(','||PERSONROLES||',', ',33,')&lt;&gt;0
+        OR INSTR(','||PERSONROLES||',', ',30,')&lt;&gt;0 OR INSTR(','||PERSONROLES||',', ',31,')&lt;&gt;0
+        OR INSTR(','||PERSONROLES||',', ',34,')&lt;&gt;0 OR INSTR(','||PERSONROLES||',', ',35,')&lt;&gt;0)
+        ) AND POLICE_JOB_GRADE NOT IN ('0530','0630','0718','0740','0840') AND DELSTATUS='0'AND PCLASSID='00001'
+    </select>
+
+    <select id="findRulesCountByWtxz" resultMap="countWtxz">
+        select *
+        from (
+        select wtxz ,count(*) AS count from NJGAZNL.M_JLSC_AJJB t WHERE DW LIKE #{rule} AND CFJDSJ IS NOT NULL group by wtxz
+        )
+        order by count desc
+    </select>
+</mapper>

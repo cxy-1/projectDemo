@@ -1,0 +1,13 @@
+spring:
+  redis:
+    host: 192.168.8.11
+    port: 6379
+  session:
+    store-type: redis
+    redis:
+      namespace: smartPolitical
+
+#eureka集群高可用，填写2个eureka的地址
+cluster:
+  eureka:
+    ip: localhost

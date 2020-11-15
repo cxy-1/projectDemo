@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zksg.smartpolitical.usermgmt.dao.BsUserMapper" >
+
+    <resultMap id="BsUserMap" type="com.zksg.smartpolitical.usermgmt.entity.BasicUser">
+        <result column="PERSON_ID" property="personId"></result>
+        <result column="USER_NAME" property="userName"></result>
+        <result column="ID_NUMBER" property="idNumber"></result>
+        <result column="COMPANY_ID" property="companyId"></result>
+        <result column="DEPT_ID" property="unitId"></result>
+        <result column="POLICE_NO" property="policeNo"></result>
+        <result column="PHONE" property="phone"></result>
+        <result column="SEX" property="sex"></result>
+        <result column="STATUS" property="status"></result>
+        <result column="NAME_LOGOGRAM" property="logogram"></result>
+        <result column="DEPT_NAME" property="unitName"></result>
+        <result column="COMPANY_NAME" property="companyName"></result>
+        <result column="AURONUM" property="auronum"></result>
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+        PERSON_ID, USER_NAME, ID_NUMBER, COMPANY_ID, DEPT_ID, SEX,
+        POLICE_NO, PHONE, STATUS, NAME_LOGOGRAM, DEPT_NAME, COMPANY_NAME
+    </sql>
+
+<!--    1-->
+    <!-- 根据id查询 -->
+    <select id="queryUser" resultType="com.zksg.smartpolitical.usermgmt.entity.BasicUser" parameterType="java.lang.String">
+        select
+        u.USER_NAME as userName, u.PERSON_ID as personId, u.ID_NUMBER as idNumber,
+        u.COMPANY_ID as companyId, u.DEPT_ID as unitId, u.SEX as sex, u.PHONE as phone,
+        u.POLICE_NO as policeNo, u.PHONE as phone, c.UNIT_NAME as unitName, c.COMPANY_NAME as companyName
+        from BASIC_USER_NEW u left join BS_COMPANY_NEW c
+		on u.DEPT_ID = c.UNIT_ID
+        where u.PERSON_ID = #{personId}
+    </select>
+
+<!--    1-->
+    <!-- 根据部门id查询用户 -->
+    <select id="queryUserByDeptId" resultType="com.zksg.smartpolitical.usermgmt.entity.BasicUser" parameterType="java.lang.String">
+        select
+        u.USER_NAME as userName, u.PERSON_ID as personId, u.ID_NUMBER as idNumber,
+        u.COMPANY_ID as companyId, u.DEPT_ID as unitId, u.SEX as sex, u.PHONE as phone,
+        u.POLICE_NO as policeNo, u.PHONE as phone, c.UNIT_NAME as unitName, c.COMPANY_NAME as companyName
+        from BASIC_USER_NEW u left join BS_COMPANY_NEW c
+		on u.DEPT_ID = c.UNIT_ID
+        where u.DEPT_ID = #{unitId}
+    </select>
+
+<!--    1-->
+    <!-- 查询用户 -->
+    <select id="selectUser" resultType="com.zksg.smartpolitical.usermgmt.entity.BasicUser"
+            parameterType="com.zksg.smartpolitical.usermgmt.entity.BasicUser">
+        select
+        u.USER_NAME as userName, u.PERSON_ID as personId, u.ID_NUMBER as idNumber,
+        u.COMPANY_ID as companyId, u.DEPT_ID as unitId,
+        u.POLICE_NO as policeNo, u.PHONE as phone, u.DEPT_NAME as unitName, u.COMPANY_NAME as companyName
+        from BASIC_USER_NEW u
+        where u.POLICE_NO = #{policeNo} and u.PASSWORD = #{password}
+    </select>
+
+    <!-- 查询用户 -->
+    <select id="getUserByIdNumber" resultType="com.zksg.smartpolitical.usermgmt.entity.BasicUser"
+            parameterType="java.lang.String">
+        select
+        u.USER_NAME as userName, u.PERSON_ID as personId, u.ID_NUMBER as idNumber,
+        u.COMPANY_ID as companyId, u.DEPT_ID as unitId,
+        u.POLICE_NO as policeNo, u.PHONE as phone, u.DEPT_NAME as unitName, u.COMPANY_NAME as companyName
+        from BASIC_USER_NEW u
+        where UPPER(u.ID_NUMBER) = UPPER(#{idNumber})
+    </select>
+
+<!--    1-->
+    <select id="selectUserByIdNumber" resultType="com.zksg.smartpolitical.usermgmt.entity.BasicUser"
+            parameterType="java.lang.String">
+        select
+        u.USER_NAME as userName, u.PERSON_ID as personId, u.ID_NUMBER as idNumber,
+        u.COMPANY_ID as companyId, u.DEPT_ID as unitId,
+        u.POLICE_NO as policeNo, u.PHONE as phone, u.DEPT_NAME as unitName, u.COMPANY_NAME as companyName
+        from BASIC_USER_NEW u
+        where u.USER_NAME = #{userName} and u.ID_NUMBER = #{idNumber}
+    </select>
+
+    <!-- 查询用户列表 -->
+    <select id="selectUserList" resultType="com.zksg.smartpolitical.usermgmt.entity.BasicUser" >
+        select
+        u.USER_NAME as userName, u.PERSON_ID as personId, u.ID_NUMBER as idNumber,
+        u.COMPANY_ID as companyId, u.DEPT_ID as unitId,
+        u.POLICE_NO as policeNo, u.PHONE as phone, u.DEPT_NAME as unitName, u.COMPANY_NAME as companyName
+        from BASIC_USER_NEW u
+        where
+        u.DEPT_ID like CONCAT(#{dataId},'%')
+        <if test="userName != null and userName != ''">
+            and u.USER_NAME LIKE '%' || #{userName} || '%'
+        </if>
+        <if test="policeNo != null and policeNo != ''">
+            and u.POLICE_NO LIKE '%' || #{policeNo} || '%'
+        </if>
+        <if test="idNumber != null and idNumber != ''">
+            and u.ID_NUMBER LIKE '%' || #{idNumber} || '%'
+        </if>
+    </select>
+
+<!--    <if test="personId != '9999999999' and unitId == null ">
+        and u.DEPT_ID in (SELECT DEPT_ID FROM BASIC_USER_NEW WHERE PERSON_ID = #{personId})
+    </if>-->
+
+<!--    1-->
+    <!-- 更新用户信息 -->
+    <update id="updateUser" parameterType="com.zksg.smartpolitical.usermgmt.entity.BasicUser" >
+        update BASIC_USER_NEW
+        set PASSWORD = #{password}
+        where PERSON_ID = #{personId}
+    </update>
+
+    <!-- 根据角色id查询 -->
+    <select id="selectUserName" resultMap="BsUserMap" parameterType="java.lang.Integer">
+        select
+        u.USER_NAME,  u.PERSON_ID,  u.ID_NUMBER,  u.COMPANY_ID,  u.DEPT_ID, u.POLICE_NO
+        from BASIC_USER u left join USER_ROLE_KEY urk
+		on u.ID = urk.USER_ID and urk.STATE = 'A'
+		left join BS_ROLE r
+		on urk.ROLE_ID = r.ID and r.STATE = 'A'
+        where r.ID = #{roleId}
+    </select>
+
+    <select id="selectAllUser" resultType="com.zksg.smartpolitical.usermgmt.datasyncentity.User" >
+        select
+        u.ID as yhid, u.USER_NAME as xm, u.PERSON_ID as rybh, u.ID_NUMBER as sfzh,
+        u.POLICE_NO as jh, u.POLICE_NO as dlzh, u.PASSWORD as dlmm, c.PARENT_NAME as ssdwmc
+        from BASIC_USER u left join BS_COMPANY c
+        on u.UNIT_ID = c.COMPANY_ID
+        where u.STATE = 'A'
+    </select>
+
+
+<!-- 1 -->
+    <!-- 根据角色-部门的RO_ID查询对应部门下的人员 -->
+    <select id="selectBsRoleAndRoleOrgJoin" resultMap="BsUserMap" >
+        SELECT
+        <include refid="Base_Column_List"></include>
+        FROM BASIC_USER_NEW
+        WHERE UNIT_ID = #{unitId}
+    </select>
+
+
+<!-- 1 -->
+    <!-- 根据部门ID查询对应部门下的人员 -->
+    <select id="selectUserByUnitId" resultMap="BsUserMap" >
+        SELECT
+        a.PERSON_ID ,a.USER_NAME,a.COMPANY_ID,a.DEPT_NAME,b.AURONUM
+        FROM BASIC_USER_NEW a LEFT JOIN BASIC_USER_NEW_REL b ON a.PERSON_ID=b.PERSON_ID
+        WHERE DEPT_ID = #{unitId} order by b.AURONUM
+    </select>
+
+    <!-- 更新用户排序信息 -->
+    <update id="updateUserRel" parameterType="com.zksg.smartpolitical.usermgmt.entity.BasicUser" >
+        update BASIC_USER_NEW_REL
+        set AURONUM = #{auronum}
+        where PERSON_ID = #{personId}
+    </update>
+
+
+
+</mapper>

@@ -1,0 +1,1 @@
+package com.sugon.analysis.entity;import lombok.Data;/** * description 描述 *  根据领导身份证号查出来的民族分布实体类 * @author young * @time 16:29 */@Datapublic class NationMapPojo {    private String nationName;    private Integer nationNum;}

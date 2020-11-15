@@ -1,0 +1,1 @@
+package com.sugon.analysis.domain.data.query;import lombok.Data;/** * @author: create by huangxb * @version: v1.0 * @description: * @date:2019/12/4 */@Datapublic class RewardAndCount {    /**     * ½±Àø     */    private String award;    /**     * ÊýÁ¿     */    private int count;}

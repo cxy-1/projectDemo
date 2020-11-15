@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>南京公安政能量</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="keywords" content="南京智慧政工" />
+    <meta name="description" content="政工" /> 
+    <!-- <link rel="shortcut icon"  href="favicon.ico"/>   -->
+    <!-- <script src="./static/js/jquery3.3.1.js"></script> -->
+    <script src="./static/js/jquery-1.10.2.min.js"></script>
+    <script src="./static/js/timeline-min.js"></script>
+    <script src="./static/js/Convert_Pinyin.js"></script>
+    <!--数字证书-->
+    <!-- <script src="./static/js/kinggrid.min.js"></script>
+    <script src="./static/js/kinggrid.plus.min.js"></script>
+    <script src="./static/js/dialog-min.js"></script>
+    <script src="./static/js/signature.min.js"></script>
+    <script src="./static/js/signature.pc.min.js"></script>
+    <script src="./static/js/password.min.js"></script>
+    <script src="./static/js/signature_pad.min.js"></script>
+    <script src="./static/js/jquery.timer.dev.js"></script>
+    <script src="./static/js/jquery.qrcode.min.js"></script>
+    <script src="./static/js/qrcode.min.js"></script>
+    <script src="./static/js/jsQR.js"></script>
+    <script src="./static/js/search.js"></script>  -->
+    <script src="./static/js/tablecel.js"></script>
+    
+    <!--数图  -->
+     <!-- <script src="./static/js/interface.js"></script>  -->
+     <style>
+         html,body{
+             width: 100%;
+             height: 100%;
+         }
+         #noChrome{
+             width: 100%;
+             height: 100%;
+             background: url('static/img/manage/noChrome1.jpg') no-repeat center;
+             background-size:100% 100%;
+             position: relative;
+             overflow: hidden;
+         }
+         .noInfo{
+             width: 50%;
+             height: 64%;
+             background: url('static/img/manage/noChrome2.png') no-repeat center;
+             background-size:100% 100%;
+             position: relative;
+             margin:5% auto;
+             border:1px solid transparent;
+         }
+         .infoDetail{
+             width:100%;
+             text-align: center;
+             position: relative;
+             margin-top: 25%;
+         }
+         .infoDetail>p{
+             font-size:20px;
+             font-family:'PingFangSC-Semibold';
+             color:#1890FF;
+             line-height:36px;
+         }
+         .loadBtn{
+             width: 120px;
+             height:32px;
+             font-family:'PingFangSC-Medium';
+             border:none;
+            font-size: 18px;
+            color: #FFFFFF;
+            cursor: pointer;
+            margin-top:10px;
+             background: url('static/img/manage/noChrome3.png') no-repeat center;
+             background-size:100% 100%;
+         }
+    </style>
+</head>
+<body>
+    <div id="noChrome">
+        <div class="noInfo">
+            <div class="infoDetail">
+                <p>您的浏览器中需要安装一些控件和软件</p>
+                <p>我们为您提供了一键式安装工具&emsp;&emsp;&emsp;&emsp;&emsp;</p>
+                <button class="loadBtn">请点击下载</button>
+            </div>
+        </div>
+    </div>
+    <div class="mainApp">
+        <div id="app"></div>
+    </div>
+<script>
+    // var _hmt = _hmt || [];
+    // 判断浏览器版本和类型
+    (function() {
+        $('.loadBtn').click(function(){
+            window.location.href="http://10.33.72.236:9999/download/browser.zip"; 
+            // window.open('http://192.168.8.147:8080/download/chrome_73.0.3683.86.exe')
+        });
+        // var hm = document.createElement("script");
+        // hm.src = "https://hm.baidu.com/hm.js?b455f7e1c6ca6e239edaccf0e6aa11fb";
+        // var s = document.getElementsByTagName("script")[0]; 
+        // s.parentNode.insertBefore(hm, s);
+        var agent = navigator.userAgent.toLowerCase() ;
+        var regStr_ie = /msie [\d.]+;/gi ;
+        var regStr_ff = /firefox\/[\d.]+/gi
+        var regStr_chrome = /chrome\/[\d.]+/gi ;
+        var regStr_saf = /safari\/[\d.]+/gi ;
+        //IE11以下
+        if(agent.indexOf("msie") > 0){
+            $('.mainApp').hide();
+            $('#noChrome').show();
+            return agent.match(regStr_ie) ;
+        }
+        //IE11版本中不包括MSIE字段
+        if(agent.indexOf("trident") > 0&&agent.indexOf("rv") > 0){
+            console.log(777)
+            $('.mainApp').hide();
+            $('#noChrome').show();
+            return "IE " + agent.match(/rv:(\d+\.\d+)/) [1];
+        }
+        //firefox
+        if(agent.indexOf("firefox") > 0){
+            console.log(555)
+            var edition=agent.match(regStr_ff).toString();
+            // if(parseInt(edition.substr(7,2))<60){//版本小于60
+            //     $('.mainApp').hide();
+            //     $('#noChrome').show();
+            // }else{
+                $('.mainApp').show();
+                $('#noChrome').hide();
+            // }
+            return agent.match(regStr_ff);
+        }
+        //Chrome
+        if(agent.indexOf("chrome") > 0){
+            var edition=agent.match(regStr_chrome).toString();
+            // if(parseInt(edition.substr(7,2))<60){//版本小于60
+            //     $(".mainApp").hide();
+            //     $("#noChrome").show();
+            // }else{
+                $('.mainApp').show();
+                $('#noChrome').hide();
+            // }
+            return agent.match(regStr_chrome) ;//chrome/67.0.3396.99
+        }
+        //Safari
+        if(agent.indexOf("safari") > 0 && agent.indexOf("chrome") < 0){
+            console.log(888)
+            $('.mainApp').hide();
+            $('#noChrome').show();
+            return agent.match(regStr_saf) ;
+        }
+    })();
+</script>
+
+</body>
+</html>

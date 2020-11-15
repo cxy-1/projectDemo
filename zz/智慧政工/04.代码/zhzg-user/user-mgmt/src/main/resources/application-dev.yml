@@ -1,0 +1,17 @@
+spring:
+  redis:
+    host: 192.168.8.11
+    port: 6379
+  datasource:
+    url: jdbc:oracle:thin:@192.168.8.11:1521:orcl
+    username: zhzg
+    password: zhzg_2019
+    driverClassName: oracle.jdbc.driver.OracleDriver
+  data:
+    mongodb:
+      uri: mongodb://192.168.8.11:27017/zhzg
+
+#eureka集群高可用，填写2个eureka的地址
+cluster:
+  eureka:
+    ip: localhost

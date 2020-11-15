@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: user-mgmt
+  profiles:
+    active: test
+
+#server:
+#  tomcat:
+#    basedir: /data/ZHZG/${spring.application.name}
+
+#注册eureka的密码
+security:
+  user:
+    name: zhzg
+    password: zhzg123
+
+eureka:
+  client:
+    register-with-eureka: true
+
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: http://${security.user.name}:${security.user.password}@${cluster.eureka.ip}:11000/eureka/
+
+

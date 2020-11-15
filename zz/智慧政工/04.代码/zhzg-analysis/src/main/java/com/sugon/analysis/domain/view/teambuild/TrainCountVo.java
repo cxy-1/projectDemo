@@ -1,0 +1,1 @@
+package com.sugon.analysis.domain.view.teambuild;import lombok.Data;/** * @program: analysis->TrainCountVo * @description: * @author: gaowh * @create: 2019-11-01 11:38 **/@Datapublic class TrainCountVo {    /**     * 年份     */    private String year;    /**     * 次数     */    private String count;}

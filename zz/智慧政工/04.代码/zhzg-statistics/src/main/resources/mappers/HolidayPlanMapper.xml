@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sugon.zhzg.statistics.repository.oracle.HolidayPlanDao">
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        <selectKey keyProperty="id" resultType="java.lang.Integer" order="AFTER">
+            select HOLIDAY_PLAN_SEQ.CURRVAL as id from dual
+        </selectKey>
+        INSERT INTO HOLIDAY_PLAN(ID, PERSON_ID, HOLIDAY_PLAN_DAYS, H_YEAR, H_MONTH, TYPE,APPLICAT_TYPE,LAST_TIME)
+        select HOLIDAY_PLAN_SEQ.NEXTVAL, a.personId, a.holidayPlanDays, a.year,
+        a.month, a.type ,a.applicatType ,a.lastTime from
+        (<foreach collection="holidayPlanList" index="" item="item" separator="union all">
+        select
+        #{item.personId} personId,
+        #{item.holidayPlanDays} holidayPlanDays,
+        #{item.year} year,
+        #{item.month} month,
+        #{item.type} type,
+        #{item.applicatType} applicatType,
+        #{item.lastTime} lastTime
+        from dual
+    </foreach>) a
+    </insert>
+
+    <delete id="delHolidayPlan" >
+        delete from HOLIDAY_PLAN
+        where PERSON_ID = #{personId} and H_YEAR = #{year}
+    </delete>
+
+    <select id="selectHolidayPlanByYearAndPersonId" resultType="com.sugon.zhzg.statistics.domain.data.object.oracle.HolidayPlan">
+        select ID as id,PERSON_ID as personId,HOLIDAY_PLAN_DAYS as holidayPlanDays,H_YEAR as year,
+         H_MONTH as month, TYPE as type, APPLICAT_TYPE as applicatType,LAST_TIME as lastTime
+         from HOLIDAY_PLAN where PERSON_ID = #{personId} and H_YEAR = #{year}
+    </select>
+
+    <select id="selectUserPlanList" resultType="com.sugon.zhzg.statistics.domain.data.query.HolidayPlan.HolidayListModal">
+        select SUM(HOLIDAY_PLAN_DAYS) as totalDays,H_YEAR as year,LAST_TIME as lastTime from HOLIDAY_PLAN
+        where PERSON_ID = #{personId}
+        <if test="year != null and year != ''">
+            AND H_YEAR LIKE concat(concat('%',#{year}),'%')
+        </if>
+        group by H_YEAR,LAST_TIME
+    </select>
+    
+    <select id="selectTotalPlanList" resultType="com.sugon.zhzg.statistics.domain.data.query.HolidayPlan.HolidayTotalListModel">
+        select c.PERSON_ID as personId ,c.USER_NAME as name,a.year as year,c.POLICE_NO as policeNo,nvl(c.DEPT_ID,c.COMPANY_ID) as deptId,a.totalHolidays as totalHolidays,a.lastTime as lastTime,
+               b.JANUARY,b.FEBRUARY,b.MARCH,b.APRIL,b.MAY,b.JUNE,b.JULY,b.AUGUST,b.SEPTEMPER,b.OCTOBER,b.NOVEMBER,b.DECEMBER
+        from
+            (select SUM(HOLIDAY_PLAN_DAYS) as totalHolidays,PERSON_ID as personId,H_YEAR as year,LAST_TIME as lastTime from HOLIDAY_PLAN group by H_YEAR, LAST_TIME ,PERSON_ID) a left join
+            (select * from (select PERSON_ID,H_YEAR,
+                    sum(decode(H_MONTH,1,HOLIDAY_PLAN_DAYS,null)) as January,
+                    sum(decode(H_MONTH,2,HOLIDAY_PLAN_DAYS,null)) as February,
+                    sum(decode(H_MONTH,3,HOLIDAY_PLAN_DAYS,null)) as March,
+                    sum(decode(H_MONTH,4,HOLIDAY_PLAN_DAYS,null)) as April,
+                    sum(decode(H_MONTH,5,HOLIDAY_PLAN_DAYS,null)) as May,
+                    sum(decode(H_MONTH,6,HOLIDAY_PLAN_DAYS,null)) as June,
+                    sum(decode(H_MONTH,7,HOLIDAY_PLAN_DAYS,null)) as July,
+                    sum(decode(H_MONTH,8,HOLIDAY_PLAN_DAYS,null)) as August,
+                    sum(decode(H_MONTH,9,HOLIDAY_PLAN_DAYS,null)) as Septemper,
+                    sum(decode(H_MONTH,10,HOLIDAY_PLAN_DAYS,null)) as October,
+                    sum(decode(H_MONTH,11,HOLIDAY_PLAN_DAYS,null)) as November,
+                    sum(decode(H_MONTH,12,HOLIDAY_PLAN_DAYS,null)) as December
+            from HOLIDAY_PLAN group by PERSON_ID,H_YEAR ) order by H_YEAR desc) b on a.personId = b.PERSON_ID and a.year = b.H_YEAR
+        left join  BASIC_USER_NEW c on a.personId = c.PERSON_ID
+        where  nvl(c.DEPT_ID,c.COMPANY_ID) LIKE concat(#{dataId},'%')
+        <if test="name != null and name != ''">
+            AND c.USER_NAME LIKE concat(concat('%',#{name}),'%')
+        </if>
+        <if test="policeNo != null and policeNo != ''">
+            AND c.POLICE_NO LIKE concat(concat('%',#{policeNo}),'%')
+        </if>
+        <if test="year != null and year != ''">
+            AND a.year LIKE concat(concat('%',#{year}),'%')
+        </if>
+    </select>
+
+</mapper>

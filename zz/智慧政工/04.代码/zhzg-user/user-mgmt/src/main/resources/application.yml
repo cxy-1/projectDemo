@@ -1,0 +1,64 @@
+server:
+  port: 8088
+
+
+eureka:
+  client:
+    healthcheck:
+      enabled: false
+  instance:
+    leaseRenewalIntervalInSeconds: 5
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.ipAddress}:${server.port}
+
+spring:
+  session:
+    store-type: redis
+    redis:
+      namespace: smartPolitical
+
+mybatis:
+  mapper-locations: classpath:mappers/*.xml
+  type-aliases-package: com.zksg.smartpolitical.usermgmt.entity
+
+pagehelper:
+  helperDialect: oracle
+  reasonable: true
+  supportMethodsArguments: true
+  params:
+    count: countSql
+
+#设置feign开启fallback
+feign:
+  hystrix:
+    enabled: true
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          strategy: SEMAPHORE
+          thread:
+            timeoutInMilliseconds: 60000
+          semaphore.maxConcurrentRequests: 1000
+  stream:
+    maxConcurrentConnections: 30
+  config:
+    stream:
+      maxConcurrentConnections: 30
+  fallback.isolation.semaphore.maxConcurrentRequests: 1000
+
+system:
+  #用户默认密码
+  password: 111111
+  #民警默认角色id
+  roleId: 2
+  host: 10.33.66.86
+  port: 9999
+  #流程配置菜单id
+  permId: 1360000

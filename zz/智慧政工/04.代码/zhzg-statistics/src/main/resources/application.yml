@@ -1,0 +1,49 @@
+server:
+  port: 8188
+
+spring:
+  session:
+    store-type: redis
+    redis:
+      namespace: smartPolitical
+  jackson:
+      date-format: yyyy-MM-dd HH:mm:ss
+      time-zone: GMT+8
+#  main:
+#    allow-bean-definition-overriding = true
+mybatis:
+  mapper-locations: classpath:mappers/*.xml
+
+eureka:
+  client:
+    healthcheck:
+      enabled: false
+  instance:
+    leaseRenewalIntervalInSeconds: 5
+    prefer-ip-address: true
+    instance-id: ${spring.cloud.client.ipAddress}:${server.port}
+
+#设置feign开启fallback
+feign:
+  hystrix:
+    enabled: true
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 5000
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          strategy: SEMAPHORE
+          thread:
+            timeoutInMilliseconds: 60000
+          semaphore.maxConcurrentRequests: 1000
+  stream:
+    maxConcurrentConnections: 30
+  config:
+    stream:
+      maxConcurrentConnections: 30
+  fallback.isolation.semaphore.maxConcurrentRequests: 1000

@@ -1,0 +1,1 @@
+package com.sugon.analysis.domain.data.query;import lombok.Data;/** * @author: create by huangxb * @version: v1.0 * @description: * @date:2019/10/10 */@Datapublic class TPersonCountAndAge {    /**     * 获取人数     * @return     */    private int num;    /**     * 获取年龄综合     * @return     */    private String ageSum;}

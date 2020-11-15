@@ -1,0 +1,77 @@
+{
+    "code": 200,
+    "data": [
+        {
+            "type": "folder",
+            "name": "一级文件夹",
+            "path": "demo.excel",   
+            "content": 
+            [
+                {
+                    "type": "folder",
+                    "name": "二级文件夹",
+                    "content": 
+                    [
+                        {
+                            "type": "excel",
+                            "name": "三级Excel文件",
+                            "path": "demo.excel"                            
+                        },
+                        {
+                            "type": "word",
+                            "name": "三级Word文件",
+                            "path": "demo.word"                             
+                        }
+                    ]
+                },
+                {
+                    "type": "excel",
+                    "name": "三级Excel文件",
+                    "path": "demo.excel"                             
+                },
+                {
+                    "type": "word",
+                    "name": "三级Word文件",                            
+                    "path": "demo.word" 
+                }
+            ]
+        },
+        {
+            "type": "excel",
+            "name": "三级Excel文件",
+            "path": "demo.excel"                             
+        },
+        {
+            "type": "word",
+            "name": "三级Word文件",
+            "path": "demo.word"                             
+        },
+        {
+            "type": "folder",
+            "name": "一级文件夹",
+            "path": "demo.excel",   
+            "content": [
+                {
+                    "type": "excel",
+                    "name": "三级Excel文件",
+                    "path": "demo.excel"                             
+                },
+                {
+                    "type": "word",
+                    "name": "三级Word文件",
+                    "path": "demo.word"                             
+                }
+            ]
+        },
+        {
+            "type": "excel",
+            "name": "三级Excel文件",
+            "path": "demo.excel"                             
+        },
+        {
+            "type": "word",
+            "name": "三级Word文件",
+            "path": "demo.word"                             
+        }
+    ]
+}

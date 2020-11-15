@@ -1,0 +1,1 @@
+package com.sugon.analysis.domain.view.return2view;import lombok.Data;import java.util.List;import java.util.Map;/** * @author: create by huangxb * @version: v1.0 * @description: * @date:2019/12/9 */@Datapublic class DutyAndYearVo {    /**     * 职务数据     */    Map<String,Map<String,String>> dutyMap;    /**     * 职务的列     */    List<String> dutyColumn;}

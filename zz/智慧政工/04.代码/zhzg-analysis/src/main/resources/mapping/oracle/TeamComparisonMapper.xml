@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sugon.analysis.mappper.oracle.TeamComparisonMapper" >
+    <resultMap id="trainCountResult" type="com.sugon.analysis.domain.view.teambuild.TrainCountVo">
+        <result property="year" column="YEAR"/>
+        <result property="count" column="COUNT"/>
+    </resultMap>
+
+    <resultMap id="trainDetailResult" type="com.sugon.analysis.domain.view.teambuild.SelectDetailTrainVo">
+        <result property="personName" column="PERSON_NAME"/>
+        <result property="policeNo" column="POLICE_NO"/>
+        <result property="unitName" column="UNITNAME"/>
+        <result property="trainingStartTime" column="startyear"/>
+        <result property="trainingEndTime" column="endyear"/>
+        <result property="trainCourse" column="TRAINING_COURSE"/>
+        <result property="trainResult" column="TRAINING_RESULT"/>
+    </resultMap>
+
+    <resultMap id="honorDetailResult" type="com.sugon.analysis.domain.view.teambuild.SelectHonorDetailVo">
+        <result property="honorName" column="HONOURNAME"/>
+        <result property="dept" column="DEPTNAME"/>
+        <result property="hdept" column="UNITNAME"/>
+        <result property="hdate" column="HDATE"/>
+
+    </resultMap>
+
+
+    <resultMap id="personHonorDetailResult" type="com.sugon.analysis.domain.view.teambuild.SelectPersonHonorDetailVo">
+        <result property="personName" column="PERSON_NAME"/>
+        <result property="policeNo" column="POLICE_NO"/>
+        <result property="unitName" column="UNITNAME"/>
+        <result property="awardName" column="AWARD_NAME"/>
+        <result property="approvalDate" column="APPROVAL_DATE"/>
+        <result property="awardWinningUnit" column="AWARD_WINNING_UNIT"/>
+    </resultMap>
+
+    <resultMap id="breakRuleCaseResult" type="com.sugon.analysis.domain.view.EchartsVo">
+        <result property="name" column="CFJDSJ"/>
+        <result property="value" column="COUNT"/>
+    </resultMap>
+
+    <resultMap id="breakRuleDetailResult" type="com.sugon.analysis.domain.view.teambuild.SelectBreakRuleDetailPojo">
+        <result property="xm" column="XM"/>
+        <result property="dw" column="DW"/>
+        <result property="policeNo" column="POLICE_NO"/>
+        <result property="sfzh" column="SFZH"/>
+        <result property="cfjdsj" column="CFJDSJ"/>
+        <result property="cfdqsj" column="CFDQSJ"/>
+        <result property="wtxz" column="WTXZ"/>
+        <result property="lasj" column="lasj"/>
+    </resultMap>
+    <!-- 根据身份证号查询教育培训按并年份区间统计 -->
+    <select id="findTrainCountByYear" resultMap="trainCountResult">
+        SELECT YEAR, COUNT(*) COUNT FROM (
+        SELECT TO_CHAR(T1.TRAINING_START_TIME,'YYYY') YEAR FROM
+        (SELECT * FROM NJGAZNL.T_TRAINING_HISTORY WHERE DELSTATUS = '0'
+        AND IDNO IN
+        <foreach collection="idNoList" index="index" item="item" open="(" separator="," close=")">
+            <if test="(index % 1000) == 999">
+                NULL) OR IDNO IN (
+            </if>
+            #{item}
+        </foreach>
+        ) T1
+        LEFT JOIN (SELECT * FROM NJGAZNL.T_PERSON WHERE DELSTATUS = '0' AND PCLASSID = '00001') T2 ON T1.IDNO = T2.IDNO
+        INNER JOIN NJGAZNL.SYS_USER T3 ON T3.IDENTITYNUM = T2.IDNO
+        INNER JOIN NJGAZNL.SYS_DEPT   T4 ON T3.DEPTID = T4. ID
+        WHERE T1.IDNO IS NOT NULL AND T3.DELSTATUS = 0
+        AND T3.POST_TYPE = '0')
+        WHERE 1 = 1
+        <if test="teamSelect.startYear != ''">
+            AND YEAR &gt;= #{teamSelect.startYear}
+        </if>
+        <if test="teamSelect.endYear != ''">
+            AND YEAR &lt;= #{teamSelect.endYear}
+        </if>
+        GROUP BY YEAR ORDER BY YEAR
+    </select>
+
+
+    <!-- 根据身份证号查询教育培训按并年份区间统计 详情-->
+    <select id="findTrainDetailByYear" resultMap="trainDetailResult">
+        SELECT PERSON_NAME,POLICE_NO,office_simple_name as UNITNAME,TRAINING_COURSE,TRAINING_RESULT, TO_CHAR(T1.TRAINING_START_TIME,'YYYY') as startyear,TO_CHAR(T1.TRAINING_END_TIME,'YYYY') as endyear FROM
+        (SELECT * FROM NJGAZNL.T_TRAINING_HISTORY WHERE DELSTATUS = '0'
+        AND IDNO IN
+        <foreach collection="idNoList" index="index" item="item" open="(" separator="," close=")">
+            <if test="(index % 1000) == 999">
+                NULL) OR IDNO IN (
+            </if>
+            #{item}
+        </foreach>
+        ) T1
+        LEFT JOIN (SELECT * FROM NJGAZNL.T_PERSON WHERE DELSTATUS = '0' AND PCLASSID = '00001') T2 ON T1.IDNO = T2.IDNO
+        INNER JOIN NJGAZNL.SYS_USER T3 ON T3.IDENTITYNUM = T2.IDNO
+        INNER JOIN NJGAZNL.SYS_DEPT   T4 ON T3.DEPTID = T4. ID
+        WHERE T1.IDNO IS NOT NULL AND T3.DELSTATUS = 0
+        AND T3.POST_TYPE = '0'
+        AND TO_CHAR(T1.TRAINING_START_TIME,'YYYY') &gt;=#{detailParamPojo.startYear}
+        AND TO_CHAR(T1.TRAINING_END_TIME,'YYYY') &lt;=#{detailParamPojo.endYear}
+        ORDER BY startyear
+    </select>
+
+
+
+    <!-- 根据单位名称查询集体荣誉并按年份区间统计 -->
+    <select id="findOrgHonorCountByYear" resultMap="trainCountResult" >
+        SELECT HDATE AS YEAR ,COUNT(*) AS COUNT FROM (
+        SELECT STDDEPTNAME AS UNITNAME, STDDEPTNAME || BRANCHNAME AS DEPTNAME, HONOURNAME, SUBSTR(TO_CHAR(HDATE),0,4) HDATE FROM NJGAZNL.T_ORG_HONOR WHERE HONOURNAME IN ('全国优秀公安局', '全国优秀公安基层单位','全省优秀公安局','集体一等功','集体二等功','集体三等功','集体嘉奖','通报表扬','荣誉称号','先进集体')
+        )
+        WHERE (UNITNAME LIKE #{name} OR DEPTNAME LIKE #{name})
+        AND HDATE IS NOT NULL
+        <if test="teamSelect.startYear != ''">
+            AND HDATE &gt;= #{teamSelect.startYear}
+        </if>
+        <if test="teamSelect.endYear != ''">
+            AND HDATE &lt;= #{teamSelect.endYear}
+        </if>
+        GROUP BY HDATE
+        ORDER BY HDATE
+    </select>
+
+
+    <!-- 根据单位名称查询集体荣誉并按年份区间统计 详情-->
+    <select id="findOrgHonorDetailByYear" resultMap="honorDetailResult" >
+        SELECT * FROM (
+        SELECT STDDEPTNAME AS UNITNAME, STDDEPTNAME || BRANCHNAME AS DEPTNAME, HONOURNAME, HDATE FROM NJGAZNL.T_ORG_HONOR WHERE HONOURNAME IN ('全国优秀公安局', '全国优秀公安基层单位','全省优秀公安局','集体一等功','集体二等功','集体三等功','集体嘉奖','通报表扬','荣誉称号','先进集体')
+        )
+        WHERE (UNITNAME LIKE #{name} OR DEPTNAME LIKE #{name})
+        AND HDATE IS NOT NULL
+        <if test="detailParamPojo.startYear != ''">
+            and SUBSTR(TO_CHAR(HDATE),0,4)&gt;=#{detailParamPojo.startYear}
+        </if>
+        <if test="detailParamPojo.endYear != ''">
+            and SUBSTR(TO_CHAR(HDATE),0,4)&lt;=#{detailParamPojo.endYear}
+        </if>
+
+        order by hdate
+    </select>
+
+    <!-- 根据身份证号查询个人荣誉数量并按年份区间统计 -->
+    <select id="findPersonHonorCountByIdNoAndYear" resultMap="trainCountResult">
+        SELECT APPROVAL_DATE AS YEAR ,COUNT(*) AS COUNT FROM
+        (SELECT SUBSTR(TO_CHAR(APPROVAL_DATE,'YYYY-MM-DD'),0,4) APPROVAL_DATE,DELSTATUS,APPROVAL_SORT,IDNO FROM NJGAZNL.T_COMMEND_INFO
+        WHERE AWARD_NAME LIKE '%一等功%' OR AWARD_NAME LIKE '%二等功%' OR AWARD_NAME LIKE '%三等功%' OR
+        AWARD_NAME IN ('革命烈士','全国公安系统一级英雄模范','全国公安系统二级英雄模范','全国劳模',
+        '全国特级优秀人民警察','全国优秀人民警察','全国三八红旗手','省劳模','省三八红旗手','省五四青年奖章','市劳动模范','市三八红旗手','市五四青年奖章'))
+        WHERE DELSTATUS = '0'
+        AND IDNO IN
+        <foreach collection="idNoList" index="index" item="item" open="(" separator="," close=")">
+            <if test="(index % 1000) == 999">
+                NULL) OR IDNO IN (
+            </if>
+            #{item}
+        </foreach>
+        AND IDNO IS NOT NULL
+        <if test="teamSelect.startYear != ''">
+            AND APPROVAL_DATE &gt;= #{teamSelect.startYear}
+        </if>
+        <if test="teamSelect.endYear != ''">
+            AND APPROVAL_DATE &lt;= #{teamSelect.endYear}
+        </if>
+        GROUP BY APPROVAL_DATE
+        ORDER BY APPROVAL_DATE
+    </select>
+
+
+    <!-- 根据身份证号查询个人荣誉数量并按年份区间统计 详情-->
+    <select id="findPersonHonorDetailByIdNoAndYear" resultMap="personHonorDetailResult">
+        select person_name,POLICE_NO, AWARD_NAME,AWARD_WINNING_UNIT,APPROVAL_DATE,idno from
+        (select t1.DELSTATUS as DELSTATUS, AWARD_NAME,AWARD_WINNING_UNIT,APPROVAL_DATE,APPROVAL_SORT,t1.IDNO as idno,person_name,POLICE_NO from
+        (SELECT AWARD_NAME,AWARD_WINNING_UNIT, SUBSTR(TO_CHAR(APPROVAL_DATE,'YYYY-MM-DD'),0,4) APPROVAL_DATE,DELSTATUS,APPROVAL_SORT,IDNO FROM NJGAZNL.T_COMMEND_INFO
+        WHERE AWARD_NAME LIKE '%一等功%' OR AWARD_NAME LIKE '%二等功%' OR AWARD_NAME LIKE '%三等功%' OR
+        AWARD_NAME IN ('革命烈士','全国公安系统一级英雄模范','全国公安系统二级英雄模范','全国劳模',
+        '全国特级优秀人民警察','全国优秀人民警察','全国三八红旗手','省劳模','省三八红旗手','省五四青年奖章','市劳动模范','市三八红旗手','市五四青年奖章'))t1
+
+        left join
+
+        (select idno,person_name,ORG_SIMPLE_NAME,POLICE_NO from NJGAZNL.T_PERSON)t2
+        on t1.idno=t2.idno
+        )k
+        where
+        k.DELSTATUS = '0'
+
+        AND k.IDNO IN
+        <foreach collection="idNoList" index="index" item="item" open="(" separator="," close=")">
+            <if test="(index % 1000) == 999">
+                NULL) OR IDNO IN (
+            </if>
+            #{item}
+        </foreach>
+        AND k.IDNO IS NOT NULL
+        <if test="detailParamPojo.startYear != ''">
+            and APPROVAL_DATE &gt;=#{detailParamPojo.startYear}
+        </if>
+        <if test="detailParamPojo.endYear != ''">
+            and APPROVAL_DATE &lt;=#{detailParamPojo.endYear}
+        </if>
+
+        ORDER BY k.APPROVAL_DATE
+    </select>
+
+    <!-- 根据单位名称查询纪检案件并按年份区间统计 -->
+<!--    <select id="findBreakRuleCaseCountByNameAndYear" resultMap="breakRuleCaseResult" >-->
+<!--        SELECT LTRIM(LASJ, '0') LASJ, COUNT FROM (-->
+<!--        SELECT SUBSTR(LASJ, 5, 6) LASJ, COUNT(LASJ) COUNT FROM-->
+<!--        (-->
+<!--        SELECT * FROM (SELECT XM, DW, SFZH, SUBSTR(LASJ, 0, 6) LASJ, WTXZ FROM NJGAZNL.M_JLSC_AJJB)-->
+<!--        WHERE DW LIKE #{name}-->
+<!--        <if test="teamSelect.year != ''">-->
+<!--            AND LASJ LIKE #{teamSelect.year}-->
+<!--        </if>-->
+<!--        )-->
+<!--        GROUP BY LASJ ORDER BY LASJ-->
+<!--        )-->
+<!--    </select>-->
+
+    <select id="findBreakRuleCaseCountByNameAndYear" resultMap="trainCountResult" >
+         SELECT SUBSTR(CFJDSJ, 0, 4) as YEAR ,count(*) AS COUNT FROM NJGAZNL.M_JLSC_AJJB
+         WHERE DW LIKE  #{name} AND CFJDSJ IS NOT NULL
+        <if test="teamSelect.startYear != ''">
+            AND to_date(SUBSTR(CFJDSJ, 0, 4),'yyyy') &gt;= to_date(#{teamSelect.startYear},'yyyy')
+        </if>
+        <if test="teamSelect.endYear != ''">
+            AND to_date(SUBSTR(CFJDSJ, 0, 4),'yyyy') &lt;= to_date(#{teamSelect.endYear},'yyyy')
+        </if>
+         GROUP BY SUBSTR(CFJDSJ, 0, 4)
+         ORDER BY YEAR
+    </select>
+
+    <select id="findBreakRuleCaseCountByNameAndYearDetail" resultMap="breakRuleDetailResult" >
+        select XM,DW,POLICE_NO,SFZH,CFJDSJ,CFDQSJ,WTXZ,lasj from
+        (select XM,DW,SFZH,CFJDSJ,CFDQSJ,WTXZ,lasj from NJGAZNL.M_JLSC_AJJB where  CFJDSJ IS NOT NULL)t1
+        left join
+        (select idno,police_no from NJGAZNL.T_PERSON)t2
+        on t1.sfzh=t2.idno
+        where
+        dw like #{name}
+        and to_date(SUBSTR(CFJDSJ, 0, 4),'yyyy') &gt;= to_date(#{detailParamPojo.startYear},'yyyy')
+        and to_date(SUBSTR(CFJDSJ, 0, 4),'yyyy') &lt;= to_date(#{detailParamPojo.endYear},'yyyy')
+        order by to_date(CFJDSJ,'yyyy-MM-dd') desc
+    </select>
+
+</mapper>

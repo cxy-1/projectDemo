@@ -1,0 +1,1 @@
+package com.sugon.analysis.enums;/** * @author liuwei */public enum TeamType {    /**     * 分局     */    FJ("分局"),    /**     * 部门     */    BM("部门");    private String type;    TeamType(String type) {        this.type = type;    }    public String getType() {        return type;    }    public void setType(String type) {        this.type = type;    }}

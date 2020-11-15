@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zksg.smartpolitical.usermgmt.dao.qt.SysDeptMapper" >
+    <resultMap id="SysDeptMap" type="com.zksg.smartpolitical.usermgmt.entity.qtview.SysDeptDo">
+        <result column="ID" property="id"></result>
+        <result column="UNITCODE" property="unitId"></result>
+        <result column="DEPTLEVEL" property="deptLevel"></result>
+        <result column="DEPTLEADERS" property="deptLeaders"></result>
+        <result column="DELSTATUS" property="delStatus"></result>
+        <result column="SORTINDEX" property="sortIndex"></result>
+        <result column="SEARCHCODE" property="searchCode"></result>
+        <result column="PERMSTRING" property="permString"></result>
+        <result column="SIMPLECHINANAME" property="simpleName"></result>
+        <result column="CHINANAME" property="unitName"></result>
+        <result column="PARENTID" property="parentId"></result>
+        <result column="UNITID" property="companyId"></result>
+        <result column="FAXPHONE" property="faxPhone"></result>
+        <result column="PHONETIC" property="phoneTic"></result>
+        <result column="CONTACTPHONE" property="contactPhone"></result>
+    </resultMap>
+
+    <!-- 根据unitId查询Company -->
+    <select id="selectDeptByUnitId" resultMap="SysDeptMap" >
+        SELECT *
+        FROM SYS_DEPT
+        WHERE UNITCODE = #{unitId} AND CHINANAME NOT LIKE '%测试%'
+    </select>
+
+    <!-- 查询下级单位名称 -->
+    <select id="selectChildDeptList" resultMap="SysDeptMap">
+        SELECT
+        ID, CHINANAME, UNITCODE, PARENTID
+        FROM SYS_DEPT
+        WHERE PARENTID
+        IN
+        (SELECT ID FROM SYS_DEPT WHERE UNITCODE = #{unitId}) AND CHINANAME NOT LIKE '%测试%'
+    </select>
+
+</mapper>

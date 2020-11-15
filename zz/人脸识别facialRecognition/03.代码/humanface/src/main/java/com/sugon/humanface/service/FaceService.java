@@ -1,0 +1,1 @@
+package com.sugon.humanface.service;public interface FaceService {    /**     * 根据工号获取人员信息     * @param no     * @return     */    public String getUserInfo(String no);    /**     * 获取系统已经人脸识别的人数     * @return     */    public Integer getFaceCount();}

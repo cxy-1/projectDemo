@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zksg.smartpolitical.usermgmt.dao.BsPermissionMapper" >
+  <resultMap id="BsPermissionMap" type="com.zksg.smartpolitical.usermgmt.entity.BsPermission">
+    <result column="ID" property="id"></result>
+    <result column="TITLE" property="title"></result>
+    <result column="P_INDEX" property="index"></result>
+    <result column="P_CODE" property="code"></result>
+    <result column="ICON" property="icon"></result>
+    <result column="PARENT_ID" property="parentId"></result>
+    <result column="LINKTO" property="linkTo"></result>
+    <result column="LINKS" property="links"></result>
+    <result column="DEPTH" property="depth"></result>
+    <result column="NEW_ICON" property="newIcon"></result>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    distinct ID, TITLE, P_INDEX, P_CODE, ICON, PARENT_ID, LINKTO, LINKS, DEPTH, NEW_ICON
+  </sql>
+
+  <!-- 查询菜单 -->
+  <select id="selectParentList" resultMap="BsPermissionMap" >
+      SELECT
+      <include refid="Base_Column_List" />
+      FROM BS_PERMISSION
+      CONNECT BY PRIOR ID = PARENT_ID start WITH ID in
+      <foreach collection="permissionList" index="index" item="permId" open="(" separator="," close=")">
+        #{permId}
+      </foreach>
+      order by ID
+  </select>
+
+<!--    1-->
+  <!-- 查询菜单列表 -->
+  <select id="selectPermissionList" resultMap="BsPermissionMap" parameterType="java.lang.String">
+    select
+    <include refid="Base_Column_List" />
+    from BS_PERMISSION p left join ROLE_PERMISSION_KEY_NEW rpk
+    on p.ID = rpk.PERM_ID and rpk.STATE = 'A'
+    left join USER_ROLE_NEW ur
+    on rpk.ROLE_ID = ur.ROLE_ID and ur.STATE = 'A'
+    where ur.PERSON_ID = #{personId}
+    order by p.ID
+  </select>
+
+<!--    1-->
+    <select id="selectPermByRoleId" resultMap="BsPermissionMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List" />
+        from BS_PERMISSION p left join ROLE_PERMISSION_KEY_NEW rpk
+        on p.ID = rpk.PERM_ID and rpk.STATE = 'A'
+        where rpk.ROLE_ID = #{roleId}
+        order by p.ID
+    </select>
+
+<!--    1-->
+  <!-- 查询菜单编码 -->
+  <select id="findPermissionList" resultType="java.lang.String" parameterType="java.util.List">
+    select
+    P_CODE
+    from BS_PERMISSION
+    where ID IN
+    <foreach collection="permissionList" index="index" item="permId" open="(" separator="," close=")">
+      #{permId}
+    </foreach>
+  </select>
+
+  <!-- 根据角色id查询 -->
+  <select id="selectPermName" resultMap="BsPermissionMap" parameterType="java.lang.Integer">
+        select
+        distinct p.ID, p.TITLE, p.P_INDEX, p.ICON, p.NEW_ICON
+        from BS_PERMISSION p left join ROLE_PERMISSION_KEY rpk
+		on p.ID = rpk.PERM_ID and rpk.STATE = 'A'
+		left join BS_ROLE r
+		on rpk.ROLE_ID = r.ID and r.STATE = 'A'
+        where r.ID = #{roleId}
+        order by p.ID
+    </select>
+
+<!--    1-->
+    <!-- 根据用户id查询 -->
+    <select id="selectPermIdByUserId" resultType="java.lang.Integer" parameterType="java.lang.String">
+        select distinct p.ID
+        from BS_PERMISSION p
+		left join ROLE_PERMISSION_KEY_NEW rpk
+		on p.ID = rpk.PERM_ID and rpk.STATE = 'A'
+		left join USER_ROLE_NEW urk
+		on urk.ROLE_ID = rpk.ROLE_ID and urk.STATE = 'A'
+		left join BASIC_USER_NEW u
+		on urk.PERSON_ID = u.PERSON_ID
+        where  u.PERSON_ID = #{personId}
+    </select>
+
+    <insert id="insertPerm" parameterType="java.util.List" useGeneratedKeys="false">
+        INSERT INTO BS_PERMISSION_COP(ID, TITLE, P_INDEX, P_CODE, ICON, PARENT_ID, LINKTO, LINKS, DEPTH, NEW_ICON)
+        (<foreach collection="list" index="" item="item" separator="union all">
+            select
+            #{item.id},
+            #{item.title},
+            #{item.index},
+            #{item.code},
+            #{item.icon},
+            #{item.parentId},
+            #{item.linkTo},
+            #{item.links},
+            #{item.depth},
+            #{item.newIcon}
+            from dual
+        </foreach>)
+    </insert>
+</mapper>

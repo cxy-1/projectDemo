@@ -1,0 +1,48 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/zhzg
+
+  datasource:
+    primary:
+      url: jdbc:oracle:thin:@localhost:1521:orcl
+      username: njgaznl
+      password: zhzg_2019
+      driverClassName: oracle.jdbc.driver.OracleDriver
+
+    secondary:
+      url: jdbc:oracle:thin:@localhost:1521:orcl
+      username: sugon
+      password: zhzg_2019
+      driverClassName: oracle.jdbc.driver.OracleDriver
+
+    tertiary:
+      url: jdbc:oracle:thin:@localhost:1521:orcl
+      username: zhzg
+      password: zhzg_2019
+      driverClassName: oracle.jdbc.driver.OracleDriver
+
+  jpa:
+    database: oracle
+    properties:
+      hibernate:
+        show_sql: true
+    hibernate:
+      ddl-auto: update
+  file:
+    template: D:\ttt\
+    outPath: D:\ttt\out\
+    picPath: D:\ttt\img\
+
+
+mymyd:
+  webPath: http://192.168.8.11:8188/queryData/
+
+
+
+ftpimg:
+  ip: localhost
+
+local:
+  url: http://localhost:${server.port}/
+

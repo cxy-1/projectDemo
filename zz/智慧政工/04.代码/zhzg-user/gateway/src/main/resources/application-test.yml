@@ -1,0 +1,13 @@
+spring:
+  redis:
+    host: 10.33.66.86
+    port: 6379
+  session:
+    store-type: redis
+    redis:
+      namespace: smartPolitical
+
+#eureka集群高可用，填写2个eureka的地址
+cluster:
+  eureka:
+    ip: 10.33.66.86

@@ -1,0 +1,1 @@
+package com.sugon.analysis.domain.data.query;import lombok.Data;/** * @author: create by huangxb * @version: v1.0 * @description: * @date:2019/10/31 */@Datapublic class EducationCount {    /**     * @学历编码     */    private String educationTitile;    /**     * @人数     */    private int count;}

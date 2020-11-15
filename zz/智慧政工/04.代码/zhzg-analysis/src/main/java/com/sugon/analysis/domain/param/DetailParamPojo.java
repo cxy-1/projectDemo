@@ -1,0 +1,1 @@
+package com.sugon.analysis.domain.param;import lombok.Data;/** * description √Ë ˆ * * @author young * @time 16:53 */@Datapublic class DetailParamPojo {    private String startYear;    private String endYear;    private String unitId;    private String type;}
