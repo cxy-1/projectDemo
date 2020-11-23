@@ -42,7 +42,7 @@ class Link {//一个链表类
     //头插法
     public void insertHead(int val) {  // 插在头结点和第一个节点之间
         //有这么一个节点
-        Entry cur = new Entry(0);
+        Entry cur = new Entry(0);//创建空的节点
         /*
          * 第一种
          */
@@ -99,7 +99,7 @@ class Link {//一个链表类
     }
 
     /** 根据节点地址去删除节点
-     * 在不知道头指针的情况下删除指定节点
+     * 在不知道头指针的情况下删除指定节点          即知道有这个对象 但是不知道这个对象在那个位置
      *
      * @param n
      * @return
@@ -161,19 +161,20 @@ class Link {//一个链表类
     }
 
     /**https://blog.csdn.net/weixin_40807247/article/details/91435275
-     * 链表反转      反转当前节点以后的全部节点  （从传参传进去的节点开始反转）
+     * 链表反转      反转当前节点以后的全部节点  （从传参传进去的节点开始反转）      ？？？？？？？
      *
      * @param head
      * @return
      */
     public Entry ReverseIteratively(Entry head) {
-        Entry pReversedHead = head;
-        Entry pNode = head;
-        Entry pPrev = null;
+        Entry pReversedHead = head;//最终
+        Entry pNode = head; //  中转站  中间节点 链表首
+        Entry pPrev = null;//  中转站  中间节点  链表尾
         while (pNode != null) {
             Entry pNext = pNode.next;
             if (pNext == null) {
                 pReversedHead = pNode;
+                System.out.println("反转："+pReversedHead.data);
             }
             pNode.next = pPrev;
             pPrev = pNode;
@@ -182,6 +183,21 @@ class Link {//一个链表类
         this.head = pReversedHead;
         return this.head;
     }
+    Entry reverse(Entry head){// 链表反转
+        Entry p,q,pr;
+        p = head.next;
+        q = null;
+        head.next = null;
+        while(p!=null){
+            pr = p.next;
+            p.next = q;
+            q = p;
+            p = pr;
+        }
+        head.next = q;
+        return head;
+    }
+
     /** 采用快慢指针的方式查找单链表的中间节点，快指针一次走两步，慢指针一次走一步，当快指针走完时，慢指针刚好到达中间节点。
      * 查找单链表的中间节点
      *
@@ -220,7 +236,7 @@ class Link {//一个链表类
         return p2;
     }
     /**
-     * 排序
+     * 排序  正序
      *
      * @return
      */
@@ -271,7 +287,7 @@ class Link {//一个链表类
         }
     }
     /**
-     * 判断链表是否有环，单向链表有环时，尾节点相同
+     * 判断链表是否有环，单向链表有环时，尾节点相同    有环  是 true
      *
      * @param head
      * @return
@@ -293,23 +309,23 @@ class Link {//一个链表类
     }
 
     /**
-     * 找出链表环的入口
+     * 找出链表环的入口        ？？      出口 是 链表头            入口 是链表尾
      *
      * @param head
      * @return
      */
     public Entry FindLoopPort(Entry head) {
         Entry fast = head, slow = head;
-        while (fast != null && fast.next != null) {
+        while (fast != null && fast.next != null) {   //？？  感觉这个 没意义       因为就单纯的遍历
             slow = slow.next;
             fast = fast.next.next;
-            if (slow == fast)
+            if (slow == fast)// 循环两次追上时跳过本次
                 break;
         }
         if (fast == null || fast.next == null)
             return null;
         slow = head;
-        while (slow != fast) {
+        while (slow != fast) {//  即 找到链表末尾
             slow = slow.next;
             fast = fast.next;
         }
